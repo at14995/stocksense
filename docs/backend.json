@@ -1,0 +1,168 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the Stock Sense application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "URL of the user's profile picture.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "displayName"
+      ]
+    },
+    "Stock": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Stock",
+      "type": "object",
+      "description": "Represents a stock listed in the marketplace.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the stock entity."
+        },
+        "ticker": {
+          "type": "string",
+          "description": "The stock ticker symbol (e.g., AAPL)."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the company (e.g., Apple Inc.)."
+        },
+        "currentPrice": {
+          "type": "number",
+          "description": "The current price of the stock."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the stock."
+        }
+      },
+      "required": [
+        "id",
+        "ticker",
+        "name",
+        "currentPrice"
+      ]
+    },
+    "SentimentAnalysis": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SentimentAnalysis",
+      "type": "object",
+      "description": "Represents the sentiment analysis result for a stock.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the sentiment analysis result."
+        },
+        "stockId": {
+          "type": "string",
+          "description": "Reference to Stock. (Relationship: Stock 1:N SentimentAnalysis)"
+        },
+        "analysisDate": {
+          "type": "string",
+          "description": "The date and time the sentiment analysis was performed.",
+          "format": "date-time"
+        },
+        "sentimentScore": {
+          "type": "number",
+          "description": "A numerical score representing the sentiment (e.g., -1 to 1)."
+        },
+        "summary": {
+          "type": "string",
+          "description": "A textual summary of the sentiment analysis."
+        }
+      },
+      "required": [
+        "id",
+        "stockId",
+        "analysisDate",
+        "sentimentScore",
+        "summary"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information.  Path-based ownership is enforced via the {userId} parameter.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user, corresponding to their Firebase Auth UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/stocks/{stockId}",
+        "definition": {
+          "entityName": "Stock",
+          "schema": {
+            "$ref": "#/backend/entities/Stock"
+          },
+          "description": "Stores stock information. No ownership constraints; accessible by all users.",
+          "params": [
+            {
+              "name": "stockId",
+              "description": "The unique identifier for the stock."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/stocks/{stockId}/sentimentAnalysis/{sentimentAnalysisId}",
+        "definition": {
+          "entityName": "SentimentAnalysis",
+          "schema": {
+            "$ref": "#/backend/entities/SentimentAnalysis"
+          },
+          "description": "Stores sentiment analysis results for a specific stock. Includes denormalized stockId to allow listing all sentiments for a stock without a collection group query.",
+          "params": [
+            {
+              "name": "stockId",
+              "description": "The unique identifier of the stock."
+            },
+            {
+              "name": "sentimentAnalysisId",
+              "description": "The unique identifier for the sentiment analysis result."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to manage user data, stock information, and sentiment analysis results in a secure, scalable, and debuggable manner. It focuses on authorization independence and structural segregation.  User data is stored under `/users/{userId}` guaranteeing path-based ownership. Stock data is stored globally.  Sentiment analysis results are stored in a subcollection of Stocks. This structure avoids hierarchical authorization dependencies by NOT relying on `get()` calls in security rules. All rules rely solely on `request.auth.uid` or the data present in the document being validated. All collections are designed for homogeneous security posture.\n\nThis structure supports the required QAPs by:\n\n1.  **Secure List Operations:** Segregating data into collections with clear ownership rules (e.g., `/users/{userId}`) allows for secure list operations based on user ID. The `/stocks` collection may require additional constraints (e.g., pagination, filtering) to manage large datasets, but its rules remain simple.\n2.  **Authorization Independence:** No `get()` calls are required in the rules, ensuring atomic operations are possible.\n3.  **Debuggability:** The structure makes the authorization intent clear by using standard patterns (Path-Based Ownership).\n4.  **DBAC:** Roles will need to be stored inside the user document. Example `isAdmin: true | false`."
+  }
+}
