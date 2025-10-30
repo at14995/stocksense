@@ -1,14 +1,12 @@
 'use client';
 
-import { DashboardGrid } from '@/features/dashboard/dashboard-grid';
+import { Loader2 } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import WatchlistPanel from '@/features/watchlists/components/watchlist-panel';
 
-export default function DashboardPage() {
+export default function WatchlistsPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
 
@@ -27,15 +25,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <>
-      <div className="p-4 md:p-6">
-        <div className="flex justify-end mb-4">
-          <Button asChild>
-            <Link href="/watchlists">Manage Watchlists</Link>
-          </Button>
-        </div>
-        <DashboardGrid />
-      </div>
-    </>
+    <div className="container mx-auto p-4 md:p-6">
+      <WatchlistPanel />
+    </div>
   );
 }

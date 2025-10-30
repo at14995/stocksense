@@ -19,9 +19,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { List, Plus } from 'lucide-react';
 import { useMarketFeed } from '../hooks/use-market-feed';
+import { useUser } from '@/firebase';
+import { useEffect, useState } from 'react';
+import { listenUserWatchlists } from '@/features/watchlists/watchlist-service';
+import Link from 'next/link';
 
 export function WatchlistWidget() {
-  const { watchlistData, isLoading } = useMarketFeed();
+  const { user } = useUser();
+  const [watchlistSymbols, setWatchlistSymbols] = useState<string[] | null>(null);
+  const { watchlistData, isLoading } = useMarketFeed(watchlistSymbols || []);
+
+  useEffect(() => {
+    if (!user) return;
+    const unsub = listenUserWatchlists(user.uid, lists => {
+      setWatchlistSymbols(lists[0]?.symbols ?? []);
+    });
+    return () => unsub && unsub();
+  }, [user]);
 
   return (
     <Card className="xl:col-span-2">
@@ -30,13 +44,15 @@ export function WatchlistWidget() {
           <List className="h-5 w-5" />
           <span>My Watchlist</span>
         </CardTitle>
-        <Button variant="outline" size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Symbol
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/watchlists">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Symbol
+          </Link>
         </Button>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
+        {isLoading && watchlistSymbols === null ? (
           <div className="space-y-2">
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
@@ -46,6 +62,9 @@ export function WatchlistWidget() {
           <div className="text-center text-muted-foreground py-8">
             <p>You have no items yet.</p>
             <p>Add tickers to start tracking.</p>
+             <Button asChild className="mt-4">
+                <Link href="/watchlists">Manage Watchlists</Link>
+            </Button>
           </div>
         ) : (
           <Table>

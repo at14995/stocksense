@@ -10,14 +10,16 @@ const initialOverviewData: OverviewDataItem[] = [
   { symbol: 'TSLA', price: '255.20', change: '+2.1%' },
 ];
 
-const initialWatchlistData: MarketDataItem[] = [
-    { symbol: 'NVDA', price: '877.35', change: '+2.4%' },
-    { symbol: 'GOOGL', price: '170.14', change: '-0.9%' },
-    { symbol: 'AMZN', price: '183.63', change: '+1.2%' },
-];
+const generateInitialData = (symbols: string[]): MarketDataItem[] => {
+    return symbols.map(symbol => ({
+        symbol,
+        price: (Math.random() * 1000).toFixed(2),
+        change: `${(Math.random() * 10 - 5).toFixed(1)}%`
+    }));
+}
 
 
-export function useMarketFeed(intervalMs = 30000) {
+export function useMarketFeed(symbols: string[], intervalMs = 30000) {
   const [overviewData, setOverviewData] = useState<OverviewDataItem[]>([]);
   const [watchlistData, setWatchlistData] = useState<MarketDataItem[]>([]);
   const [lastRefresh, setLastRefresh] = useState<number | null>(null);
@@ -27,7 +29,7 @@ export function useMarketFeed(intervalMs = 30000) {
     // Initial load with a delay to show skeletons
     const initialLoadTimer = setTimeout(() => {
         setOverviewData(initialOverviewData);
-        setWatchlistData(initialWatchlistData);
+        setWatchlistData(generateInitialData(symbols));
         setLastRefresh(Date.now());
         setIsLoading(false);
     }, 1000);
@@ -66,7 +68,12 @@ export function useMarketFeed(intervalMs = 30000) {
         clearTimeout(initialLoadTimer);
         clearInterval(interval);
     }
-  }, [intervalMs]);
+  }, [intervalMs, symbols]);
+
+  // If symbols change, we need to regenerate the watchlist data
+  useEffect(() => {
+    setWatchlistData(generateInitialData(symbols));
+  }, [symbols]);
 
   return useMemo(() => ({
     overviewData,
