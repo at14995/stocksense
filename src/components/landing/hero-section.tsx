@@ -1,139 +1,97 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, TrendingUp, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/firebase';
+import { ArrowRight } from 'lucide-react';
 
-type HeroSectionProps = {
-  className?: string;
-  eyebrow?: string;
-  title?: string;
-  subtitle?: string;
-  primaryCta?: { text: string; href: string };
-  secondaryCta?: { text: string; href: string };
-  note?: string;
-};
+const cards = [
+  { symbol: 'BTCUSDT', price: '62,150', change: '+1.8%', color: 'bg-green-600' },
+  { symbol: 'ETHUSDT', price: '3,210', change: '+0.9%', color: 'bg-emerald-600' },
+  { symbol: 'AAPL', price: '185.40', change: '-0.6%', color: 'bg-red-600' },
+];
 
 export function HeroSection({
   className,
-  eyebrow = 'Full-stack market intelligence',
-  title = 'Stock Sense',
-  subtitle = 'Turn complex market data into clear, actionable insights for smarter trading decisions.',
-  primaryCta = { text: 'Launch Dashboard', href: '/dashboard' },
-  secondaryCta = { text: 'Explore Marketplace', href: '/marketplace' },
-  note = 'Live prices update every 30s. Alerts via email or in-app.',
-}: HeroSectionProps) {
+}: {
+  className?: string;
+}) {
   const { user } = useUser();
-  const fadeUp = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
-  };
-  const stagger = {
-    show: { transition: { staggerChildren: 0.08 } },
-  };
-
-  const primaryHref = user ? primaryCta.href : '/auth';
-  const primaryText = user ? primaryCta.text : 'Get Started';
+  const primaryHref = user ? '/dashboard' : '/auth';
 
   return (
-    <section className={cn('relative', className)}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-        <motion.div
-          className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16"
-          initial="hidden"
-          whileInView="show"
-          variants={stagger}
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <div className="flex flex-col justify-center">
-            <motion.p
-              className="mb-2 text-sm font-semibold uppercase tracking-wider text-primary"
-              variants={fadeUp}
-            >
-              {eyebrow}
-            </motion.p>
+    <section className={cn('relative min-h-[calc(100vh-4rem)] overflow-hidden', className)}>
+       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_1px_1px,hsl(var(--border))_1px,transparent_0)] bg-[length:20px_20px]"></div>
+      <div className="container mx-auto px-6 md:px-12 xl:px-20 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
+          {/* Left Column (Text) */}
+          <div className="text-center md:text-left">
             <motion.h1
-              className="text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl"
-              variants={fadeUp}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              {title}
+              Full-Stack Market Intelligence
+              <br />
+              for Smarter Trading
             </motion.h1>
             <motion.p
-              className="mt-6 max-w-lg text-lg text-muted-foreground"
-              variants={fadeUp}
+              className="text-muted-foreground text-lg mt-4 max-w-xl mx-auto md:mx-0"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
             >
-              {subtitle}
+              Turn complex market data into clear, actionable insights for smarter trading decisions.
             </motion.p>
             <motion.div
-              className="mt-8 flex flex-wrap gap-4"
-              variants={fadeUp}
+              className="flex flex-wrap gap-4 mt-8 justify-center md:justify-start"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Button asChild size="lg" aria-label={primaryText}>
+              <Button asChild size="lg">
                 <Link href={primaryHref}>
-                  {primaryText} <ArrowRight className="ml-2" />
+                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" aria-label={secondaryCta.text}>
-                <Link href={secondaryCta.href}>{secondaryCta.text}</Link>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/marketplace">Explore Marketplace</Link>
               </Button>
             </motion.div>
-            <motion.p
-              className="mt-4 text-xs text-muted-foreground"
-              variants={fadeUp}
-            >
-              {note}
-            </motion.p>
           </div>
-          <motion.div
-            className="relative flex items-center justify-center lg:h-full"
-            variants={stagger}
-          >
-            <motion.div
-              className="group relative"
-              variants={fadeUp}
-              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-            >
-              <Card className="p-3 shadow-lg transform-gpu transition-transform hover:-rotate-3">
-                <div className="flex items-center justify-between gap-4">
-                    <span className="font-mono text-sm">BTCUSDT</span>
-                    <span className="text-sm font-semibold text-green-500 flex items-center">
-                        <TrendingUp className="h-4 w-4 mr-1"/> +1.8%
-                    </span>
-                </div>
-              </Card>
-            </motion.div>
-            <motion.div
-              className="group absolute top-1/4 -right-8"
-              variants={fadeUp}
-              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
-            >
-              <Card className="p-3 shadow-xl transform-gpu transition-transform hover:rotate-6">
-                <div className="flex items-center justify-between gap-4">
-                    <span className="font-mono text-sm">AAPL</span>
-                    <span className="text-sm font-semibold text-red-500 flex items-center">
-                        <TrendingUp className="h-4 w-4 mr-1 transform rotate-180"/> -0.6%
-                    </span>
-                </div>
-              </Card>
-            </motion.div>
-            <motion.div
-              className="group absolute bottom-1/4 -left-8"
-              variants={fadeUp}
-              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
-            >
-              <Card className="p-3 shadow-2xl bg-destructive text-destructive-foreground transform-gpu transition-transform hover:rotate-2">
-                 <div className="flex items-center gap-2">
-                    <Bell className="h-4 w-4"/>
-                    <span className="font-mono text-xs">Alert: ETH above $3,200</span>
-                </div>
-              </Card>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+
+          {/* Right Column (Infographic) */}
+          <div className="relative flex justify-center md:justify-end h-72 md:h-96">
+             <div className="relative w-64 h-full">
+                {cards.map((card, i) => (
+                <motion.div
+                    key={card.symbol}
+                    className={cn(
+                        'absolute p-4 rounded-xl shadow-lg backdrop-blur bg-card/70 border w-40 text-center text-sm',
+                        {
+                            'top-0 right-8': i === 0,
+                            'top-28 right-0': i === 1,
+                            'top-52 right-12': i === 2,
+                        }
+                    )}
+                    initial={{ opacity: 0, y: 20, rotate: i % 2 === 0 ? -5 : 5 }}
+                    animate={{ opacity: 1, y: 0, rotate: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 + i * 0.15, ease: 'easeOut' }}
+                    whileHover={{ scale: 1.05, y: -5, transition: { duration: 0.2 } }}
+                >
+                    <div className="font-mono text-xs">{card.symbol}</div>
+                    <div className="font-bold text-lg my-1">{card.price}</div>
+                    <div className={cn('text-xs font-semibold px-2 py-0.5 rounded-full inline-block text-white', card.color)}>
+                    {card.change}
+                    </div>
+                </motion.div>
+                ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
