@@ -11,6 +11,7 @@ import { UserNav } from "@/components/user-nav";
 import { cn } from "@/lib/utils";
 import React from "react";
 import { motion } from "framer-motion";
+import NotificationBell from "@/features/notifications/NotificationBell";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -19,6 +20,7 @@ const navLinks = [
   { href: "/watchlists", label: "Watchlists" },
   { href: "/alerts", label: "Alerts" },
   { href: "/support", label: "Support" },
+  { href: "/notifications", label: "Notifications"},
 ];
 
 export function Header() {
@@ -87,6 +89,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center justify-end space-x-2">
+          <NotificationBell />
           <ThemeSwitcher />
           <UserNav />
         </div>
