@@ -4,16 +4,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/firebase';
 import { ArrowRight } from 'lucide-react';
-import DarkVeilDiagnostic from '../backgrounds/DarkVeil';
+import DarkVeil from '../backgrounds/DarkVeil';
 
 export function HeroSection() {
   const { user } = useUser();
   const primaryHref = user ? '/dashboard' : '/auth';
 
   return (
-    <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-black overflow-hidden">
+    <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-transparent">
       <div className="absolute inset-0 -z-10">
-        <DarkVeilDiagnostic />
+        <DarkVeil />
       </div>
 
       {/* Foreground Content */}
