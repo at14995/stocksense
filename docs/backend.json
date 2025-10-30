@@ -100,6 +100,41 @@
         "sentimentScore",
         "summary"
       ]
+    },
+    "Alert": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Alert",
+      "type": "object",
+      "description": "Represents a price alert for a stock.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the alert entity."
+        },
+        "ownerUid": {
+          "type": "string",
+          "description": "The UID of the user who owns the alert."
+        },
+        "symbol": {
+          "type": "string",
+          "description": "The stock symbol for the alert."
+        },
+        "condition": {
+          "type": "string",
+          "enum": ["above", "below"],
+          "description": "The condition for the alert to trigger ('above' or 'below')."
+        },
+        "target": {
+          "type": "number",
+          "description": "The target price for the alert."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "triggered", "archived"],
+          "description": "The current status of the alert."
+        }
+      },
+      "required": ["ownerUid", "symbol", "condition", "target", "status"]
     }
   },
   "auth": {
@@ -158,6 +193,22 @@
             {
               "name": "sentimentAnalysisId",
               "description": "The unique identifier for the sentiment analysis result."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/alerts/{alertId}",
+        "definition": {
+          "entityName": "Alert",
+          "schema": {
+            "$ref": "#/backend/entities/Alert"
+          },
+          "description": "Stores user-specific price alerts. Path-based ownership is enforced.",
+          "params": [
+            {
+              "name": "alertId",
+              "description": "The unique identifier for the alert."
             }
           ]
         }
