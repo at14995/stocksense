@@ -84,6 +84,6 @@ export default function CreateWatchlistDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog.Root>
+    </Dialog>
   );
 }
