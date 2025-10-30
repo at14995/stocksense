@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/firebase';
 import { ArrowRight } from 'lucide-react';
-import DarkVeil from '../backgrounds/DarkVeil';
+import DarkVeilDiagnostic from '../backgrounds/DarkVeil';
 
 export function HeroSection() {
   const { user } = useUser();
@@ -13,7 +13,7 @@ export function HeroSection() {
   return (
     <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-black overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <DarkVeil hueShift={60} noiseIntensity={0.1} scanlineIntensity={0.2} speed={1} scanlineFrequency={2.0} warpAmount={0.25}/>
+        <DarkVeilDiagnostic />
       </div>
 
       {/* Foreground Content */}
