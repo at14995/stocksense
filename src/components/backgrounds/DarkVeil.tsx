@@ -94,60 +94,70 @@ export default function DarkVeil({
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const canvas = ref.current as HTMLCanvasElement;
+    const canvas = ref.current;
     if (!canvas) return;
     const parent = canvas.parentElement as HTMLElement;
-
+  
+    // ✅ Create transparent renderer with correct alpha
     const renderer = new Renderer({
       dpr: Math.min(window.devicePixelRatio, 2),
       canvas,
-      alpha: true, // ✅ allows transparency instead of solid black
-      premultipliedAlpha: false,
+      alpha: true,
+      antialias: true,
     });
-
+  
     const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0); // ✅ transparent background
+    gl.clearColor(0, 0, 0, 0);
+  
     const geometry = new Triangle(gl);
-
+  
     const program = new Program(gl, {
       vertex,
       fragment,
       uniforms: {
         uTime: { value: 0 },
-        uResolution: { value: new Vec2() },
+        uResolution: { value: new Vec2(window.innerWidth, window.innerHeight) },
         uHueShift: { value: hueShift },
         uNoise: { value: noiseIntensity },
         uScan: { value: scanlineIntensity },
         uScanFreq: { value: scanlineFrequency },
         uWarp: { value: warpAmount },
       },
-      transparent: true,
     });
-
+  
     const mesh = new Mesh(gl, { geometry, program });
-
+  
+    // ✅ Update viewport and uniforms on resize
     const resize = () => {
-      const w = parent.clientWidth;
-      const h = parent.clientHeight;
-      renderer.setSize(w, h);
-      program.uniforms.uResolution.value.set(w, h);
+      const width = parent.offsetWidth;
+      const height = parent.offsetHeight;
+      renderer.setSize(width, height);
+      program.uniforms.uResolution.value.set(width, height);
+      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     };
-
-    resize();
     window.addEventListener("resize", resize);
-
+    resize();
+  
+    // ✅ Continuous render loop with time update
     const start = performance.now();
-    let frame: number;
-
-    const loop = () => {
-      program.uniforms.uTime.value = ((performance.now() - start) / 1000) * speed;
+    let frameId: number;
+  
+    const renderFrame = () => {
+      const elapsed = (performance.now() - start) / 1000;
+      program.uniforms.uTime.value = elapsed * speed;
+      program.uniforms.uHueShift.value = hueShift;
+      program.uniforms.uNoise.value = noiseIntensity;
+      program.uniforms.uScan.value = scanlineIntensity;
+      program.uniforms.uScanFreq.value = scanlineFrequency;
+      program.uniforms.uWarp.value = warpAmount;
       renderer.render({ scene: mesh });
-      frame = requestAnimationFrame(loop);
+      frameId = requestAnimationFrame(renderFrame);
     };
-    loop();
-
+    renderFrame();
+  
+    // ✅ Cleanup
     return () => {
-      cancelAnimationFrame(frame);
+      cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
