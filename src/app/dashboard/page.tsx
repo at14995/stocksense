@@ -1,23 +1,28 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+'use client';
+
+import { DashboardGrid } from '@/features/dashboard/dashboard-grid';
+import { useUser } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export default function DashboardPage() {
-  return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
-      <h1 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-        Dashboard
-      </h1>
-      <div className="mt-8 grid gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome to your Dashboard</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              This is where your personalized stock market data and user-specific information will be displayed.
-            </p>
-          </CardContent>
-        </Card>
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/auth');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <div className="container flex min-h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <DashboardGrid />;
 }
