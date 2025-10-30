@@ -10,6 +10,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import { UserNav } from "@/components/user-nav";
 import { cn } from "@/lib/utils";
 import React from "react";
+import { motion } from "framer-motion";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -23,7 +24,12 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <motion.header 
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="container flex h-16 items-center">
         <div className="mr-8 hidden md:flex">
           <Logo />
@@ -56,6 +62,9 @@ export function Header() {
                     </nav>
                 </SheetContent>
             </Sheet>
+             <div className="ml-4 md:hidden">
+              <Logo />
+            </div>
         </div>
         
         <div className="flex flex-1 items-center justify-center space-x-2 md:justify-center">
@@ -66,7 +75,7 @@ export function Header() {
                 href={link.href}
                 className={cn(
                   "font-medium transition-colors hover:text-primary",
-                  pathname === link.href ? "text-primary" : "text-muted-foreground"
+                  pathname === link.href ? "text-primary underline" : "text-muted-foreground"
                 )}
               >
                 {link.label}
@@ -80,6 +89,6 @@ export function Header() {
           <UserNav />
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }

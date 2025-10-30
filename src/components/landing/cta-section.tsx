@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ArrowRight } from 'lucide-react';
+import { useUser } from '@/firebase';
 
 type CTASectionProps = {
   className?: string;
@@ -23,6 +24,10 @@ export function CTASection({
   secondary = { text: 'View Sentiment', href: '/sentiment' },
   reassurance = 'No credit card required.',
 }: CTASectionProps) {
+  const { user } = useUser();
+  const primaryHref = user ? '/dashboard' : primary.href;
+  const primaryText = user ? 'Go to Dashboard' : primary.text;
+  
   return (
     <section
       className={cn(
@@ -45,9 +50,9 @@ export function CTASection({
             {subtitle}
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" aria-label={primary.text}>
-              <Link href={primary.href}>
-                {primary.text} <ArrowRight className="ml-2 h-5 w-5" />
+            <Button asChild size="lg" aria-label={primaryText}>
+              <Link href={primaryHref}>
+                {primaryText} <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" aria-label={secondary.text}>

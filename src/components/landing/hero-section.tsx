@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, TrendingUp, AlertTriangle, Bell } from 'lucide-react';
+import { ArrowRight, TrendingUp, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useUser } from '@/firebase';
 
 type HeroSectionProps = {
   className?: string;
@@ -26,6 +27,7 @@ export function HeroSection({
   secondaryCta = { text: 'Explore Marketplace', href: '/marketplace' },
   note = 'Live prices update every 30s. Alerts via email or in-app.',
 }: HeroSectionProps) {
+  const { user } = useUser();
   const fadeUp = {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
@@ -33,6 +35,9 @@ export function HeroSection({
   const stagger = {
     show: { transition: { staggerChildren: 0.08 } },
   };
+
+  const primaryHref = user ? primaryCta.href : '/auth';
+  const primaryText = user ? primaryCta.text : 'Get Started';
 
   return (
     <section className={cn('relative', className)}>
@@ -67,9 +72,9 @@ export function HeroSection({
               className="mt-8 flex flex-wrap gap-4"
               variants={fadeUp}
             >
-              <Button asChild size="lg" aria-label={primaryCta.text}>
-                <Link href={primaryCta.href}>
-                  {primaryCta.text} <ArrowRight className="ml-2" />
+              <Button asChild size="lg" aria-label={primaryText}>
+                <Link href={primaryHref}>
+                  {primaryText} <ArrowRight className="ml-2" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" aria-label={secondaryCta.text}>
@@ -110,7 +115,7 @@ export function HeroSection({
                 <div className="flex items-center justify-between gap-4">
                     <span className="font-mono text-sm">AAPL</span>
                     <span className="text-sm font-semibold text-red-500 flex items-center">
-                        <TrendingUp className="h-4 w-4 mr-1 rotate-180"/> -0.6%
+                        <TrendingUp className="h-4 w-4 mr-1 transform rotate-180"/> -0.6%
                     </span>
                 </div>
               </Card>

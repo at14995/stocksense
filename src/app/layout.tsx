@@ -5,6 +5,7 @@ import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
 import { BackgroundGrid } from '@/components/landing/background-grid';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
   title: 'Stock Sense — Intelligent Market Analysis and Alerts',
@@ -45,13 +46,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <BackgroundGrid />
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <Toaster />
+          <FirebaseClientProvider>
+            <BackgroundGrid />
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1 pt-16">{children}</main>
+              <Footer />
+            </div>
+            <Toaster />
+          </FirebaseClientProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -18,7 +18,7 @@ const pageVariants = {
 export default function Home() {
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <motion.main
         initial="hidden"
         animate="enter"
         exit="exit"
@@ -30,7 +30,7 @@ export default function Home() {
         <FeatureGrid />
         <CTASection />
         <FAQAccordion />
-      </motion.div>
+      </motion.main>
     </AnimatePresence>
   );
 }
