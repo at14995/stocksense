@@ -135,6 +135,50 @@
         }
       },
       "required": ["ownerUid", "symbol", "condition", "target", "status"]
+    },
+    "Post": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Post",
+      "description": "A post made by a user in the social feed.",
+      "type": "object",
+      "properties": {
+        "ownerUid": { "type": "string", "description": "The UID of the user who created the post." },
+        "username": { "type": "string", "description": "The display name of the user who created the post." },
+        "content": { "type": "string", "description": "The text content of the post.", "maxLength": 500 },
+        "tickers": { "type": "array", "items": { "type": "string" }, "description": "A list of stock tickers mentioned in the post." },
+        "sentiment": { "type": "string", "enum": ["bullish", "bearish", "neutral"], "description": "The user's sentiment towards the mentioned tickers." },
+        "likeCount": { "type": "number", "description": "The number of likes the post has received." },
+        "commentCount": { "type": "number", "description": "The number of comments on the post." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerUid", "username", "content", "sentiment", "likeCount", "commentCount", "createdAt"]
+    },
+    "Comment": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Comment",
+      "description": "A comment on a post.",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string", "description": "The ID of the post this comment belongs to." },
+        "ownerUid": { "type": "string", "description": "The UID of the user who created the comment." },
+        "username": { "type": "string", "description": "The display name of the user who created the comment." },
+        "content": { "type": "string", "description": "The text content of the comment.", "maxLength": 250 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["postId", "ownerUid", "username", "content", "createdAt"]
+    },
+    "Follow": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Follow",
+      "description": "Represents a follow relationship between two users.",
+      "type": "object",
+      "properties": {
+        "followerUid": { "type": "string", "description": "The UID of the user who is following." },
+        "followingUid": { "type": "string", "description": "The UID of the user being followed." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["followerUid", "followingUid", "createdAt"]
     }
   },
   "auth": {
@@ -149,51 +193,29 @@
         "path": "/users/{userId}",
         "definition": {
           "entityName": "User",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Stores user profile information.  Path-based ownership is enforced via the {userId} parameter.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user, corresponding to their Firebase Auth UID."
-            }
-          ]
+          "schema": { "$ref": "#/backend/entities/User" },
+          "description": "Stores user profile information. Path-based ownership is enforced via the {userId} parameter.",
+          "params": [{ "name": "userId", "description": "The unique identifier of the user, corresponding to their Firebase Auth UID." }]
         }
       },
       {
         "path": "/stocks/{stockId}",
         "definition": {
           "entityName": "Stock",
-          "schema": {
-            "$ref": "#/backend/entities/Stock"
-          },
+          "schema": { "$ref": "#/backend/entities/Stock" },
           "description": "Stores stock information. No ownership constraints; accessible by all users.",
-          "params": [
-            {
-              "name": "stockId",
-              "description": "The unique identifier for the stock."
-            }
-          ]
+          "params": [{ "name": "stockId", "description": "The unique identifier for the stock." }]
         }
       },
       {
         "path": "/stocks/{stockId}/sentimentAnalysis/{sentimentAnalysisId}",
         "definition": {
           "entityName": "SentimentAnalysis",
-          "schema": {
-            "$ref": "#/backend/entities/SentimentAnalysis"
-          },
+          "schema": { "$ref": "#/backend/entities/SentimentAnalysis" },
           "description": "Stores sentiment analysis results for a specific stock. Includes denormalized stockId to allow listing all sentiments for a stock without a collection group query.",
           "params": [
-            {
-              "name": "stockId",
-              "description": "The unique identifier of the stock."
-            },
-            {
-              "name": "sentimentAnalysisId",
-              "description": "The unique identifier for the sentiment analysis result."
-            }
+            { "name": "stockId", "description": "The unique identifier of the stock." },
+            { "name": "sentimentAnalysisId", "description": "The unique identifier for the sentiment analysis result." }
           ]
         }
       },
@@ -201,16 +223,36 @@
         "path": "/alerts/{alertId}",
         "definition": {
           "entityName": "Alert",
-          "schema": {
-            "$ref": "#/backend/entities/Alert"
-          },
+          "schema": { "$ref": "#/backend/entities/Alert" },
           "description": "Stores user-specific price alerts. Path-based ownership is enforced.",
-          "params": [
-            {
-              "name": "alertId",
-              "description": "The unique identifier for the alert."
-            }
-          ]
+          "params": [{ "name": "alertId", "description": "The unique identifier for the alert." }]
+        }
+      },
+      {
+        "path": "/posts/{postId}",
+        "definition": {
+          "entityName": "Post",
+          "schema": { "$ref": "#/backend/entities/Post" },
+          "description": "Stores social feed posts from users/analysts.",
+          "params": [{ "name": "postId", "description": "The unique identifier for the post." }]
+        }
+      },
+      {
+        "path": "/comments/{commentId}",
+        "definition": {
+          "entityName": "Comment",
+          "schema": { "$ref": "#/backend/entities/Comment" },
+          "description": "Stores comments on posts.",
+          "params": [{ "name": "commentId", "description": "The unique identifier for the comment." }]
+        }
+      },
+      {
+        "path": "/follows/{followId}",
+        "definition": {
+          "entityName": "Follow",
+          "schema": { "$ref": "#/backend/entities/Follow" },
+          "description": "Stores follow relationships between users.",
+          "params": [{ "name": "followId", "description": "The unique identifier for the follow relationship." }]
         }
       }
     ],
