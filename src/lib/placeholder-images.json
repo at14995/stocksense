@@ -1,3 +1,70 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "user-avatar",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc2MTc1MzE2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person face"
+    },
+    {
+      "id": "landing-hero",
+      "description": "Abstract representation of stock market data",
+      "imageUrl": "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdG9jayUyMGNoYXJ0fGVufDB8fHx8MTc2MTc0NzkxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "stock chart"
+    },
+    {
+      "id": "feature-dashboard",
+      "description": "A modern analytics dashboard",
+      "imageUrl": "https://images.unsplash.com/photo-1644143153646-f36282dfb953?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YW5hbHl0aWNzJTIwZGFzaGJvYXJkfGVufDB8fHx8MTc2MTY5OTc3OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "analytics dashboard"
+    },
+    {
+      "id": "feature-marketplace",
+      "description": "Items neatly arranged in a marketplace",
+      "imageUrl": "https://images.unsplash.com/photo-1654796374480-65940eaf0df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBzdG9yZWZyb250fGVufDB8fHx8MTc2MTc0MTM2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern storefront"
+    },
+    {
+      "id": "feature-sentiment",
+      "description": "AI robot analyzing data",
+      "imageUrl": "https://images.unsplash.com/photo-1718241905673-a81786aaa609?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxyb2JvdCUyMGRhdGF8ZW58MHx8fHwxNzYxNzk5MDM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "robot data"
+    },
+    {
+      "id": "marketplace-item-1",
+      "description": "Financial news subscription service",
+      "imageUrl": "https://images.unsplash.com/photo-1761735486587-bcac08b15c79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmaW5hbmNpYWwlMjBuZXdzfGVufDB8fHx8MTc2MTc5OTAzOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial news"
+    },
+    {
+      "id": "marketplace-item-2",
+      "description": "Advanced trading tools software box",
+      "imageUrl": "https://images.unsplash.com/photo-1717962688841-3a0890141b90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGJveHxlbnwwfHx8fDE3NjE3OTkwMzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "software box"
+    },
+    {
+      "id": "marketplace-item-3",
+      "description": "Investment strategy ebook",
+      "imageUrl": "https://images.unsplash.com/photo-1760443728294-81b19787ec4c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxlYm9vayUyMGNvdmVyfGVufDB8fHx8MTc2MTczMzM5OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ebook cover"
+    },
+    {
+      "id": "marketplace-item-4",
+      "description": "One-on-one financial advisor session",
+      "imageUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmaW5hbmNpYWwlMjBhZHZpc29yfGVufDB8fHx8MTc2MTc0MjEwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial advisor"
+    },
+    {
+      "id": "marketplace-item-5",
+      "description": "Stock screening tool subscription",
+      "imageUrl": "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZGF0YSUyMGFuYWx5c2lzfGVufDB8fHx8MTc2MTc4MzI3OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data analysis"
+    },
+    {
+      "id": "marketplace-item-6",
+      "description": "Portfolio management course",
+      "imageUrl": "https://images.unsplash.com/photo-1588702547954-4800ead296ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxvbmxpbmUlMjBjb3Vyc2V8ZW58MHx8fHwxNzYxNzE3NjA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "online course"
+    }
+  ]
 }
