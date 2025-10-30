@@ -11,6 +11,8 @@ import { MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const mockSentiment = [
   { symbol: 'BTC', label: 'Positive', score: 0.68 },
@@ -35,11 +37,14 @@ export function SentimentPreviewWidget() {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-lg">
           <MessageSquare className="h-5 w-5" />
           <span>AI Sentiment Snapshot</span>
         </CardTitle>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/sentiment">View Details</Link>
+        </Button>
       </CardHeader>
       <CardContent>
         {isLoading ? (
