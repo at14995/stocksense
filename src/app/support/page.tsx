@@ -1,23 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+'use client';
+import { useUser } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
+import UserSupportPage from '@/features/support/components/UserSupportPage';
 
 export default function SupportPage() {
-  return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
-      <h1 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-        Support
-      </h1>
-      <div className="mt-8 grid gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>How can we help?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              This is where support information, FAQs, and contact details will be available.
-            </p>
-          </CardContent>
-        </Card>
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/auth');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <div className="container flex min-h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
-    </div>
-  );
+    );
+  }
+  return <UserSupportPage />;
 }

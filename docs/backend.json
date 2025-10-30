@@ -179,6 +179,52 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["followerUid", "followingUid", "createdAt"]
+    },
+    "Ticket": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Ticket",
+      "description": "A support ticket submitted by a user.",
+      "type": "object",
+      "properties": {
+        "ownerUid": { "type": "string" },
+        "subject": { "type": "string", "maxLength": 120 },
+        "message": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["open", "in_progress", "resolved", "closed"] },
+        "priority": { "type": "string", "enum": ["low", "normal", "high"] },
+        "adminAssigneeUid": { "type": "string" },
+        "resolutionNotes": { "type": "string" },
+        "lastActor": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerUid", "subject", "message", "status", "priority", "lastActor", "createdAt", "updatedAt"]
+    },
+    "Role": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Role",
+      "description": "Assigns a role (e.g., admin) to a user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["uid", "role"]
+    },
+    "Notification": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Notification",
+      "description": "An in-app notification for a user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "href": { "type": "string", "format": "uri" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "type", "title", "body", "read", "createdAt"]
     }
   },
   "auth": {
@@ -253,6 +299,33 @@
           "schema": { "$ref": "#/backend/entities/Follow" },
           "description": "Stores follow relationships between users.",
           "params": [{ "name": "followId", "description": "The unique identifier for the follow relationship." }]
+        }
+      },
+      {
+        "path": "/tickets/{ticketId}",
+        "definition": {
+          "entityName": "Ticket",
+          "schema": { "$ref": "#/backend/entities/Ticket" },
+          "description": "Stores support tickets submitted by users.",
+          "params": [{ "name": "ticketId", "description": "The unique identifier for the support ticket." }]
+        }
+      },
+      {
+        "path": "/roles/{userId}",
+        "definition": {
+          "entityName": "Role",
+          "schema": { "$ref": "#/backend/entities/Role" },
+          "description": "Stores user roles, primarily for admin access.",
+          "params": [{ "name": "userId", "description": "The UID of the user." }]
+        }
+      },
+       {
+        "path": "/notifications/{notificationId}",
+        "definition": {
+          "entityName": "Notification",
+          "schema": { "$ref": "#/backend/entities/Notification" },
+          "description": "Stores in-app notifications for users.",
+          "params": [{ "name": "notificationId", "description": "The unique identifier for the notification." }]
         }
       }
     ],
