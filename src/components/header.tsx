@@ -34,12 +34,8 @@ export function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="container flex h-16 items-center">
-        <div className="mr-8 hidden md:flex">
-          <Logo />
-        </div>
-        
-        <div className="flex items-center md:hidden">
+      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-2 shrink-0 md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -66,29 +62,31 @@ export function Header() {
                     </nav>
                 </SheetContent>
             </Sheet>
-             <div className="ml-4 md:hidden">
+             <div className="ml-4">
               <Logo />
             </div>
         </div>
         
-        <div className="flex flex-1 items-center justify-center space-x-2 md:justify-center">
-          <nav className="hidden items-center gap-6 text-sm md:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "font-medium transition-colors hover:text-primary",
-                  pathname === link.href ? "text-primary underline" : "text-muted-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+        <div className="hidden md:flex items-center gap-8">
+           <Logo />
+        </div>
+        
+        <div className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "font-medium transition-colors hover:text-primary",
+                pathname === link.href ? "text-primary underline" : "text-muted-foreground"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
 
-        <div className="flex items-center justify-end space-x-2">
+        <div className="flex items-center gap-4">
           <NotificationBell />
           <ThemeSwitcher />
           <UserNav />
