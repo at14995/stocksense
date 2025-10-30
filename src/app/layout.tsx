@@ -4,10 +4,23 @@ import {ThemeProvider} from '@/components/theme-provider';
 import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
+import { BackgroundGrid } from '@/components/landing/background-grid';
 
 export const metadata: Metadata = {
-  title: 'Stock Sense',
-  description: 'AI-powered stock sentiment analysis.',
+  title: 'Stock Sense — Intelligent Market Analysis and Alerts',
+  description: 'Build watchlists, set price alerts, and analyze news sentiment with real-time data.',
+  openGraph: {
+    title: 'Stock Sense — Intelligent Market Analysis and Alerts',
+    description: 'Build watchlists, set price alerts, and analyze news sentiment with real-time data.',
+    images: [
+      {
+        url: '/og-image.png', // Assuming you have a generic social preview image
+        width: 1200,
+        height: 630,
+        alt: 'Stock Sense',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -32,6 +45,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <BackgroundGrid />
           <div className="relative flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">{children}</main>
