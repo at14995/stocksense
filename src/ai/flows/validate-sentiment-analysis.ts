@@ -36,19 +36,28 @@ export async function validateSentimentAnalysis(
   return validateSentimentAnalysisFlow(input);
 }
 
-const validateSentimentAnalysisTool = ai.defineTool({
-  name: 'validateSentimentAnalysisTool',
-  description: 'Validates the sentiment analysis insights for a given stock ticker using external source before making trading decisions.',
-  inputSchema: z.object({
-    stockTicker: z.string().describe('The stock ticker to validate sentiment for.'),
-    sentimentSummary: z.string().describe('A summary of the sentiment analysis.'),
-  }),
-  outputSchema: z.object({
-    isValid: z.boolean().describe('Whether the sentiment analysis is valid or not.'),
-    validationReason: z
-      .string()
-      .describe('The reason why the sentiment analysis is valid or invalid.'),
-  }),
+const validateSentimentAnalysisTool = ai.defineTool(
+  {
+    name: 'validateSentimentAnalysisTool',
+    description:
+      'Validates the sentiment analysis insights for a given stock ticker using external source before making trading decisions.',
+    inputSchema: z.object({
+      stockTicker: z
+        .string()
+        .describe('The stock ticker to validate sentiment for.'),
+      sentimentSummary: z
+        .string()
+        .describe('A summary of the sentiment analysis.'),
+    }),
+    outputSchema: z.object({
+      isValid: z
+        .boolean()
+        .describe('Whether the sentiment analysis is valid or not.'),
+      validationReason: z
+        .string()
+        .describe('The reason why the sentiment analysis is valid or invalid.'),
+    }),
+  },
   async (input) => {
     // Dummy implementation: Always returns true for demonstration purposes.
     // In a real application, this would call an external API or perform some validation logic.
@@ -59,8 +68,8 @@ const validateSentimentAnalysisTool = ai.defineTool({
       isValid: true,
       validationReason: 'Validated against external source successfully.',
     };
-  },
-});
+  }
+);
 
 const validateSentimentAnalysisPrompt = ai.definePrompt({
   name: 'validateSentimentAnalysisPrompt',
