@@ -11,18 +11,9 @@ export function HeroSection() {
   const primaryHref = user ? '/dashboard' : '/auth';
 
   return (
-    <section className="relative w-full overflow-hidden min-h-[calc(100vh-4rem)] flex items-center justify-center bg-black">
-      {/* Animated Background */}
+    <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-b from-gray-950 via-gray-900 to-black overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <DarkVeil
-          hueShift={30}
-          noiseIntensity={0.08}
-          scanlineIntensity={0.2}
-          speed={0.8}
-          scanlineFrequency={2.0}
-          warpAmount={0.2}
-          resolutionScale={1}
-        />
+        <DarkVeil hueShift={45} noiseIntensity={0.05} scanlineIntensity={0.15} speed={0.7} scanlineFrequency={1.8} warpAmount={0.25}/>
       </div>
 
       {/* Foreground Content */}

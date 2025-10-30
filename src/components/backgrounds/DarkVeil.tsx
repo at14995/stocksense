@@ -95,14 +95,18 @@ export default function DarkVeil({
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current as HTMLCanvasElement;
+    if (!canvas) return;
     const parent = canvas.parentElement as HTMLElement;
 
     const renderer = new Renderer({
       dpr: Math.min(window.devicePixelRatio, 2),
-      canvas
+      canvas,
+      alpha: true, // ✅ allows transparency instead of solid black
+      premultipliedAlpha: false,
     });
 
     const gl = renderer.gl;
+    gl.clearColor(0, 0, 0, 0); // ✅ transparent background
     const geometry = new Triangle(gl);
 
     const program = new Program(gl, {
@@ -115,41 +119,36 @@ export default function DarkVeil({
         uNoise: { value: noiseIntensity },
         uScan: { value: scanlineIntensity },
         uScanFreq: { value: scanlineFrequency },
-        uWarp: { value: warpAmount }
-      }
+        uWarp: { value: warpAmount },
+      },
+      transparent: true,
     });
 
     const mesh = new Mesh(gl, { geometry, program });
 
     const resize = () => {
-      const w = parent.clientWidth,
-        h = parent.clientHeight;
-      renderer.setSize(w * resolutionScale, h * resolutionScale);
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+      renderer.setSize(w, h);
       program.uniforms.uResolution.value.set(w, h);
     };
 
-    window.addEventListener('resize', resize);
     resize();
+    window.addEventListener("resize", resize);
 
     const start = performance.now();
-    let frame = 0;
+    let frame: number;
 
     const loop = () => {
       program.uniforms.uTime.value = ((performance.now() - start) / 1000) * speed;
-      program.uniforms.uHueShift.value = hueShift;
-      program.uniforms.uNoise.value = noiseIntensity;
-      program.uniforms.uScan.value = scanlineIntensity;
-      program.uniforms.uScanFreq.value = scanlineFrequency;
-      program.uniforms.uWarp.value = warpAmount;
       renderer.render({ scene: mesh });
       frame = requestAnimationFrame(loop);
     };
-
     loop();
 
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
   return <canvas ref={ref} className="w-full h-full block" />;
