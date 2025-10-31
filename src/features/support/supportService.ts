@@ -19,6 +19,14 @@ const { firestore: db } = initializeFirebase();
 const COL = 'tickets';
 
 export function listenMyTickets(uid: string, cb: (items: Ticket[]) => void) {
+  if (process.env.NODE_ENV === 'development') {
+    const dummyTickets: Ticket[] = [
+      { id: '1', ownerUid: uid, subject: 'Dev Ticket', message: 'My app is in dev mode.', status: 'open', priority: 'normal', lastActor: 'user' },
+    ];
+    cb(dummyTickets);
+    return () => {}; // Return an empty unsubscribe function
+  }
+
   const q = query(
     collection(db, COL),
     where('ownerUid', '==', uid),
@@ -35,6 +43,14 @@ export function listenAllTicketsByStatus(
   status: TicketStatus | 'all',
   cb: (items: Ticket[]) => void
 ) {
+  if (process.env.NODE_ENV === 'development') {
+    const dummyTickets: Ticket[] = [
+      { id: '1', ownerUid: 'dummy-user-id', subject: 'Admin Dev Ticket', message: 'This is a placeholder for admins.', status: 'open', priority: 'high', lastActor: 'user' },
+    ];
+    cb(dummyTickets.filter(t => status === 'all' || t.status === status));
+    return () => {};
+  }
+  
   const base = collection(db, COL);
   const qy =
     status === 'all'

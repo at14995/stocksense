@@ -34,6 +34,16 @@ export function useUserNotifications(uid: string | null) {
       setItems([]);
       return;
     };
+
+    if (process.env.NODE_ENV === 'development') {
+      const dummyNotifications: Notification[] = [
+        { id: '1', uid, type: 'alert', title: 'Dummy Alert', body: 'This is a dev placeholder.', read: false, href: '/alerts' },
+        { id: '2', uid, type: 'ticket', title: 'Dummy Ticket', body: 'This is a dev placeholder for a ticket.', read: true, href: '/support' },
+      ];
+      setItems(dummyNotifications);
+      return;
+    }
+
     const q = query(
       collection(db, 'notifications'),
       where('uid', '==', uid),

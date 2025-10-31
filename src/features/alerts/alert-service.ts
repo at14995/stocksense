@@ -22,6 +22,15 @@ export function listenUserAlerts(
   ownerUid: string,
   cb: (items: Alert[]) => void
 ) {
+  if (process.env.NODE_ENV === 'development') {
+    const dummyAlerts: Alert[] = [
+      { id: '1', ownerUid, symbol: 'DUMMY', condition: 'above', target: 100, status: 'active' },
+      { id: '2', ownerUid, symbol: 'TEST', condition: 'below', target: 50, status: 'triggered' },
+    ];
+    cb(dummyAlerts);
+    return () => {}; // Return an empty unsubscribe function
+  }
+
   const q = query(
     collection(db, COL),
     where('ownerUid', '==', ownerUid),
