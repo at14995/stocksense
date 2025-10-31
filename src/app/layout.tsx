@@ -39,7 +39,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-body antialiased">
+      <body className="font-body antialiased bg-background">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -47,12 +47,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-            <div className="fixed inset-0 -z-10">
-              <DarkVeil />
-            </div>
-            <div className="relative flex min-h-screen flex-col bg-transparent">
+            <div className="relative flex min-h-screen flex-col">
               <Header />
-              <main className="flex-1 pt-16">{children}</main>
+              <section className="relative flex-1">
+                <div className="absolute inset-0 -z-10">
+                  <DarkVeil />
+                </div>
+                <main>{children}</main>
+              </section>
               <Footer />
             </div>
             <Toaster />
