@@ -40,9 +40,15 @@
     @apply bg-background text-foreground;
   }
   html, body {
-    background-color: #0f172a !important;
+    background-color: #0a0a0a !important;
+    overflow-x: hidden;
   }
   html {
     color-scheme: dark;
+  }
+  canvas {
+    display: block;
+    position: absolute;
+    inset: 0;
   }
 }

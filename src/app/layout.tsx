@@ -1,5 +1,5 @@
-import type {Metadata} from 'next';
 import './globals.css';
+import type {Metadata} from 'next';
 import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
@@ -38,26 +38,35 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-body antialiased bg-[#0f172a] text-foreground">
+      <body className="font-body antialiased bg-[#0f172a] text-foreground relative min-h-screen overflow-x-hidden">
         <FirebaseClientProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <div
-                className="fixed top-0 left-0 right-0 z-[100] border-b border-gray-800 shadow-md"
-                style={{
-                  backgroundColor: "#0a0a0a",
-                  opacity: 1,
-                }}
-              >
-              <Header />
-            </div>
-            <section className="relative flex-1 pt-16">
-              <div className="absolute inset-0 -z-10">
-                <DarkVeil />
-              </div>
-              <main>{children}</main>
-            </section>
-            <Footer />
+          {/* Fixed Solid Navbar */}
+          <header
+              className="fixed top-0 left-0 right-0 z-[100] border-b border-gray-800 shadow-md"
+              style={{
+                backgroundColor: "#0a0a0a",
+                opacity: 1,
+              }}
+            >
+            <Header />
+          </header>
+
+          {/* Persistent Animated Background — stays behind content only */}
+          <div className="fixed inset-0 -z-10">
+            <DarkVeil />
           </div>
+
+          {/* Gradient overlay for contrast and depth */}
+          <div className="fixed inset-0 -z-[5] pointer-events-none bg-gradient-to-b from-black/50 via-transparent to-black/90" />
+          
+          {/* Main Content */}
+          <main className="relative z-10 pt-16 min-h-screen">{children}</main>
+
+          {/* Footer */}
+          <footer className="relative z-50">
+            <Footer />
+          </footer>
+
           <Toaster />
         </FirebaseClientProvider>
       </body>
