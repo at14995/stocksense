@@ -3,24 +3,35 @@
 import { useEffect, useState, useMemo } from 'react';
 import type { MarketDataItem, OverviewDataItem } from '../types';
 
-const initialOverviewData: OverviewDataItem[] = [
-  { symbol: 'BTC/USDT', price: '62,134.00', change: '+1.6%' },
-  { symbol: 'ETH/USDT', price: '3,212.00', change: '+0.8%' },
-  { symbol: 'AAPL', price: '185.40', change: '-0.4%' },
-  { symbol: 'TSLA', price: '255.20', change: '+2.1%' },
+const dummyOverviewData: OverviewDataItem[] = [
+  { symbol: 'AAPL', price: '189.23', change: '+1.12%' },
+  { symbol: 'TSLA', price: '247.86', change: '-0.45%' },
+  { symbol: 'GOOG', price: '142.54', change: '+0.72%' },
+  { symbol: 'AMZN', price: '185.00', change: '+0.25%' },
 ];
 
-const generateInitialData = (symbols: string[]): MarketDataItem[] => {
-    if (!Array.isArray(symbols)) return [];
-    return symbols.map(symbol => ({
-        symbol,
-        price: (Math.random() * 1000).toFixed(2),
-        change: `${(Math.random() * 10 - 5).toFixed(1)}%`
-    }));
-}
+const dummyWatchlistData: MarketDataItem[] = [
+    { symbol: "BTC/USDT", price: '67123.00', change: '+2.14%' },
+    { symbol: "ETH/USDT", price: '3264.10', change: '-1.33%' },
+    { symbol: "SOL/USDT", price: '150.75', change: '+5.50%' },
+];
+
+const updateDummyData = (data: MarketDataItem[]) => {
+    return data.map(item => {
+        const currentPrice = parseFloat(item.price.replace(/,/g, ''));
+        const changeFactor = (Math.random() - 0.5) * 0.02; // up to 1% change
+        const newPrice = currentPrice * (1 + changeFactor);
+        const newChangePercent = (newPrice - currentPrice) / currentPrice * 100;
+        return {
+            ...item,
+            price: newPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+            change: `${newChangePercent >= 0 ? '+' : ''}${newChangePercent.toFixed(2)}%`,
+        };
+    });
+};
 
 
-export function useMarketFeed(symbols: string[] | null, intervalMs = 30000) {
+export function useMarketFeed(symbols: string[] | null = null, intervalMs = 5000) {
   const [overviewData, setOverviewData] = useState<OverviewDataItem[]>([]);
   const [watchlistData, setWatchlistData] = useState<MarketDataItem[]>([]);
   const [lastRefresh, setLastRefresh] = useState<number | null>(null);
@@ -29,41 +40,15 @@ export function useMarketFeed(symbols: string[] | null, intervalMs = 30000) {
   useEffect(() => {
     // Initial load with a delay to show skeletons
     const initialLoadTimer = setTimeout(() => {
-        setOverviewData(initialOverviewData);
-        if (symbols) {
-          setWatchlistData(generateInitialData(symbols));
-        }
+        setOverviewData(dummyOverviewData);
+        setWatchlistData(dummyWatchlistData);
         setLastRefresh(Date.now());
         setIsLoading(false);
     }, 1000);
 
     const interval = setInterval(() => {
-      setOverviewData((prevData) =>
-        prevData.map((item) => {
-          const currentPrice = parseFloat(item.price.replace(/,/g, ''));
-          const change = (Math.random() - 0.5) * (currentPrice * 0.01);
-          const newPrice = currentPrice + change;
-          const newChangePercent = (change / currentPrice) * 100;
-          return {
-            ...item,
-            price: newPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-            change: `${newChangePercent >= 0 ? '+' : ''}${newChangePercent.toFixed(1)}%`,
-          };
-        })
-      );
-      setWatchlistData((prevData) =>
-        prevData.map((item) => {
-          const currentPrice = parseFloat(item.price.replace(/,/g, ''));
-          const change = (Math.random() - 0.5) * (currentPrice * 0.01);
-          const newPrice = currentPrice + change;
-          const newChangePercent = (change / currentPrice) * 100;
-          return {
-            ...item,
-            price: newPrice.toFixed(2),
-            change: `${newChangePercent >= 0 ? '+' : ''}${newChangePercent.toFixed(1)}%`,
-          };
-        })
-      );
+      setOverviewData(prevData => updateDummyData(prevData));
+      setWatchlistData(prevData => updateDummyData(prevData));
       setLastRefresh(Date.now());
     }, intervalMs);
 
@@ -71,14 +56,7 @@ export function useMarketFeed(symbols: string[] | null, intervalMs = 30000) {
         clearTimeout(initialLoadTimer);
         clearInterval(interval);
     }
-  }, [intervalMs, symbols]);
-
-  // If symbols change, we need to regenerate the watchlist data
-  useEffect(() => {
-    if (symbols) {
-      setWatchlistData(generateInitialData(symbols));
-    }
-  }, [symbols]);
+  }, [intervalMs]);
 
   return useMemo(() => ({
     overviewData,
