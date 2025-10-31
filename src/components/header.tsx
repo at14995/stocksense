@@ -28,11 +28,8 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
-    <motion.header 
-      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
+    <header 
+      className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 shrink-0 md:hidden">
@@ -92,6 +89,6 @@ export function Header() {
           <UserNav />
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 }

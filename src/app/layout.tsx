@@ -49,7 +49,7 @@ export default function RootLayout({
           <FirebaseClientProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
-              <section className="relative flex-1">
+              <section className="relative flex-1 pt-16">
                 <div className="absolute inset-0 -z-10">
                   <DarkVeil />
                 </div>
