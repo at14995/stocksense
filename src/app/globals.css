@@ -56,3 +56,13 @@
     display: block;
   }
 }
+
+html {
+  overflow-y: scroll;
+}
+
+/* Prevent Radix Dialog from locking scroll and adding right padding */
+body[style*="overflow: hidden"] {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}
