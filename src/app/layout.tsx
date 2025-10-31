@@ -51,7 +51,7 @@ export default function RootLayout({
           {/* Gradient overlay for contrast and depth */}
           <div className="fixed inset-0 -z-[5] pointer-events-none bg-gradient-to-b from-black/50 via-transparent to-black/90" />
           
-          <main className="relative z-10 pt-16 min-h-screen">{children}</main>
+          <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
 
           {/* Footer */}
           <footer className="relative z-50">
