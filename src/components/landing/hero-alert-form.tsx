@@ -109,7 +109,7 @@ export function HeroAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <Card className="w-full max-w-2xl mx-auto bg-[#0E0E12] border-white/10 shadow-2xl shadow-black/40 rounded-xl transition-all hover:shadow-black/60">
+          <Card className="w-full max-w-2xl mx-auto bg-[#0E0E12]/95 backdrop-blur-sm border-white/10 shadow-2xl shadow-black/40 rounded-2xl transition-all hover:shadow-black/60">
             <CardHeader className="text-center p-8">
               <CardTitle className="flex items-center gap-3 text-2xl justify-center">
                 <BellRing className="w-7 h-7 text-primary" />

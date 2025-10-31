@@ -105,7 +105,7 @@ export function FeatureGrid({
               whileHover={{ scale: 1.01, y: -5 }}
               className="h-full"
             >
-              <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg">
+              <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg bg-[#0E0E12]/90 backdrop-blur-sm border-white/10">
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <feature.icon className="h-8 w-8 text-primary" />
