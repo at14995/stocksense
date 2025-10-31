@@ -32,36 +32,49 @@ service cloud.firestore {
      */
     match /users/{userId} {
       allow create: if request.auth != null && request.auth.uid == userId;
-      allow read, update, delete: if request.auth != null && request.auth.uid == userId && resource.data.id == userId;
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
     }
 
-    /**
-     * @description Allows public read access to stock information.
-     * @path /stocks/{stockId}
-     * @allow (get, list) Any user can read stock data.
-     * @deny (create, update, delete) No user can create, update, or delete stock data without authorization.
-     * @principle Allows public read, restricts writes.
-     */
     match /stocks/{stockId} {
-      allow get, list: if true;
-      allow create, update, delete: if false; // Writes should be handled by a backend process
+      allow read, list: if request.auth != null;
+      allow write: if false; // Should be managed by a trusted backend
     }
 
-    /**
-     * @description Allows public read access to sentiment analysis results for a specific stock.
-     * @path /stocks/{stockId}/sentimentAnalysis/{sentimentAnalysisId}
-     * @allow (get, list) Any user can read sentiment analysis data.
-     * @deny (create, update, delete) No user can create, update, or delete sentiment analysis data without authorization.
-     * @principle Allows public read, restricts writes.
-     */
-    match /stocks/{stockId}/sentimentAnalysis/{sentimentAnalysisId} {
-      allow get, list: if true;
-       allow create, update, delete: if false; // Writes should be handled by a backend process
+    match /stocks/{stockId}/sentimentAnalysis/{sentimentId} {
+        allow read, list: if request.auth != null;
+        allow write: if false; // Should be managed by a trusted backend
+    }
+    
+    match /watchlists/{watchlistId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.ownerUid;
     }
 
-    // Default deny all other collections
-    match /{document=**} {
-      allow read, write: if false;
+    match /alerts/{alertId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.ownerUid;
     }
+
+    match /posts/{postId} {
+      allow read, list: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.uid == request.resource.data.ownerUid;
+    }
+
+    match /comments/{commentId} {
+      allow read, list: if request.auth != null;
+      allow create, delete: if request.auth != null; // Allow any authenticated user to comment or delete their own comment
+    }
+    
+    match /tickets/{ticketId} {
+       allow read, write: if request.auth != null && (request.resource.data.ownerUid == request.auth.uid || get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'admin');
+    }
+    
+    match /roles/{userId} {
+      allow read: if request.auth != null && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'admin';
+      allow write: if false; // Roles managed manually or by backend
+    }
+
+    match /notifications/{notificationId} {
+      allow read, write: if request.auth != null && request.resource.data.uid == request.auth.uid;
+    }
+
   }
 }
