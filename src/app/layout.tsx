@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -38,25 +38,19 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-body antialiased bg-[#0f172a] text-foreground relative min-h-screen overflow-x-hidden">
+      <body className="relative min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden antialiased">
         <FirebaseClientProvider>
-          {/* Fixed Solid Navbar */}
-          <header
-              className="fixed top-0 left-0 right-0 z-[100] border-b border-gray-800 shadow-md"
-              style={{
-                backgroundColor: "#0a0a0a",
-                opacity: 1,
-              }}
-            >
+          {/* Solid fixed navbar */}
+          <header className="fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0a] border-b border-gray-800 shadow-md">
             <Header />
           </header>
 
+          {/* Animated background behind all pages */}
           <DarkVeilWrapper />
 
           {/* Gradient overlay for contrast and depth */}
           <div className="fixed inset-0 -z-[5] pointer-events-none bg-gradient-to-b from-black/50 via-transparent to-black/90" />
           
-          {/* Main Content */}
           <main className="relative z-10 pt-16 min-h-screen">{children}</main>
 
           {/* Footer */}
