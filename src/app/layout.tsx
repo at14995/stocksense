@@ -4,8 +4,8 @@ import {ThemeProvider} from '@/components/theme-provider';
 import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
-import { BackgroundGrid } from '@/components/landing/background-grid';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import DarkVeil from '@/components/backgrounds/DarkVeil';
 
 export const metadata: Metadata = {
   title: 'Stock Sense — Intelligent Market Analysis and Alerts',
@@ -47,8 +47,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-            <BackgroundGrid />
-            <div className="relative flex min-h-screen flex-col">
+            <div className="fixed inset-0 -z-10">
+              <DarkVeil />
+            </div>
+            <div className="relative flex min-h-screen flex-col bg-transparent">
               <Header />
               <main className="flex-1 pt-16">{children}</main>
               <Footer />

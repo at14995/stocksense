@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { AuthTabs } from '@/features/auth/auth-tabs';
 import { useUser } from '@/firebase';
 import { Loader2 } from 'lucide-react';
-import { BackgroundGrid } from '@/components/landing/background-grid';
 
 function AuthPageContent() {
   const { user, isUserLoading } = useUser();
@@ -32,7 +31,6 @@ function AuthPageContent() {
 
   return (
     <>
-      <BackgroundGrid />
       <div className="container relative flex min-h-[80vh] items-center justify-center px-4 py-8 md:py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
