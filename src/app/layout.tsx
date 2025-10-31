@@ -4,7 +4,7 @@ import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import DarkVeilWrapper from '@/components/backgrounds/DarkVeilWrapper';
+import DotGrid from '@/components/backgrounds/DotGrid';
 
 export const metadata: Metadata = {
   title: 'Stock Sense — Intelligent Market Analysis and Alerts',
@@ -46,7 +46,9 @@ export default function RootLayout({
           </header>
 
           {/* Animated background behind all pages */}
-          <DarkVeilWrapper />
+          <div className="fixed inset-0 -z-10">
+            <DotGrid dotSize={10} gap={15} baseColor="#5227FF" activeColor="#5227FF" proximity={120} shockRadius={250} shockStrength={5} resistance={750} returnDuration={1.5} />
+          </div>
           
           <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
 
