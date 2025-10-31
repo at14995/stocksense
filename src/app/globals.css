@@ -47,12 +47,20 @@
     height: 100%;
     background: transparent;
     color-scheme: dark;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
   }
 }
 
 html {
   overflow-y: scroll;
 }
+
+/* Hide scrollbar but keep scroll functionality */
+::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* Prevent Radix Dialog from locking scroll and adding right padding */
 body[style*="overflow: hidden"] {
