@@ -38,7 +38,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="relative min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden antialiased">
+      <body className="relative min-h-screen text-white overflow-x-hidden antialiased">
         <FirebaseClientProvider>
           {/* Solid fixed navbar */}
           <header className="fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0a] border-b border-gray-800 shadow-md">
@@ -47,14 +47,11 @@ export default function RootLayout({
 
           {/* Animated background behind all pages */}
           <DarkVeilWrapper />
-
-          {/* Gradient overlay for contrast and depth */}
-          <div className="fixed inset-0 -z-[5] pointer-events-none bg-gradient-to-b from-black/50 via-transparent to-black/90" />
           
           <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
 
           {/* Footer */}
-          <footer className="relative z-50">
+          <footer className="relative z-50 bg-[#0a0a0a] border-t border-gray-800">
             <Footer />
           </footer>
 
