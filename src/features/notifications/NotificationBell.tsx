@@ -36,7 +36,7 @@ export default function NotificationBell() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-80 max-h-96 overflow-y-auto"
+        className="w-80 max-h-96 overflow-y-auto data-[state=open]:animate-fadeIn data-[state=closed]:animate-fadeOut"
         align="end"
       >
         <div className="p-2 font-semibold border-b">Notifications</div>
