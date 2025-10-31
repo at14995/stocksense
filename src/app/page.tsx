@@ -2,7 +2,6 @@
 
 import {
   FeatureGrid,
-  StatsRow,
   CTASection,
   FAQAccordion,
 } from '@/components/landing';
@@ -30,7 +29,6 @@ export default function Home() {
              <HeroAlertForm />
           </div>
         </section>
-        <StatsRow />
         <FeatureGrid />
         <CTASection />
         <FAQAccordion />
