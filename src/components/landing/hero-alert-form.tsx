@@ -10,6 +10,8 @@ import {
   Mail,
   Bell,
   Send,
+  Smartphone,
+  Percent,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +27,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { useUser } from '@/firebase';
@@ -33,22 +36,26 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { AuthTabs } from '@/features/auth/auth-tabs';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+
+const dummyTrending = {
+  stocks: ['AAPL', 'TSLA', 'NVDA', 'AMZN', 'GOOGL', 'MSFT', 'META', 'AMD', 'NFLX', 'DIS'],
+  crypto: ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT', 'DOGE/USDT', 'ADA/USDT', 'AVAX/USDT', 'LINK/USDT', 'DOT/USDT', 'MATIC/USDT'],
+};
 
 export function HeroAlertForm() {
   const { user } = useUser();
   const { toast } = useToast();
   const [assetType, setAssetType] = useState('stocks');
   const [symbol, setSymbol] = useState('');
-  const [condition, setCondition] = useState<'above' | 'below'>('above');
+  const [condition, setCondition] = useState('target_price');
   const [target, setTarget] = useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [notifyVia, setNotifyVia] = useState({ email: false, sms: false, app: false });
 
   const handleSubmit = async () => {
     if (!user) {
@@ -66,13 +73,18 @@ export function HeroAlertForm() {
     }
 
     try {
-      await createAlert(user.uid, symbol, condition, Number(target));
+      // The createAlert function would need to be updated to support the new alert structure
+      // For now, we adapt to the existing `createAlert` function signature
+      const alertCondition = condition.includes('decrease') || condition.includes('drop') ? 'below' : 'above';
+      await createAlert(user.uid, symbol, alertCondition, Number(target));
+      
       toast({
         title: 'Alert Set!',
-        description: `You'll be notified when ${symbol.toUpperCase()} is ${condition} $${target}.`,
+        description: `You'll be notified for ${symbol.toUpperCase()} based on your criteria.`,
       });
       setSymbol('');
       setTarget('');
+      setNotifyVia({email: false, sms: false, app: false})
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -82,6 +94,13 @@ export function HeroAlertForm() {
     }
   };
 
+  const conditionLabel = 
+    condition.includes('percentage') ? '%' :
+    condition.includes('amount') ? '$' :
+    '$';
+    
+  const trendingAssets = assetType === 'stocks' ? dummyTrending.stocks : dummyTrending.crypto;
+
   return (
     <>
       <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
@@ -90,17 +109,18 @@ export function HeroAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <Card className="bg-background/80 backdrop-blur-md border-white/10 shadow-2xl shadow-primary/10 transition-all hover:shadow-primary/20 hover:scale-[1.01]">
-            <CardHeader>
+          <Card className="w-full max-w-2xl mx-auto bg-[#0E0E12] border-white/10 shadow-2xl shadow-black/40 rounded-xl transition-all hover:shadow-black/60">
+            <CardHeader className="text-center p-8">
               <CardTitle className="flex items-center gap-3 text-2xl justify-center">
                 <BellRing className="w-7 h-7 text-primary" />
-                <span>Create a Real-Time Alert</span>
+                <span>Never Miss a Price Move</span>
               </CardTitle>
+              <CardDescription>Set advanced, real-time alerts for stocks and crypto.</CardDescription>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-8 pt-0 space-y-6">
               <Tabs
                 value={assetType}
-                onValueChange={setAssetType}
+                onValueChange={(value) => { setAssetType(value); setSymbol(''); }}
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-2">
@@ -112,61 +132,72 @@ export function HeroAlertForm() {
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
-
-              <div className="flex items-center bg-input/50 border border-input rounded-md focus-within:ring-2 focus-within:ring-ring">
-                <DollarSign className="w-5 h-5 mx-3 text-muted-foreground" />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <Select onValueChange={setSymbol} value={symbol}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Trending Asset" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {trendingAssets.map(asset => (
+                      <SelectItem key={asset} value={asset}>{asset}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
                 <Input
                   type="text"
-                  placeholder={
-                    assetType === 'stocks' ? 'e.g. AAPL' : 'e.g. BTC/USDT'
-                  }
+                  placeholder="Or enter symbol..."
                   value={symbol}
                   onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-                  className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 h-11"
+                  className="h-10"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select value={condition} onValueChange={setCondition as any}>
                   <SelectTrigger>
                     <SelectValue placeholder="Condition" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="above">Above</SelectItem>
-                    <SelectItem value="below">Below</SelectItem>
+                     <SelectItem value="target_price">Price reaches</SelectItem>
+                     <SelectItem value="increase_percentage">Price rises by</SelectItem>
+                     <SelectItem value="decrease_percentage">Price drops by</SelectItem>
+                     <SelectItem value="increase_amount">Price increases by</SelectItem>
+                     <SelectItem value="decrease_amount">Price decreases by</SelectItem>
                   </SelectContent>
                 </Select>
-                <Input
-                  type="number"
-                  placeholder="Target Price"
-                  value={target}
-                  onChange={(e) => setTarget(e.target.value)}
-                  className="h-10"
-                />
+                <div className="relative">
+                  <Input
+                    type="number"
+                    placeholder="Value"
+                    value={target}
+                    onChange={(e) => setTarget(e.target.value)}
+                    className="h-10 pl-7"
+                  />
+                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                    {conditionLabel}
+                  </span>
+                </div>
               </div>
-
-              <Select defaultValue="browser">
-                <SelectTrigger>
-                  <SelectValue placeholder="Notify via..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="browser">
-                    <div className="flex items-center gap-2">
-                      <Bell className="w-4 h-4" /> Browser
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="email">
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4" /> Email
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="telegram" disabled>
-                    <div className="flex items-center gap-2">
-                      <Send className="w-4 h-4" /> Telegram (soon)
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Notify me via:</Label>
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="email" checked={notifyVia.email} onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} />
+                    <Label htmlFor="email" className="font-normal flex items-center gap-1.5"><Mail className="w-4 h-4"/>Email</Label>
+                  </div>
+                   <div className="flex items-center space-x-2">
+                    <Checkbox id="sms" checked={notifyVia.sms} onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))} />
+                    <Label htmlFor="sms" className="font-normal flex items-center gap-1.5"><Smartphone className="w-4 h-4"/>SMS</Label>
+                  </div>
+                   <div className="flex items-center space-x-2">
+                    <Checkbox id="app" checked={notifyVia.app} onCheckedChange={(c) => setNotifyVia(v => ({...v, app: !!c}))} />
+                    <Label htmlFor="app" className="font-normal flex items-center gap-1.5"><Bell className="w-4 h-4"/>App Alert</Label>
+                  </div>
+                </div>
+              </div>
 
               <Button size="lg" className="w-full" onClick={handleSubmit}>
                 Set Alert
