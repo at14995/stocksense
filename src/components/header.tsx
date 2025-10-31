@@ -20,7 +20,6 @@ const navLinks = [
   { href: "/watchlists", label: "Watchlists" },
   { href: "/alerts", label: "Alerts" },
   { href: "/support", label: "Support" },
-  { href: "/notifications", label: "Notifications"},
 ];
 
 export function Header() {
