@@ -48,7 +48,15 @@ export default function RootLayout({
         >
           <FirebaseClientProvider>
             <div className="relative flex min-h-screen flex-col">
-              <Header />
+              <div
+                  className="fixed top-0 left-0 right-0 z-[100] border-b border-gray-800 shadow-md"
+                  style={{
+                    backgroundColor: "#0a0a0a",
+                    opacity: 1,
+                  }}
+                >
+                <Header />
+              </div>
               <section className="relative flex-1 pt-16">
                 <div className="absolute inset-0 -z-10">
                   <DarkVeil />
