@@ -28,7 +28,7 @@ import RenameWatchlistDialog from './rename-watchlist-dialog';
 import DeleteWatchlistDialog from './delete-watchlist-dialog';
 import SymbolEditor from './symbol-editor';
 import PublicToggle from './public-toggle';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Watchlist } from '../types';
 
