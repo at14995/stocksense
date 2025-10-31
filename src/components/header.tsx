@@ -6,7 +6,6 @@ import { Menu } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ThemeSwitcher } from "@/components/theme-switcher";
 import { UserNav } from "@/components/user-nav";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -82,7 +81,6 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           <NotificationBell />
-          <ThemeSwitcher />
           <UserNav />
         </div>
       </div>
