@@ -28,65 +28,75 @@ export default function DarkVeil() {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    const parent = canvas.parentElement as HTMLElement;
 
-    // --- Create renderer
-    const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 2),
-      canvas,
-      alpha: true,
-      antialias: true,
-    });
-
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0); // transparent background
-
-    const geometry = new Triangle(gl);
-    const program = new Program(gl, {
-      vertex,
-      fragment,
-      uniforms: {
-        uResolution: { value: new Vec2() },
-        uTime: { value: 0 },
-      },
-    });
-
-    const mesh = new Mesh(gl, { geometry, program });
-
-    // --- Resize handler
-    const resize = () => {
-      const w = parent.clientWidth;
-      const h = parent.clientHeight;
-      renderer.setSize(w, h);
-      program.uniforms.uResolution.value.set(w, h);
-      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    };
-    window.addEventListener("resize", resize);
-    resize();
-
-    // --- Animation loop
-    const start = performance.now();
+    let renderer: Renderer | null = null;
     let frame: number;
-    const animate = () => {
-      program.uniforms.uTime.value = (performance.now() - start) / 1000;
-      renderer.render({ scene: mesh });
-      frame = requestAnimationFrame(animate);
-    };
-    
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
+
+    const init = () => {
+      if (!canvas.parentElement) return;
+      const parent = canvas.parentElement as HTMLElement;
+      renderer = new Renderer({
+        dpr: Math.min(window.devicePixelRatio, 2),
+        canvas,
+        alpha: true,
+        antialias: true,
+      });
+      const gl = renderer.gl;
+      gl.clearColor(0, 0, 0, 0);
+
+      const geometry = new Triangle(gl);
+      const program = new Program(gl, {
+        vertex,
+        fragment,
+        uniforms: {
+          uResolution: { value: new Vec2() },
+          uTime: { value: 0 },
+        },
+      });
+      const mesh = new Mesh(gl, { geometry, program });
+
+      const resize = () => {
+        const w = parent.clientWidth;
+        const h = parent.clientHeight;
+        renderer!.setSize(w, h);
+        program.uniforms.uResolution.value.set(w, h);
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+      };
+
+      window.addEventListener("resize", resize);
+      resize();
+
+      const start = performance.now();
+      const animate = () => {
+        if (!renderer) return;
+        program.uniforms.uTime.value = (performance.now() - start) / 1000;
+        renderer.render({ scene: mesh });
+        frame = requestAnimationFrame(animate);
+      };
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          cancelAnimationFrame(frame);
+        } else {
+          animate();
+        }
+      });
+      
+      animate();
+
+      return () => {
         cancelAnimationFrame(frame);
-      } else {
-        animate();
-      }
-    });
-
-    animate();
-
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
+        window.removeEventListener("resize", resize);
+        renderer = null;
+      };
     };
+
+    // ✅ Defer initialization until next frame to ensure DOM is measured
+    const initCleanup = requestAnimationFrame(init);
+    
+    return () => {
+        cancelAnimationFrame(initCleanup);
+    }
   }, []);
 
   return (
