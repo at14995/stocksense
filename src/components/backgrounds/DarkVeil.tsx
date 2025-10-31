@@ -72,6 +72,15 @@ export default function DarkVeil() {
       renderer.render({ scene: mesh });
       frame = requestAnimationFrame(animate);
     };
+    
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        cancelAnimationFrame(frame);
+      } else {
+        animate();
+      }
+    });
+
     animate();
 
     return () => {
