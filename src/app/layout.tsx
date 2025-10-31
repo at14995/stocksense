@@ -4,7 +4,7 @@ import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import DarkVeil from '@/components/backgrounds/DarkVeil';
+import DarkVeilWrapper from '@/components/backgrounds/DarkVeilWrapper';
 
 export const metadata: Metadata = {
   title: 'Stock Sense — Intelligent Market Analysis and Alerts',
@@ -51,10 +51,7 @@ export default function RootLayout({
             <Header />
           </header>
 
-          {/* Persistent Animated Background — stays behind content only */}
-          <div className="fixed inset-0 -z-10">
-            <DarkVeil />
-          </div>
+          <DarkVeilWrapper />
 
           {/* Gradient overlay for contrast and depth */}
           <div className="fixed inset-0 -z-[5] pointer-events-none bg-gradient-to-b from-black/50 via-transparent to-black/90" />
