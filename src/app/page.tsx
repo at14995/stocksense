@@ -1,12 +1,12 @@
 'use client';
 
 import {
-  HeroSection,
   FeatureGrid,
   StatsRow,
   CTASection,
   FAQAccordion,
 } from '@/components/landing';
+import { HeroAlertForm } from '@/components/landing/hero-alert-form';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const pageVariants = {
@@ -25,7 +25,11 @@ export default function Home() {
         variants={pageVariants}
         transition={{ duration: 0.25, ease: 'easeOut' }}
       >
-        <HeroSection />
+        <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-transparent">
+          <div className="relative z-10 w-full max-w-2xl px-4">
+             <HeroAlertForm />
+          </div>
+        </section>
         <StatsRow />
         <FeatureGrid />
         <CTASection />

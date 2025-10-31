@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/firebase';
 import { ArrowRight } from 'lucide-react';
+import { HeroAlertForm } from './hero-alert-form';
 
 export function HeroSection() {
   const { user } = useUser();
@@ -13,22 +14,7 @@ export function HeroSection() {
     <section className="relative w-full min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden bg-transparent">
       {/* Foreground Content */}
       <div className="relative z-10 text-center px-6 md:px-12 lg:px-20">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-          Full-Stack Market Intelligence
-        </h1>
-        <p className="text-gray-300 mt-4 max-w-2xl mx-auto text-lg">
-          Turn complex market data into clear, actionable insights for smarter trading decisions.
-        </p>
-        <div className="flex flex-wrap gap-4 justify-center mt-8">
-            <Button asChild size="lg">
-                <Link href={primaryHref}>
-                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-                <Link href="/marketplace">Explore Marketplace</Link>
-            </Button>
-        </div>
+        <HeroAlertForm />
       </div>
     </section>
   );
