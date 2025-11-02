@@ -75,7 +75,7 @@ export default function CreateAlertDialog({
       await createAlert(user.uid, {
         symbol: symbol.trim(),
         exchange,
-        condition,
+        condition: condition as Alert['condition'],
         target: Number(targetValue),
         notificationMethod
       });
