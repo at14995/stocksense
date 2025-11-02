@@ -10,6 +10,7 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
+  limit,
 } from 'firebase/firestore';
 import { initializeFirebase } from '@/firebase';
 import type { Alert } from './types';
@@ -20,12 +21,20 @@ const COL = 'alerts';
 
 export function listenUserAlerts(
   ownerUid: string,
-  cb: (items: Alert[]) => void
+  cb: (items: Alert[]) => void,
+  count?: number
 ) {
+  const constraints = [
+    where('ownerUid', '==', ownerUid),
+    orderBy('updatedAt', 'desc'),
+  ];
+  if (count) {
+    constraints.push(limit(count));
+  }
+  
   const q = query(
     collection(db, COL),
-    where('ownerUid', '==', ownerUid),
-    orderBy('updatedAt', 'desc')
+    ...constraints
   );
   return onSnapshot(q, (snap) => {
     const list: Alert[] = [];
