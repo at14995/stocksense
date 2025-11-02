@@ -10,6 +10,7 @@ export async function ensureUserProfile(db: Firestore, uid: string, data: { disp
       displayName: data.displayName || '',
       email: data.email || '',
       photoURL: '',
+      preferredCurrency: 'USD',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },

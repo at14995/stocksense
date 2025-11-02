@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import NotificationBell from "@/features/notifications/NotificationBell";
 import { useUser } from "@/firebase";
+import { CurrencySelector } from "./CurrencySelector";
 
 const loggedInLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -88,6 +89,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
+          <CurrencySelector />
           {user && <NotificationBell />}
           <UserNav />
         </div>

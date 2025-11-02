@@ -5,6 +5,7 @@ import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import AuroraBackground from '@/components/backgrounds/AuroraBackground';
+import { CurrencyProvider } from '@/context/CurrencyContext';
 
 export const metadata: Metadata = {
   title: 'Stock Sense — Intelligent Market Analysis and Alerts',
@@ -40,24 +41,26 @@ export default function RootLayout({
       </head>
       <body className="relative min-h-screen text-white overflow-x-hidden antialiased">
         <FirebaseClientProvider>
-          {/* Solid fixed navbar */}
-          <header className="fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0a] border-b border-gray-800 shadow-md">
-            <Header />
-          </header>
+          <CurrencyProvider>
+            {/* Solid fixed navbar */}
+            <header className="fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0a] border-b border-gray-800 shadow-md">
+              <Header />
+            </header>
 
-          {/* Animated background behind all pages */}
-          <div className="fixed inset-0 -z-10">
-            <AuroraBackground />
-          </div>
-          
-          <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
+            {/* Animated background behind all pages */}
+            <div className="fixed inset-0 -z-10">
+              <AuroraBackground />
+            </div>
+            
+            <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
 
-          {/* Footer */}
-          <footer className="relative z-50 bg-[#0a0a0a] border-t border-gray-800">
-            <Footer />
-          </footer>
+            {/* Footer */}
+            <footer className="relative z-50 bg-[#0a0a0a] border-t border-gray-800">
+              <Footer />
+            </footer>
 
-          <Toaster />
+            <Toaster />
+          </CurrencyProvider>
         </FirebaseClientProvider>
       </body>
     </html>
