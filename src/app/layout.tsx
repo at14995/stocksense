@@ -4,7 +4,7 @@ import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import DotGrid from '@/components/backgrounds/DotGrid';
+import AuroraBackground from '@/components/backgrounds/AuroraBackground';
 
 export const metadata: Metadata = {
   title: 'Stock Sense — Intelligent Market Analysis and Alerts',
@@ -47,7 +47,7 @@ export default function RootLayout({
 
           {/* Animated background behind all pages */}
           <div className="fixed inset-0 -z-10">
-            <DotGrid dotSize={10} gap={15} baseColor="#5227FF" activeColor="#5227FF" proximity={120} shockRadius={250} shockStrength={5} resistance={750} returnDuration={1.5} />
+            <AuroraBackground />
           </div>
           
           <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
