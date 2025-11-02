@@ -11,25 +11,29 @@ const TickerSchema = z.string().min(1, "Ticker is required").max(10, "Ticker is 
 async function saveSentimentAnalysis(ticker: string, analysis: AnalyzeStockSentimentOutput) {
   try {
     const { firestore } = initializeFirebase();
-    // Note: Firestore security rules should be configured to allow this write.
-    // We are writing to a subcollection of a "stocks" document.
     // This assumes a document for the ticker exists at /stocks/{ticker}.
     // In a real app, you might need to create it if it doesn't exist.
     const sentimentCollectionRef = collection(firestore, 'stocks', ticker, 'sentimentAnalysis');
     
     let sentimentScore = 0;
-    if (analysis.sentiment.toLowerCase() === 'positive') sentimentScore = 0.5;
-    if (analysis.sentiment.toLowerCase() === 'negative') sentimentScore = -0.5;
+    if (analysis.sentiment.toLowerCase().includes('positive') || analysis.sentiment.toLowerCase().includes('bullish')) sentimentScore = 0.5;
+    if (analysis.sentiment.toLowerCase().includes('negative') || analysis.sentiment.toLowerCase().includes('bearish')) sentimentScore = -0.5;
     
-    await addDoc(sentimentCollectionRef, {
+    // Non-blocking write
+    addDoc(sentimentCollectionRef, {
       stockId: ticker,
       analysisDate: serverTimestamp(),
       sentimentScore: sentimentScore,
       summary: analysis.reason,
+    }).catch(err => {
+      // Log error internally, but don't block user response
+      console.error(`Failed to save sentiment for ${ticker}:`, err);
     });
+
   } catch (error) {
     // In a real app, you'd want more robust error handling/logging here.
-    console.error(`Failed to save sentiment for ${ticker}:`, error);
+    console.error(`Failed to initialize Firebase or save sentiment for ${ticker}:`, error);
+    // This error is not returned to the user as saving is a background task.
   }
 }
 
@@ -45,9 +49,9 @@ export async function getSentimentAnalysis(ticker: string): Promise<{ data?: Ana
     // Don't block the user response while saving.
     saveSentimentAnalysis(validation.data, result);
     return { data: result };
-  } catch (e) {
-    console.error(e);
-    return { error: 'Failed to analyze sentiment. Please try again later.' };
+  } catch (e: any) {
+    console.error('Error in getSentimentAnalysis:', e);
+    return { error: e.message || 'Failed to analyze sentiment. The AI model may be temporarily unavailable.' };
   }
 }
 
@@ -58,8 +62,8 @@ export async function getValidation(stockTicker: string, sentimentSummary: strin
   try {
     const result = await validateSentimentAnalysis({ stockTicker, sentimentSummary });
     return { data: result };
-  } catch (e) {
-    console.error(e);
-    return { error: 'Failed to validate sentiment. Please try again later.' };
+  } catch (e: any) {
+    console.error('Error in getValidation:', e);
+    return { error: e.message || 'Failed to validate sentiment. The validation service may be temporarily unavailable.' };
   }
 }
