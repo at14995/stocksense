@@ -10,28 +10,30 @@ function AuthPageContent() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const verify = searchParams.get('verify');
 
   useEffect(() => {
     if (isUserLoading) {
-      // Don't do anything while the user state is loading.
+      // While loading, do nothing. The loader will be displayed.
       return;
     }
 
     if (user) {
-      // User is logged in.
+      // If a user object exists, we need to redirect.
       if (user.emailVerified) {
-        // If email is verified, redirect to the dashboard.
-        router.push('/dashboard');
-      } else if (!searchParams.has('verify')) {
-        // If email is not verified, show the verification prompt.
-        router.push('/auth?verify=true');
+        // If the email is verified, go to the main dashboard.
+        router.replace('/dashboard');
+      } else if (!verify) {
+        // If not verified and not already on the verify page, go there.
+        router.replace('/auth?verify=true');
       }
     }
-    // If there is no user and it's not loading, we stay on the auth page.
-  }, [user, isUserLoading, router, searchParams]);
+    // If no user, stay on the auth page to allow sign-in/sign-up.
+  }, [user, isUserLoading, router, verify]);
 
-  // Show a loader while the auth state is being determined or if the user is logged in and a redirect is imminent.
-  if (isUserLoading || user) {
+  // Show a loader ONLY while the user state is initially loading.
+  // Or if a redirect is imminent for an already logged-in user.
+  if (isUserLoading || (user && (user.emailVerified || !verify))) {
     return (
       <div className="container flex min-h-screen items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -39,7 +41,8 @@ function AuthPageContent() {
     );
   }
 
-  // If no user is logged in and loading is complete, show the authentication forms.
+  // If there's no user and loading is finished, or if we need to show
+  // the verification panel, render the main content.
   return (
     <>
       <div className="container relative flex min-h-[80vh] items-center justify-center px-4 py-8 md:py-12">
