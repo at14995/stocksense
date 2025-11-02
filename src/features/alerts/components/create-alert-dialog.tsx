@@ -19,9 +19,13 @@ import {
 import { useState } from 'react';
 import { useUser } from '@/firebase';
 import { createAlert } from '../alert-service';
-import { Loader2 } from 'lucide-react';
+import { Loader2, TrendingUp, Bitcoin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Alert } from '../types';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+const stockExchanges = ['NASDAQ', 'NYSE', 'LSE'];
+const cryptoExchanges = ['Binance', 'Coinbase', 'Kraken', 'MEXC', 'Bybit', 'Bitfinex'];
 
 export default function CreateAlertDialog({
   open,
@@ -33,6 +37,7 @@ export default function CreateAlertDialog({
   const { user } = useUser();
   const { toast } = useToast();
   
+  const [assetType, setAssetType] = useState('stocks');
   const [symbol, setSymbol] = useState('');
   const [exchange, setExchange] = useState('');
   const [condition, setCondition] = useState<Alert['condition'] | ''>('');
@@ -51,6 +56,7 @@ export default function CreateAlertDialog({
     notificationMethod;
 
   const resetForm = () => {
+    setAssetType('stocks');
     setSymbol('');
     setExchange('');
     setCondition('');
@@ -65,6 +71,11 @@ export default function CreateAlertDialog({
       resetForm();
     }
     onOpenChange(isOpen);
+  };
+  
+  const handleAssetTypeChange = (value: string) => {
+    setAssetType(value);
+    setExchange(''); // Reset exchange when asset type changes
   };
 
   const handleSubmit = async () => {
@@ -92,6 +103,8 @@ export default function CreateAlertDialog({
     }
   };
 
+  const exchangeOptions = assetType === 'stocks' ? stockExchanges : cryptoExchanges;
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
@@ -99,6 +112,21 @@ export default function CreateAlertDialog({
           <DialogTitle>Create New Alert</DialogTitle>
         </DialogHeader>
         <div className="mt-4 space-y-4">
+          <Tabs
+            value={assetType}
+            onValueChange={handleAssetTypeChange}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="stocks">
+                <TrendingUp className="w-4 h-4 mr-2" /> Stocks
+              </TabsTrigger>
+              <TabsTrigger value="crypto">
+                <Bitcoin className="w-4 h-4 mr-2" /> Crypto
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+
           <Input
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
@@ -110,12 +138,9 @@ export default function CreateAlertDialog({
               <SelectValue placeholder="Select Exchange" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="NASDAQ">NASDAQ</SelectItem>
-              <SelectItem value="NYSE">NYSE</SelectItem>
-              <SelectItem value="LSE">LSE</SelectItem>
-              <SelectItem value="BINANCE">Binance</SelectItem>
-              <SelectItem value="COINBASE">Coinbase</SelectItem>
-              <SelectItem value="KRAKEN">Kraken</SelectItem>
+              {exchangeOptions.map((ex) => (
+                <SelectItem key={ex} value={ex}>{ex}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
