@@ -41,6 +41,7 @@ import { AuthTabs } from '@/features/auth/auth-tabs';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import type { Alert } from '@/features/alerts/types';
 
 const dummyTrending = {
   stocks: ['AAPL', 'TSLA', 'NVDA', 'AMZN', 'GOOGL', 'MSFT', 'META', 'AMD', 'NFLX', 'DIS'],
@@ -52,10 +53,10 @@ export function HeroAlertForm() {
   const { toast } = useToast();
   const [assetType, setAssetType] = useState('stocks');
   const [symbol, setSymbol] = useState('');
-  const [condition, setCondition] = useState('target_price');
+  const [condition, setCondition] = useState<Alert['condition']>('price_reach');
   const [target, setTarget] = useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [notifyVia, setNotifyVia] = useState({ email: false, sms: false, app: false });
+  const [notifyVia, setNotifyVia] = useState({ email: true, sms: false, app: true });
 
   const handleSubmit = async () => {
     if (!user) {
@@ -73,10 +74,20 @@ export function HeroAlertForm() {
     }
 
     try {
-      // The createAlert function would need to be updated to support the new alert structure
-      // For now, we adapt to the existing `createAlert` function signature
-      const alertCondition = condition.includes('decrease') || condition.includes('drop') ? 'below' : 'above';
-      await createAlert(user.uid, symbol, alertCondition, Number(target));
+      const getNotificationMethod = () => {
+        if (notifyVia.app) return 'app';
+        if (notifyVia.email) return 'email';
+        if (notifyVia.sms) return 'sms';
+        return 'app';
+      };
+
+      await createAlert(user.uid, {
+        symbol: symbol.toUpperCase(),
+        exchange: assetType === 'stocks' ? 'NASDAQ' : 'BINANCE',
+        condition: condition,
+        target: Number(target),
+        notificationMethod: getNotificationMethod(),
+      });
       
       toast({
         title: 'Alert Set!',
@@ -84,7 +95,6 @@ export function HeroAlertForm() {
       });
       setSymbol('');
       setTarget('');
-      setNotifyVia({email: false, sms: false, app: false})
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -95,8 +105,8 @@ export function HeroAlertForm() {
   };
 
   const conditionLabel = 
-    condition.includes('percentage') ? '%' :
-    condition.includes('amount') ? '$' :
+    condition.includes('percent') ? '%' :
+    condition.includes('dollar') ? '$' :
     '$';
     
   const trendingAssets = assetType === 'stocks' ? dummyTrending.stocks : dummyTrending.crypto;
@@ -155,16 +165,16 @@ export function HeroAlertForm() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Select value={condition} onValueChange={setCondition as any}>
+                <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Condition" />
                   </SelectTrigger>
                   <SelectContent>
-                     <SelectItem value="target_price">Price reaches</SelectItem>
-                     <SelectItem value="increase_percentage">Price rises by</SelectItem>
-                     <SelectItem value="decrease_percentage">Price drops by</SelectItem>
-                     <SelectItem value="increase_amount">Price increases by</SelectItem>
-                     <SelectItem value="decrease_amount">Price decreases by</SelectItem>
+                     <SelectItem value="price_reach">Price reaches</SelectItem>
+                     <SelectItem value="percent_up">Price rises by</SelectItem>
+                     <SelectItem value="percent_down">Price drops by</SelectItem>
+                     <SelectItem value="price_up_dollar">Price increases by</SelectItem>
+                     <SelectItem value="price_down_dollar">Price decreases by</SelectItem>
                   </SelectContent>
                 </Select>
                 <div className="relative">

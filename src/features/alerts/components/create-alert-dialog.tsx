@@ -102,7 +102,7 @@ export default function CreateAlertDialog({
           <Input
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-            placeholder="Enter ticker symbol (e.g., AAPL, BTC)"
+            placeholder="Enter ticker symbol (e.g., AAPL, BTC/USDT)"
           />
 
           <Select value={exchange} onValueChange={setExchange}>
