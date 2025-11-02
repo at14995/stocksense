@@ -30,7 +30,10 @@ export function AlertsWidget() {
   const [alerts, setAlerts] = useState<Alert[] | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+        setAlerts([]);
+        return;
+    }
     const unsub = listenUserAlerts(user.uid, (data) => {
         setAlerts(data);
     });
@@ -67,7 +70,7 @@ export function AlertsWidget() {
             <div className="space-y-3">
                 {alerts.slice(0, 3).map(alert => (
                     <div key={alert.id} className="flex justify-between items-center text-sm">
-                        <span>{alert.symbol} {alert.condition === 'above' ? '>' : '<'} ${alert.target}</span>
+                        <span>{alert.symbol} {alert.condition.includes('up') ? '>' : '<'} ${alert.target}</span>
                         <Badge variant="outline" className={getStatusColor(alert.status)}>
                             {alert.status}
                         </Badge>

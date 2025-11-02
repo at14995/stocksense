@@ -3,15 +3,11 @@
 import { useState } from 'react';
 import {
   BellRing,
-  ChevronDown,
-  DollarSign,
   TrendingUp,
   Bitcoin,
   Mail,
   Bell,
-  Send,
   Smartphone,
-  Percent,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,12 +32,17 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { AuthTabs } from '@/features/auth/auth-tabs';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import type { Alert } from '@/features/alerts/types';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+
 
 const dummyTrending = {
   stocks: ['AAPL', 'TSLA', 'NVDA', 'AMZN', 'GOOGL', 'MSFT', 'META', 'AMD', 'NFLX', 'DIS'],
@@ -161,7 +162,7 @@ export function HeroAlertForm() {
                   <SelectTrigger>
                     <SelectValue placeholder="Select Trending Asset" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent side="bottom" avoidCollisions={false}>
                     {trendingAssets.map(asset => (
                       <SelectItem key={asset} value={asset}>{asset}</SelectItem>
                     ))}
@@ -181,7 +182,7 @@ export function HeroAlertForm() {
                 <SelectTrigger>
                   <SelectValue placeholder="Select Exchange" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent side="bottom" avoidCollisions={false}>
                    {exchangeOptions.map((ex) => (
                     <SelectItem key={ex} value={ex}>{ex}</SelectItem>
                   ))}
@@ -193,7 +194,7 @@ export function HeroAlertForm() {
                   <SelectTrigger>
                     <SelectValue placeholder="Condition" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent side="bottom" avoidCollisions={false}>
                      <SelectItem value="price_reach">Price reaches</SelectItem>
                      <SelectItem value="percent_up">Price rises by</SelectItem>
                      <SelectItem value="percent_down">Price drops by</SelectItem>
@@ -241,6 +242,14 @@ export function HeroAlertForm() {
         </motion.div>
 
         <DialogContent className="max-w-md p-0 bg-transparent border-0">
+          <VisuallyHidden>
+            <DialogHeader>
+              <DialogTitle>Sign In or Create Account</DialogTitle>
+              <DialogDescription>
+                Sign in to your Stock Sense account or create a new one to continue.
+              </DialogDescription>
+            </DialogHeader>
+          </VisuallyHidden>
           <AuthTabs />
         </DialogContent>
       </Dialog>

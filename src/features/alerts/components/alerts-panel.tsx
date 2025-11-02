@@ -252,13 +252,16 @@ function EditAlertDialog({
             <SelectTrigger>
               <SelectValue placeholder="Select Exchange" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent side="bottom" avoidCollisions={false}>
               <SelectItem value="NASDAQ">NASDAQ</SelectItem>
               <SelectItem value="NYSE">NYSE</SelectItem>
               <SelectItem value="LSE">LSE</SelectItem>
-              <SelectItem value="BINANCE">Binance</SelectItem>
-              <SelectItem value="COINBASE">Coinbase</SelectItem>
-              <SelectItem value="KRAKEN">Kraken</SelectItem>
+              <SelectItem value="Binance">Binance</SelectItem>
+              <SelectItem value="Coinbase">Coinbase</SelectItem>
+              <SelectItem value="Kraken">Kraken</SelectItem>
+              <SelectItem value="MEXC">MEXC</SelectItem>
+              <SelectItem value="Bybit">Bybit</SelectItem>
+              <SelectItem value="Bitfinex">Bitfinex</SelectItem>
             </SelectContent>
           </Select>
 
@@ -266,12 +269,9 @@ function EditAlertDialog({
             <SelectTrigger>
               <SelectValue placeholder="Notification Method" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent side="bottom" avoidCollisions={false}>
               <SelectItem value="email">Email</SelectItem>
               <SelectItem value="sms">SMS</SelectItem>
-              <SelectItem value="whatsapp">WhatsApp</SelectItem>
-              <SelectItem value="telegram">Telegram</SelectItem>
-              <SelectItem value="discord">Discord</SelectItem>
               <SelectItem value="app">App Alert</SelectItem>
             </SelectContent>
           </Select>
