@@ -63,14 +63,16 @@ service cloud.firestore {
 
     /**
      * @description Posts are readable by any authenticated user.
-     * Only users with the 'analyst' role can create posts.
+     * Only verified analysts with an active subscription can create posts.
      * Only the owner can update or delete their own post.
      */
     match /posts/{postId} {
       allow list, read: if request.auth != null;
-      allow create: if request.auth != null 
+      allow create: if request.auth != null
                     && request.resource.data.ownerUid == request.auth.uid
-                    && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'analyst';
+                    && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'analyst'
+                    && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.isVerified == true
+                    && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.subscriptionActive == true;
       allow update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
     }
 
