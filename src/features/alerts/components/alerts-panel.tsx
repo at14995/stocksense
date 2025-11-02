@@ -102,6 +102,7 @@ export default function AlertsPanel() {
           <TableHeader>
             <TableRow>
               <TableHead>Symbol</TableHead>
+              <TableHead>Exchange</TableHead>
               <TableHead>Condition</TableHead>
               <TableHead>Notify Via</TableHead>
               <TableHead>Status</TableHead>
@@ -112,6 +113,7 @@ export default function AlertsPanel() {
             {alerts.map((a) => (
               <TableRow key={a.id}>
                 <TableCell className="font-medium">{a.symbol}</TableCell>
+                <TableCell>{a.exchange || 'N/A'}</TableCell>
                 <TableCell>{getConditionLabel(a)}</TableCell>
                 <TableCell className="capitalize">{a.notificationMethod}</TableCell>
                 <TableCell>

@@ -112,6 +112,7 @@ export default function CreateAlertDialog({
             <SelectContent>
               <SelectItem value="NASDAQ">NASDAQ</SelectItem>
               <SelectItem value="NYSE">NYSE</SelectItem>
+              <SelectItem value="LSE">LSE</SelectItem>
               <SelectItem value="BINANCE">Binance</SelectItem>
               <SelectItem value="COINBASE">Coinbase</SelectItem>
               <SelectItem value="KRAKEN">Kraken</SelectItem>
