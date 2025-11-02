@@ -53,6 +53,7 @@ export function HeroAlertForm() {
   const { toast } = useToast();
   const [assetType, setAssetType] = useState('stocks');
   const [symbol, setSymbol] = useState('');
+  const [exchange, setExchange] = useState('');
   const [condition, setCondition] = useState<Alert['condition']>('price_reach');
   const [target, setTarget] = useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -64,7 +65,7 @@ export function HeroAlertForm() {
       return;
     }
 
-    if (!symbol || !target) {
+    if (!symbol || !target || !exchange) {
       toast({
         variant: 'destructive',
         title: 'Missing Fields',
@@ -83,7 +84,7 @@ export function HeroAlertForm() {
 
       await createAlert(user.uid, {
         symbol: symbol.toUpperCase(),
-        exchange: assetType === 'stocks' ? 'NASDAQ' : 'BINANCE',
+        exchange: exchange,
         condition: condition,
         target: Number(target),
         notificationMethod: getNotificationMethod(),
@@ -95,6 +96,7 @@ export function HeroAlertForm() {
       });
       setSymbol('');
       setTarget('');
+      setExchange('');
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -130,7 +132,7 @@ export function HeroAlertForm() {
             <CardContent className="p-8 pt-0 space-y-6">
               <Tabs
                 value={assetType}
-                onValueChange={(value) => { setAssetType(value); setSymbol(''); }}
+                onValueChange={(value) => { setAssetType(value); setSymbol(''); setExchange(''); }}
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-2">
@@ -163,6 +165,20 @@ export function HeroAlertForm() {
                   className="h-10"
                 />
               </div>
+
+               <Select value={exchange} onValueChange={setExchange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Exchange" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NASDAQ">NASDAQ</SelectItem>
+                  <SelectItem value="NYSE">NYSE</SelectItem>
+                  <SelectItem value="LSE">LSE</SelectItem>
+                  <SelectItem value="BINANCE">Binance</SelectItem>
+                  <SelectItem value="COINBASE">Coinbase</SelectItem>
+                  <SelectItem value="KRAKEN">Kraken</SelectItem>
+                </SelectContent>
+              </Select>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
