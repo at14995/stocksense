@@ -9,10 +9,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { UserNav } from "@/components/user-nav";
 import { cn } from "@/lib/utils";
 import React from "react";
-import { motion } from "framer-motion";
 import NotificationBell from "@/features/notifications/NotificationBell";
+import { useUser } from "@/firebase";
 
-const navLinks = [
+const loggedInLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/marketplace", label: "Marketplace" },
   { href: "/sentiment", label: "Sentiment" },
@@ -21,9 +21,17 @@ const navLinks = [
   { href: "/support", label: "Support" },
 ];
 
+const loggedOutLinks = [
+  { href: "/pricing", label: "Pricing" },
+  { href: "/support", label: "Support" },
+];
+
 export function Header() {
   const pathname = usePathname();
+  const { user, isUserLoading } = useUser();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const navLinks = user ? loggedInLinks : loggedOutLinks;
 
   return (
     <header>
@@ -80,7 +88,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <NotificationBell />
+          {user && <NotificationBell />}
           <UserNav />
         </div>
       </div>
