@@ -51,13 +51,21 @@ import { useCurrency } from '@/context/CurrencyContext';
 export default function AlertsPanel() {
   const { user } = useUser();
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingAlert, setEditingAlert] = useState<Alert | null>(null);
   const { symbol: currencySymbol } = useCurrency();
 
   useEffect(() => {
-    if (!user) return;
-    const unsub = listenUserAlerts(user.uid, setAlerts);
+    if (!user) {
+      setIsLoading(false);
+      return;
+    };
+    setIsLoading(true);
+    const unsub = listenUserAlerts(user.uid, (data) => {
+      setAlerts(data);
+      setIsLoading(false);
+    });
     return () => unsub && unsub();
   }, [user]);
 
@@ -101,80 +109,89 @@ export default function AlertsPanel() {
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Symbol</TableHead>
-              <TableHead>Exchange</TableHead>
-              <TableHead>Condition</TableHead>
-              <TableHead>Notify Via</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {alerts.map((a) => (
-              <TableRow key={a.id}>
-                <TableCell className="font-medium">{a.symbol}</TableCell>
-                <TableCell>{a.exchange || 'N/A'}</TableCell>
-                <TableCell>{getConditionLabel(a)}</TableCell>
-                <TableCell className="capitalize">{a.notificationMethod}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className={`capitalize ${getStatusColor(a.status)}`}>
-                    {a.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right space-x-1">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                         <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditingAlert(a)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Edit Alert</TooltipContent>
-                    </Tooltip>
-                    {a.status === 'triggered' && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => updateAlertStatus(a.id, 'archived')}
-                          >
-                            <Archive className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Archive</TooltipContent>
-                      </Tooltip>
-                    )}
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deleteAlert(a.id)}
-                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Delete</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {alerts.length === 0 && (
-          <div className="py-12 text-center text-muted-foreground">
-            No alerts yet. Create one to start monitoring prices.
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Symbol</TableHead>
+                <TableHead>Exchange</TableHead>
+                <TableHead>Condition</TableHead>
+                <TableHead>Notify Via</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {alerts.length > 0 ? (
+                alerts.map((a) => (
+                  <TableRow key={a.id}>
+                    <TableCell className="font-medium">{a.symbol}</TableCell>
+                    <TableCell>{a.exchange || 'N/A'}</TableCell>
+                    <TableCell>{getConditionLabel(a)}</TableCell>
+                    <TableCell className="capitalize">{a.notificationMethod}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={`capitalize ${getStatusColor(a.status)}`}>
+                        {a.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right space-x-1">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setEditingAlert(a)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Edit Alert</TooltipContent>
+                        </Tooltip>
+                        {a.status === 'triggered' && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => updateAlertStatus(a.id, 'archived')}
+                              >
+                                <Archive className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Archive</TooltipContent>
+                          </Tooltip>
+                        )}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => deleteAlert(a.id)}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Delete</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
+                    No alerts yet. Create one to start monitoring prices.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         )}
       </CardContent>
 
