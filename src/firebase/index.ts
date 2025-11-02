@@ -40,7 +40,10 @@ export function getSdks(firebaseApp: FirebaseApp) {
 
   if (typeof window !== 'undefined') {
     getAnalytics(firebaseApp);
-    getPerformance(firebaseApp);
+    const perf = getPerformance(firebaseApp);
+    // Disable automatic UI component tracing to prevent errors with long class names
+    perf.instrumentationEnabled = false;
+    perf.dataCollectionEnabled = true;
   }
 
   return {
