@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useAuth } from '@/firebase';
+import { useAuth, useUser } from '@/firebase';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -56,8 +56,16 @@ export function SignInForm() {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Let the main auth page handle the redirect
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      toast({
+        title: 'Sign In Successful',
+        description: `Welcome back, ${user.displayName || user.email}!`,
+      });
+
+      router.push('/dashboard');
+
     } catch (error: any) {
       let errorMessage = 'An unexpected error occurred.';
       switch (error.code) {

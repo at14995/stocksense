@@ -14,35 +14,37 @@ function AuthPageContent() {
 
   useEffect(() => {
     if (isUserLoading) {
-      // While loading, do nothing. The loader will be displayed.
-      return;
+      return; // Wait until the user state is resolved
     }
 
     if (user) {
-      // If a user object exists, we need to redirect.
-      if (user.emailVerified) {
-        // If the email is verified, go to the main dashboard.
+      // If the user is logged in, but their email is not verified,
+      // ensure they are on the verification screen.
+      if (!user.emailVerified) {
+        if (!verify) {
+          router.replace('/auth?verify=true');
+        }
+        // If they are already on the verify screen, do nothing.
+      } else {
+        // If the user is fully authenticated and verified, redirect to dashboard.
+        // This handles cases where a logged-in user revisits the /auth page.
         router.replace('/dashboard');
-      } else if (!verify) {
-        // If not verified and not already on the verify page, go there.
-        router.replace('/auth?verify=true');
       }
     }
-    // If no user, stay on the auth page to allow sign-in/sign-up.
+    // If there is no user, remain on the auth page to allow sign-in/sign-up.
   }, [user, isUserLoading, router, verify]);
 
-  // Show a loader ONLY while the user state is initially loading.
-  // Or if a redirect is imminent for an already logged-in user.
-  if (isUserLoading || (user && (user.emailVerified || !verify))) {
+  // Show a loader only while the user's auth state is being determined,
+  // or if a redirect is actively being processed for an already-logged-in user.
+  if (isUserLoading || (user && user.emailVerified)) {
     return (
       <div className="container flex min-h-screen items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
-
-  // If there's no user and loading is finished, or if we need to show
-  // the verification panel, render the main content.
+  
+  // Render the authentication tabs (sign-in, sign-up, email verification)
   return (
     <>
       <div className="container relative flex min-h-[80vh] items-center justify-center px-4 py-8 md:py-12">

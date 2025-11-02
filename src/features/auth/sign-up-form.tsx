@@ -6,8 +6,8 @@ import {
   updateProfile,
   sendEmailVerification,
 } from 'firebase/auth';
-import { useAuth, useFirestore, useUser } from '@/firebase';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth, useFirestore } from '@/firebase';
+import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,7 +42,6 @@ export function SignUpForm() {
   const firestore = useFirestore();
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,8 +77,11 @@ export function SignUpForm() {
         title: 'Account Created',
         description: 'A verification email has been sent. Please check your inbox.',
       });
-
-      // The main auth page will detect the user and redirect to verify
+      
+      // Since email verification is required, we don't redirect to dashboard here.
+      // The parent `auth/page.tsx` will handle showing the verification prompt.
+      // If verification wasn't required, we would redirect here:
+      // router.push('/dashboard');
       
     } catch (error: any) {
       let errorMessage = 'An unexpected error occurred.';
