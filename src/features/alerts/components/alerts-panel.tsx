@@ -199,10 +199,11 @@ function EditAlertDialog({
   const { toast } = useToast();
   const [targetValue, setTargetValue] = useState(alert.target.toString());
   const [notificationMethod, setNotificationMethod] = useState(alert.notificationMethod);
+  const [exchange, setExchange] = useState(alert.exchange || '');
   const [err, setErr] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const valid = !isNaN(Number(targetValue)) && Number(targetValue) > 0 && notificationMethod;
+  const valid = !isNaN(Number(targetValue)) && Number(targetValue) > 0 && notificationMethod && exchange;
 
   const handleUpdate = async () => {
     if (!valid) {
@@ -215,6 +216,7 @@ function EditAlertDialog({
       await updateAlert(alert.id, {
         target: Number(targetValue),
         notificationMethod,
+        exchange,
       });
       toast({
         title: 'Alert Updated',
@@ -241,6 +243,20 @@ function EditAlertDialog({
             placeholder="New Target Value"
             type="number"
           />
+
+          <Select value={exchange} onValueChange={setExchange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Exchange" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="NASDAQ">NASDAQ</SelectItem>
+              <SelectItem value="NYSE">NYSE</SelectItem>
+              <SelectItem value="LSE">LSE</SelectItem>
+              <SelectItem value="BINANCE">Binance</SelectItem>
+              <SelectItem value="COINBASE">Coinbase</SelectItem>
+              <SelectItem value="KRAKEN">Kraken</SelectItem>
+            </SelectContent>
+          </Select>
 
           <Select value={notificationMethod} onValueChange={setNotificationMethod}>
             <SelectTrigger>

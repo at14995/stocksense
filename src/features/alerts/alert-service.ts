@@ -57,7 +57,7 @@ export async function createAlert(
   return ref.id;
 }
 
-export async function updateAlert(id: string, data: Partial<Pick<Alert, 'target' | 'notificationMethod'>>) {
+export async function updateAlert(id: string, data: Partial<Pick<Alert, 'target' | 'notificationMethod' | 'exchange'>>) {
   await updateDoc(doc(db, COL, id), {
     ...data,
     updatedAt: serverTimestamp(),
