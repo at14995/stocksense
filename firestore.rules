@@ -63,11 +63,14 @@ service cloud.firestore {
 
     /**
      * @description Posts are readable by any authenticated user.
-     * Only the owner of the post can create, update, or delete it.
+     * Only users with the 'analyst' role can create posts.
+     * Only the owner can update or delete their own post.
      */
     match /posts/{postId} {
       allow list, read: if request.auth != null;
-      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
+      allow create: if request.auth != null 
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'analyst';
       allow update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
     }
 
@@ -94,9 +97,10 @@ service cloud.firestore {
     
     /**
      * @description Role documents are only readable by admins.
+     * Analysts can read their own role.
      */
     match /roles/{userId} {
-      allow read: if request.auth != null && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'admin';
+      allow read: if request.auth != null && (get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'admin' || request.auth.uid == userId);
       allow write: if false; // Roles should be managed manually or by a trusted backend.
     }
 
