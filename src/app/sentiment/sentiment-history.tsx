@@ -1,6 +1,6 @@
 'use client';
 
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, limit } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -17,7 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function SentimentHistory({ ticker }: { ticker: string }) {
   const firestore = useFirestore();
 
-  const sentimentsQuery = useMemo(() => {
+  const sentimentsQuery = useMemoFirebase(() => {
     if (!firestore || !ticker) return null;
     return query(
       collection(firestore, 'stocks', ticker, 'sentimentAnalysis'),
