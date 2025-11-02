@@ -2,7 +2,7 @@
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, limit } from 'firebase/firestore';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   LineChart,
   Line,
