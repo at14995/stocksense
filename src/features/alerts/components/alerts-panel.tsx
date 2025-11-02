@@ -53,6 +53,17 @@ export default function AlertsPanel() {
     }
   };
 
+  const getConditionLabel = (alert: Alert) => {
+    switch (alert.condition) {
+      case 'price_up_dollar': return `Rises by $${alert.target}`;
+      case 'price_down_dollar': return `Drops by $${alert.target}`;
+      case 'price_reach': return `Reaches $${alert.target}`;
+      case 'percent_up': return `Rises by ${alert.target}%`;
+      case 'percent_down': return `Drops by ${alert.target}%`;
+      default: return `Reaches ${alert.target}`;
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -72,7 +83,7 @@ export default function AlertsPanel() {
             <TableRow>
               <TableHead>Symbol</TableHead>
               <TableHead>Condition</TableHead>
-              <TableHead>Target</TableHead>
+              <TableHead>Notify Via</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -81,8 +92,8 @@ export default function AlertsPanel() {
             {alerts.map((a) => (
               <TableRow key={a.id}>
                 <TableCell className="font-medium">{a.symbol}</TableCell>
-                <TableCell>Price is {a.condition}</TableCell>
-                <TableCell>${a.target.toFixed(2)}</TableCell>
+                <TableCell>{getConditionLabel(a)}</TableCell>
+                <TableCell className="capitalize">{a.notificationMethod}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className={`capitalize ${getStatusColor(a.status)}`}>
                     {a.status}

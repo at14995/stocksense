@@ -24,8 +24,8 @@ export function listenUserAlerts(
 ) {
   if (process.env.NODE_ENV === 'development') {
     const dummyAlerts: Alert[] = [
-      { id: '1', ownerUid, symbol: 'DUMMY', condition: 'above', target: 100, status: 'active' },
-      { id: '2', ownerUid, symbol: 'TEST', condition: 'below', target: 50, status: 'triggered' },
+      { id: '1', ownerUid, symbol: 'DUMMY', condition: 'price_reach', target: 100, status: 'active', exchange: 'NASDAQ', notificationMethod: 'email' },
+      { id: '2', ownerUid, symbol: 'TEST', condition: 'price_reach', target: 50, status: 'triggered', exchange: 'BINANCE', notificationMethod: 'app' },
     ];
     cb(dummyAlerts);
     return () => {}; // Return an empty unsubscribe function
@@ -45,15 +45,11 @@ export function listenUserAlerts(
 
 export async function createAlert(
   ownerUid: string,
-  symbol: string,
-  condition: 'above' | 'below',
-  target: number
+  data: Omit<Alert, 'id' | 'ownerUid' | 'status' | 'createdAt' | 'updatedAt'>
 ) {
   const ref = await addDoc(collection(db, COL), {
     ownerUid,
-    symbol: symbol.trim().toUpperCase(),
-    condition,
-    target,
+    ...data,
     status: 'active',
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
