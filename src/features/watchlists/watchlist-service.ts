@@ -26,14 +26,6 @@ export function listenUserWatchlists(
   ownerUid: string,
   cb: (items: Watchlist[]) => void
 ) {
-   if (process.env.NODE_ENV === 'development') {
-    const dummyWatchlists: Watchlist[] = [
-      { id: '1', ownerUid, name: 'My Dev List', symbols: ['DUMMY', 'TEST'], public: true },
-    ];
-    cb(dummyWatchlists);
-    return () => {}; // Return an empty unsubscribe function
-  }
-
   const q = query(
     collection(db, COL),
     where('ownerUid', '==', ownerUid),
