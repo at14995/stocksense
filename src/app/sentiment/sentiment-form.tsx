@@ -23,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Info, Loader2, Shield, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import SentimentHistory from './sentiment-history';
 
 const FormSchema = z.object({
   ticker: z.string().min(1, {
@@ -145,6 +146,9 @@ export function SentimentForm() {
                   {analysis.recommendation}
                 </AlertDescription>
               </Alert>
+            </div>
+             <div className="pt-4">
+              <SentimentHistory ticker={form.getValues('ticker')} />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col items-stretch gap-4">
