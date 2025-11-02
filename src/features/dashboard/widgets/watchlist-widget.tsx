@@ -23,19 +23,29 @@ import { useUser } from '@/firebase';
 import { useEffect, useState } from 'react';
 import { listenUserWatchlists } from '@/features/watchlists/watchlist-service';
 import Link from 'next/link';
+import { Watchlist } from '@/features/watchlists/types';
 
 export function WatchlistWidget() {
   const { user } = useUser();
-  const [watchlistSymbols, setWatchlistSymbols] = useState<string[] | null>(null);
-  const { watchlistData, isLoading } = useMarketFeed(watchlistSymbols || []);
+  const [watchlists, setWatchlists] = useState<Watchlist[] | null>(null);
+  
+  // We'll just display symbols from the first watchlist on the dashboard for now.
+  const watchlistSymbols = watchlists?.[0]?.symbols ?? [];
+
+  const { watchlistData, isLoading } = useMarketFeed(watchlistSymbols);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+        setWatchlists([]); // Clear data on logout
+        return;
+    }
     const unsub = listenUserWatchlists(user.uid, lists => {
-      setWatchlistSymbols(lists[0]?.symbols ?? []);
+      setWatchlists(lists);
     });
     return () => unsub && unsub();
   }, [user]);
+
+  const showLoading = isLoading || watchlists === null;
 
   return (
     <Card className="xl:col-span-2">
@@ -47,12 +57,12 @@ export function WatchlistWidget() {
         <Button variant="outline" size="sm" asChild>
           <Link href="/watchlists">
             <Plus className="h-4 w-4 mr-2" />
-            Add Symbol
+            Manage
           </Link>
         </Button>
       </CardHeader>
       <CardContent>
-        {isLoading && watchlistSymbols === null ? (
+        {showLoading ? (
           <div className="space-y-2">
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
@@ -60,10 +70,9 @@ export function WatchlistWidget() {
           </div>
         ) : watchlistData.length === 0 ? (
           <div className="text-center text-muted-foreground py-8">
-            <p>You have no items yet.</p>
-            <p>Add tickers to start tracking.</p>
-             <Button asChild className="mt-4">
-                <Link href="/watchlists">Manage Watchlists</Link>
+            <p>You have no items in your primary watchlist.</p>
+            <Button asChild className="mt-4">
+                <Link href="/watchlists">Add Symbols</Link>
             </Button>
           </div>
         ) : (
