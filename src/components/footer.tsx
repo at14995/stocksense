@@ -19,8 +19,8 @@ export function Footer() {
               © {year} Stock Sense. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
-                <Link href="/support" className="text-sm text-muted-foreground hover:text-primary">Terms</Link>
-                <Link href="/support" className="text-sm text-muted-foreground hover:text-primary">Privacy</Link>
+                <Link href="/terms" className="text-sm text-muted-foreground hover:text-primary">Terms</Link>
+                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-primary">Privacy</Link>
                 <Link href="/support" className="text-sm text-muted-foreground hover:text-primary">Support</Link>
             </div>
             <p className="text-sm text-muted-foreground">
