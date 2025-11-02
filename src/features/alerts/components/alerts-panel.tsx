@@ -46,12 +46,14 @@ import {
 } from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCurrency } from '@/context/CurrencyContext';
 
 export default function AlertsPanel() {
   const { user } = useUser();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingAlert, setEditingAlert] = useState<Alert | null>(null);
+  const { symbol: currencySymbol } = useCurrency();
 
   useEffect(() => {
     if (!user) return;
@@ -76,9 +78,9 @@ export default function AlertsPanel() {
 
   const getConditionLabel = (alert: Alert) => {
     switch (alert.condition) {
-      case 'price_up_dollar': return `Rises by $${alert.target}`;
-      case 'price_down_dollar': return `Drops by $${alert.target}`;
-      case 'price_reach': return `Reaches $${alert.target}`;
+      case 'price_up_dollar': return `Rises by ${currencySymbol}${alert.target}`;
+      case 'price_down_dollar': return `Drops by ${currencySymbol}${alert.target}`;
+      case 'price_reach': return `Reaches ${currencySymbol}${alert.target}`;
       case 'percent_up': return `Rises by ${alert.target}%`;
       case 'percent_down': return `Drops by ${alert.target}%`;
       default: return `Reaches ${alert.target}`;

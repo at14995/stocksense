@@ -46,6 +46,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import type { Alert } from '@/features/alerts/types';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useCurrency } from '@/context/CurrencyContext';
 
 
 const dummyTrending = {
@@ -59,6 +60,7 @@ const cryptoExchanges = ['Binance', 'Coinbase', 'Kraken', 'MEXC', 'Bybit', 'Bitf
 export function HeroAlertForm() {
   const { user } = useUser();
   const { toast } = useToast();
+  const { symbol: currencySymbol } = useCurrency();
   const [assetType, setAssetType] = useState('stocks');
   const [symbol, setSymbol] = useState('');
   const [exchange, setExchange] = useState('');
@@ -123,8 +125,8 @@ export function HeroAlertForm() {
 
   const conditionLabel = 
     condition?.includes('percent') ? '%' :
-    condition?.includes('dollar') ? '$' :
-    '$';
+    condition?.includes('dollar') ? currencySymbol :
+    currencySymbol;
     
   const trendingAssets = assetType === 'stocks' ? dummyTrending.stocks : dummyTrending.crypto;
   const exchangeOptions = assetType === 'stocks' ? stockExchanges : cryptoExchanges;

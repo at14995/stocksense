@@ -9,13 +9,24 @@ import {
 import { useUser, useFirestore } from '@/firebase';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 
+const SYMBOL_MAP: Record<string, string> = {
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  JPY: '¥',
+  INR: '₹',
+};
+
+
 type CurrencyContextType = {
   currency: string;
+  symbol: string;
   setCurrency: (value: string) => void;
 };
 
 const CurrencyContext = createContext<CurrencyContextType>({
   currency: 'USD',
+  symbol: '$',
   setCurrency: () => {},
 });
 
@@ -26,6 +37,8 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   const firestore = useFirestore();
   const [currency, setCurrencyState] = useState('USD');
   const [isInitialized, setIsInitialized] = useState(false);
+
+  const symbol = SYMBOL_MAP[currency] || '$';
 
   const setCurrency = async (newCurrency: string) => {
     setCurrencyState(newCurrency);
@@ -73,7 +86,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   }
   
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency }}>
+    <CurrencyContext.Provider value={{ currency, symbol, setCurrency }}>
       {children}
     </CurrencyContext.Provider>
   );
