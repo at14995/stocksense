@@ -2,6 +2,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -110,6 +111,9 @@ export default function CreateAlertDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Alert</DialogTitle>
+          <DialogDescription>
+            Define the conditions for your price alert and how you want to be notified.
+          </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-4">
           <Tabs

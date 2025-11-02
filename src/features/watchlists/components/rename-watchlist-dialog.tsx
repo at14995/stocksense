@@ -2,6 +2,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -42,6 +43,9 @@ export default function RenameWatchlistDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Rename Watchlist</DialogTitle>
+           <DialogDescription>
+              Enter a new name for your watchlist.
+          </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-2">
            <Label htmlFor="rename-name">Name</Label>

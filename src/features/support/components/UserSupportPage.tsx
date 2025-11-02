@@ -18,6 +18,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -199,6 +200,9 @@ function NewTicketDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Support Ticket</DialogTitle>
+          <DialogDescription>
+            Please describe your issue in detail. Our support team will get back to you as soon as possible.
+          </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-4">
           <div className="space-y-2">
@@ -296,6 +300,9 @@ function InlineEditBtn({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Ticket</DialogTitle>
+            <DialogDescription>
+              You can only edit the subject and message for tickets that are still open.
+            </DialogDescription>
           </DialogHeader>
           <div className="mt-4 space-y-4">
              <div className="space-y-2">

@@ -30,6 +30,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -235,6 +236,9 @@ function EditAlertDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Alert for {alert.symbol}</DialogTitle>
+          <DialogDescription>
+            Modify the target value, exchange, or notification method for this alert.
+          </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-4">
           <Input

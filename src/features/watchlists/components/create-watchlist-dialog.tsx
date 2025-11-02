@@ -2,6 +2,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -50,6 +51,9 @@ export default function CreateWatchlistDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Watchlist</DialogTitle>
+          <DialogDescription>
+            Create a new watchlist to track a collection of stocks or cryptocurrencies.
+          </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-4">
           <div className="space-y-2">

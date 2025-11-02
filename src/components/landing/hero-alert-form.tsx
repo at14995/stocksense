@@ -36,17 +36,25 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { AuthTabs } from '@/features/auth/auth-tabs';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import type { Alert } from '@/features/alerts/types';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+
 
 const dummyTrending = {
   stocks: ['AAPL', 'TSLA', 'NVDA', 'AMZN', 'GOOGL', 'MSFT', 'META', 'AMD', 'NFLX', 'DIS'],
   crypto: ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT', 'DOGE/USDT', 'ADA/USDT', 'AVAX/USDT', 'LINK/USDT', 'DOT/USDT', 'MATIC/USDT'],
 };
+
+const stockExchanges = ['NASDAQ', 'NYSE', 'LSE'];
+const cryptoExchanges = ['Binance', 'Coinbase', 'Kraken', 'MEXC', 'Bybit', 'Bitfinex'];
 
 export function HeroAlertForm() {
   const { user } = useUser();
@@ -54,10 +62,16 @@ export function HeroAlertForm() {
   const [assetType, setAssetType] = useState('stocks');
   const [symbol, setSymbol] = useState('');
   const [exchange, setExchange] = useState('');
-  const [condition, setCondition] = useState<Alert['condition']>('price_reach');
+  const [condition, setCondition] = useState<Alert['condition'] | ''>('');
   const [target, setTarget] = useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [notifyVia, setNotifyVia] = useState({ email: true, sms: false, app: true });
+
+  const handleAssetTypeChange = (value: string) => {
+    setAssetType(value);
+    setSymbol('');
+    setExchange(''); // Reset exchange on asset type change
+  };
 
   const handleSubmit = async () => {
     if (!user) {
@@ -65,7 +79,7 @@ export function HeroAlertForm() {
       return;
     }
 
-    if (!symbol || !target || !exchange) {
+    if (!symbol || !target || !exchange || !condition) {
       toast({
         variant: 'destructive',
         title: 'Missing Fields',
@@ -97,6 +111,7 @@ export function HeroAlertForm() {
       setSymbol('');
       setTarget('');
       setExchange('');
+      setCondition('');
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -107,11 +122,12 @@ export function HeroAlertForm() {
   };
 
   const conditionLabel = 
-    condition.includes('percent') ? '%' :
-    condition.includes('dollar') ? '$' :
+    condition?.includes('percent') ? '%' :
+    condition?.includes('dollar') ? '$' :
     '$';
     
   const trendingAssets = assetType === 'stocks' ? dummyTrending.stocks : dummyTrending.crypto;
+  const exchangeOptions = assetType === 'stocks' ? stockExchanges : cryptoExchanges;
 
   return (
     <>
@@ -132,7 +148,7 @@ export function HeroAlertForm() {
             <CardContent className="p-8 pt-0 space-y-6">
               <Tabs
                 value={assetType}
-                onValueChange={(value) => { setAssetType(value); setSymbol(''); setExchange(''); }}
+                onValueChange={handleAssetTypeChange}
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-2">
@@ -171,12 +187,9 @@ export function HeroAlertForm() {
                   <SelectValue placeholder="Select Exchange" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NASDAQ">NASDAQ</SelectItem>
-                  <SelectItem value="NYSE">NYSE</SelectItem>
-                  <SelectItem value="LSE">LSE</SelectItem>
-                  <SelectItem value="BINANCE">Binance</SelectItem>
-                  <SelectItem value="COINBASE">Coinbase</SelectItem>
-                  <SelectItem value="KRAKEN">Kraken</SelectItem>
+                   {exchangeOptions.map((ex) => (
+                    <SelectItem key={ex} value={ex}>{ex}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
@@ -233,6 +246,14 @@ export function HeroAlertForm() {
         </motion.div>
 
         <DialogContent className="max-w-md p-0 bg-transparent border-0">
+          <VisuallyHidden>
+            <DialogHeader>
+              <DialogTitle>Sign In or Create Account</DialogTitle>
+              <DialogDescription>
+                Sign in to your Stock Sense account or create a new one to continue.
+              </DialogDescription>
+            </DialogHeader>
+          </VisuallyHidden>
           <AuthTabs />
         </DialogContent>
       </Dialog>
