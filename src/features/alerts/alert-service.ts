@@ -57,6 +57,13 @@ export async function createAlert(
   return ref.id;
 }
 
+export async function updateAlert(id: string, data: Partial<Pick<Alert, 'target' | 'notificationMethod'>>) {
+  await updateDoc(doc(db, COL, id), {
+    ...data,
+    updatedAt: serverTimestamp(),
+  });
+}
+
 export async function updateAlertStatus(
   id: string,
   status: 'active' | 'triggered' | 'archived'

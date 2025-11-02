@@ -1,11 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Bell, Plus, Trash2, Archive } from 'lucide-react';
+import { Bell, Plus, Trash2, Archive, Edit } from 'lucide-react';
 import { useUser } from '@/firebase';
 import {
   listenUserAlerts,
   updateAlertStatus,
   deleteAlert,
+  updateAlert,
 } from '../alert-service';
 import CreateAlertDialog from './create-alert-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,11 +27,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AlertsPanel() {
   const { user } = useUser();
   const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [open, setOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingAlert, setEditingAlert] = useState<Alert | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -72,7 +92,7 @@ export default function AlertsPanel() {
             <Bell className="h-5 w-5" />
             My Alerts
           </CardTitle>
-          <Button onClick={() => setOpen(true)}>
+          <Button onClick={() => setIsCreateOpen(true)}>
             <Plus className="h-4 w-4 mr-2" /> New Alert
           </Button>
         </div>
@@ -101,6 +121,18 @@ export default function AlertsPanel() {
                 </TableCell>
                 <TableCell className="text-right space-x-1">
                   <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                         <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setEditingAlert(a)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Edit Alert</TooltipContent>
+                    </Tooltip>
                     {a.status === 'triggered' && (
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -141,7 +173,99 @@ export default function AlertsPanel() {
         )}
       </CardContent>
 
-      <CreateAlertDialog open={open} onOpenChange={setOpen} />
+      <CreateAlertDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+      {editingAlert && (
+        <EditAlertDialog
+          alert={editingAlert}
+          open={!!editingAlert}
+          onOpenChange={(isOpen) => !isOpen && setEditingAlert(null)}
+        />
+      )}
     </Card>
+  );
+}
+
+function EditAlertDialog({
+  alert,
+  open,
+  onOpenChange,
+}: {
+  alert: Alert;
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+}) {
+  const { toast } = useToast();
+  const [targetValue, setTargetValue] = useState(alert.target.toString());
+  const [notificationMethod, setNotificationMethod] = useState(alert.notificationMethod);
+  const [err, setErr] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const valid = !isNaN(Number(targetValue)) && Number(targetValue) > 0 && notificationMethod;
+
+  const handleUpdate = async () => {
+    if (!valid) {
+      setErr('Please fill out all fields correctly.');
+      return;
+    }
+    setIsLoading(true);
+    setErr(null);
+    try {
+      await updateAlert(alert.id, {
+        target: Number(targetValue),
+        notificationMethod,
+      });
+      toast({
+        title: 'Alert Updated',
+        description: `Your alert for ${alert.symbol} has been updated.`,
+      });
+      onOpenChange(false);
+    } catch (e: any) {
+      setErr(e?.message ?? 'Failed to update alert.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Alert for {alert.symbol}</DialogTitle>
+        </DialogHeader>
+        <div className="mt-4 space-y-4">
+          <Input
+            value={targetValue}
+            onChange={(e) => setTargetValue(e.target.value)}
+            placeholder="New Target Value"
+            type="number"
+          />
+
+          <Select value={notificationMethod} onValueChange={setNotificationMethod}>
+            <SelectTrigger>
+              <SelectValue placeholder="Notification Method" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="email">Email</SelectItem>
+              <SelectItem value="sms">SMS</SelectItem>
+              <SelectItem value="whatsapp">WhatsApp</SelectItem>
+              <SelectItem value="telegram">Telegram</SelectItem>
+              <SelectItem value="discord">Discord</SelectItem>
+              <SelectItem value="app">App Alert</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          {err && <p className="text-sm text-destructive">{err}</p>}
+        </div>
+        <DialogFooter className="pt-4">
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button disabled={!valid || isLoading} onClick={handleUpdate}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
