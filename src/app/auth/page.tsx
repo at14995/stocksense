@@ -12,15 +12,25 @@ function AuthPageContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    if (isUserLoading) {
+      // Don't do anything while the user state is loading.
+      return;
+    }
+
+    if (user) {
+      // User is logged in.
       if (user.emailVerified) {
+        // If email is verified, redirect to the dashboard.
         router.push('/dashboard');
       } else if (!searchParams.has('verify')) {
-         router.push('/auth?verify=true');
+        // If email is not verified, show the verification prompt.
+        router.push('/auth?verify=true');
       }
     }
+    // If there is no user and it's not loading, we stay on the auth page.
   }, [user, isUserLoading, router, searchParams]);
 
+  // Show a loader while the auth state is being determined or if the user is logged in and a redirect is imminent.
   if (isUserLoading || user) {
     return (
       <div className="container flex min-h-screen items-center justify-center">
@@ -29,6 +39,7 @@ function AuthPageContent() {
     );
   }
 
+  // If no user is logged in and loading is complete, show the authentication forms.
   return (
     <>
       <div className="container relative flex min-h-[80vh] items-center justify-center px-4 py-8 md:py-12">
