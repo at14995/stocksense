@@ -1,3 +1,4 @@
+
 'use client';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
@@ -22,5 +23,11 @@ export default function SupportPage() {
       </div>
     );
   }
-  return <UserSupportPage />;
+  return (
+    <main className="flex justify-center items-start min-h-screen px-4 py-20">
+      <div className="max-w-5xl w-full bg-[#0E0E12]/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/10">
+        <UserSupportPage />
+      </div>
+    </main>
+  );
 }
