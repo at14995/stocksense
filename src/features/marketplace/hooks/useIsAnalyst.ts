@@ -14,7 +14,12 @@ export function useIsAnalyst() {
       return;
     }
     const unsub = onSnapshot(doc(db, 'roles', user.uid), (snap) => {
-      setIsAnalyst(snap.exists() && snap.data()?.role === 'analyst');
+      const data = snap.data();
+      const hasFullAnalystRole = snap.exists() && 
+                                  data?.role === 'analyst' && 
+                                  data?.isVerified === true && 
+                                  data?.subscriptionActive === true;
+      setIsAnalyst(hasFullAnalystRole);
     });
     return () => unsub && unsub();
   }, [user, db]);
