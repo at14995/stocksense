@@ -16,7 +16,6 @@ import { CurrencySelector } from "./CurrencySelector";
 const loggedInLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/marketplace", label: "Marketplace" },
-  { href: "/sentiment", label: "Sentiment" },
   { href: "/watchlists", label: "Watchlists" },
   { href: "/alerts", label: "Alerts" },
   { href: "/support", label: "Support" },

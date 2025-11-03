@@ -21,7 +21,7 @@ export function CTASection({
   title = 'Trade on signals, not noise.',
   subtitle = 'Build watchlists, set alerts, and analyze news in one place.',
   primary = { text: 'Get Started', href: '/auth' },
-  secondary = { text: 'View Sentiment', href: '/sentiment' },
+  secondary = { text: 'View Dashboard', href: '/dashboard' },
   reassurance = 'No credit card required.',
 }: CTASectionProps) {
   const { user } = useUser();

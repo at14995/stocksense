@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { MarketOverviewWidget } from './widgets/market-overview-widget';
 import { WatchlistWidget } from './widgets/watchlist-widget';
-import { SentimentPreviewWidget } from './widgets/sentiment-preview-widget';
 import { AlertsWidget } from './widgets/alerts-widget';
 import { SupportWidget } from './widgets/support-widget';
 
@@ -17,7 +16,6 @@ export function DashboardGrid() {
     >
       <MarketOverviewWidget />
       <WatchlistWidget />
-      <SentimentPreviewWidget />
       <AlertsWidget />
       <SupportWidget />
     </motion.div>

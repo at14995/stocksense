@@ -65,42 +65,6 @@
         "currentPrice"
       ]
     },
-    "SentimentAnalysis": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "SentimentAnalysis",
-      "type": "object",
-      "description": "Represents the sentiment analysis result for a stock.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the sentiment analysis result."
-        },
-        "stockId": {
-          "type": "string",
-          "description": "Reference to Stock. (Relationship: Stock 1:N SentimentAnalysis)"
-        },
-        "analysisDate": {
-          "type": "string",
-          "description": "The date and time the sentiment analysis was performed.",
-          "format": "date-time"
-        },
-        "sentimentScore": {
-          "type": "number",
-          "description": "A numerical score representing the sentiment (e.g., -1 to 1)."
-        },
-        "summary": {
-          "type": "string",
-          "description": "A textual summary of the sentiment analysis."
-        }
-      },
-      "required": [
-        "id",
-        "stockId",
-        "analysisDate",
-        "sentimentScore",
-        "summary"
-      ]
-    },
     "Alert": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Alert",
@@ -446,26 +410,6 @@
             {
               "name": "stockId",
               "description": "The unique identifier for the stock."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/stocks/{stockId}/sentimentAnalysis/{sentimentAnalysisId}",
-        "definition": {
-          "entityName": "SentimentAnalysis",
-          "schema": {
-            "$ref": "#/backend/entities/SentimentAnalysis"
-          },
-          "description": "Stores sentiment analysis results for a specific stock. Includes denormalized stockId to allow listing all sentiments for a stock without a collection group query.",
-          "params": [
-            {
-              "name": "stockId",
-              "description": "The unique identifier of the stock."
-            },
-            {
-              "name": "sentimentAnalysisId",
-              "description": "The unique identifier for the sentiment analysis result."
             }
           ]
         }

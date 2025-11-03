@@ -6,7 +6,6 @@ import {
   Eye,
   BellRing,
   AreaChart,
-  Newspaper,
   Store,
   ArrowRight,
 } from 'lucide-react';
@@ -46,12 +45,6 @@ const defaultFeatures: Feature[] = [
     title: 'Live Market Data',
     description: 'Access up-to-the-minute stock prices and market data.',
     href: '/dashboard',
-  },
-  {
-    icon: Newspaper,
-    title: 'AI News Sentiment',
-    description: 'Analyze market sentiment from news sources with our AI.',
-    href: '/sentiment',
   },
   {
     icon: Store,
