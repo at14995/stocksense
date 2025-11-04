@@ -8,7 +8,6 @@ import {
   deleteAlert,
   updateAlert,
 } from '../alert-service';
-import CreateAlertDialog from './create-alert-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Alert } from '../types';
@@ -47,12 +46,13 @@ import {
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/context/CurrencyContext';
+import Link from 'next/link';
+import CreateAlertForm from './create-alert-form';
 
 export default function AlertsPanel() {
   const { user } = useUser();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingAlert, setEditingAlert] = useState<Alert | null>(null);
   const { symbol: currencySymbol } = useCurrency();
 
@@ -60,7 +60,7 @@ export default function AlertsPanel() {
     if (!user) {
       setIsLoading(false);
       return;
-    };
+    }
     setIsLoading(true);
     const unsub = listenUserAlerts(user.uid, (data) => {
       setAlerts(data);
@@ -70,7 +70,7 @@ export default function AlertsPanel() {
   }, [user]);
 
   if (!user) return null;
-  
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
@@ -86,12 +86,18 @@ export default function AlertsPanel() {
 
   const getConditionLabel = (alert: Alert) => {
     switch (alert.condition) {
-      case 'price_up_dollar': return `Rises by ${currencySymbol}${alert.target}`;
-      case 'price_down_dollar': return `Drops by ${currencySymbol}${alert.target}`;
-      case 'price_reach': return `Reaches ${currencySymbol}${alert.target}`;
-      case 'percent_up': return `Rises by ${alert.target}%`;
-      case 'percent_down': return `Drops by ${alert.target}%`;
-      default: return `Reaches ${alert.target}`;
+      case 'price_up_dollar':
+        return `Rises by ${currencySymbol}${alert.target}`;
+      case 'price_down_dollar':
+        return `Drops by ${currencySymbol}${alert.target}`;
+      case 'price_reach':
+        return `Reaches ${currencySymbol}${alert.target}`;
+      case 'percent_up':
+        return `Rises by ${alert.target}%`;
+      case 'percent_down':
+        return `Drops by ${alert.target}%`;
+      default:
+        return `Reaches ${alert.target}`;
     }
   };
 
@@ -103,8 +109,10 @@ export default function AlertsPanel() {
             <Bell className="h-5 w-5" />
             My Alerts
           </CardTitle>
-          <Button onClick={() => setIsCreateOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" /> New Alert
+          <Button asChild>
+            <Link href="/alerts/create">
+              <Plus className="h-4 w-4 mr-2" /> New Alert
+            </Link>
           </Button>
         </div>
       </CardHeader>
@@ -132,9 +140,14 @@ export default function AlertsPanel() {
                     <TableCell className="font-medium">{a.symbol}</TableCell>
                     <TableCell>{a.exchange || 'N/A'}</TableCell>
                     <TableCell>{getConditionLabel(a)}</TableCell>
-                    <TableCell className="capitalize">{a.notificationMethod}</TableCell>
+                    <TableCell className="capitalize">
+                      {a.notificationMethod}
+                    </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className={`capitalize ${getStatusColor(a.status)}`}>
+                      <Badge
+                        variant="outline"
+                        className={`capitalize ${getStatusColor(a.status)}`}
+                      >
                         {a.status}
                       </Badge>
                     </TableCell>
@@ -158,7 +171,9 @@ export default function AlertsPanel() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => updateAlertStatus(a.id, 'archived')}
+                                onClick={() =>
+                                  updateAlertStatus(a.id, 'archived')
+                                }
                               >
                                 <Archive className="h-4 w-4" />
                               </Button>
@@ -185,7 +200,10 @@ export default function AlertsPanel() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
+                  <TableCell
+                    colSpan={6}
+                    className="py-12 text-center text-muted-foreground"
+                  >
                     No alerts yet. Create one to start monitoring prices.
                   </TableCell>
                 </TableRow>
@@ -195,7 +213,6 @@ export default function AlertsPanel() {
         )}
       </CardContent>
 
-      <CreateAlertDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
       {editingAlert && (
         <EditAlertDialog
           alert={editingAlert}
@@ -218,12 +235,18 @@ function EditAlertDialog({
 }) {
   const { toast } = useToast();
   const [targetValue, setTargetValue] = useState(alert.target.toString());
-  const [notificationMethod, setNotificationMethod] = useState(alert.notificationMethod);
+  const [notificationMethod, setNotificationMethod] = useState(
+    alert.notificationMethod
+  );
   const [exchange, setExchange] = useState(alert.exchange || '');
   const [err, setErr] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const valid = !isNaN(Number(targetValue)) && Number(targetValue) > 0 && notificationMethod && exchange;
+  const valid =
+    !isNaN(Number(targetValue)) &&
+    Number(targetValue) > 0 &&
+    notificationMethod &&
+    exchange;
 
   const handleUpdate = async () => {
     if (!valid) {
@@ -256,7 +279,8 @@ function EditAlertDialog({
         <DialogHeader>
           <DialogTitle>Edit Alert for {alert.symbol}</DialogTitle>
           <DialogDescription>
-            Modify the target value, exchange, or notification method for this alert.
+            Modify the target value, exchange, or notification method for this
+            alert.
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-4">
@@ -284,7 +308,10 @@ function EditAlertDialog({
             </SelectContent>
           </Select>
 
-          <Select value={notificationMethod} onValueChange={setNotificationMethod}>
+          <Select
+            value={notificationMethod}
+            onValueChange={setNotificationMethod}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Notification Method" />
             </SelectTrigger>
@@ -294,7 +321,7 @@ function EditAlertDialog({
               <SelectItem value="app">App Alert</SelectItem>
             </SelectContent>
           </Select>
-          
+
           {err && <p className="text-sm text-destructive">{err}</p>}
         </div>
         <DialogFooter className="pt-4">

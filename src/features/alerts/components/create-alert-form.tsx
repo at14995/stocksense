@@ -42,6 +42,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import type { Alert } from '@/features/alerts/types';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useCurrency } from '@/context/CurrencyContext';
+import { Combobox } from '@/components/ui/combobox';
+import { useRouter } from 'next/navigation';
 
 
 const dummyTrending = {
@@ -52,9 +55,11 @@ const dummyTrending = {
 const stockExchanges = ['NASDAQ', 'NYSE', 'LSE'];
 const cryptoExchanges = ['Binance', 'Coinbase', 'Kraken', 'MEXC', 'Bybit', 'Bitfinex'];
 
-export function HeroAlertForm() {
+export default function CreateAlertForm() {
   const { user } = useUser();
   const { toast } = useToast();
+  const router = useRouter();
+  const { symbol: currencySymbol } = useCurrency();
   const [assetType, setAssetType] = useState('stocks');
   const [symbol, setSymbol] = useState('');
   const [exchange, setExchange] = useState('');
@@ -108,6 +113,7 @@ export function HeroAlertForm() {
       setTarget('');
       setExchange('');
       setCondition('');
+      router.push('/alerts');
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -119,11 +125,13 @@ export function HeroAlertForm() {
 
   const conditionLabel = 
     condition?.includes('percent') ? '%' :
-    condition?.includes('dollar') ? '$' :
-    '$';
+    condition?.includes('dollar') ? currencySymbol :
+    currencySymbol;
     
   const trendingAssets = assetType === 'stocks' ? dummyTrending.stocks : dummyTrending.crypto;
   const exchangeOptions = assetType === 'stocks' ? stockExchanges : cryptoExchanges;
+
+  const assetOptions = trendingAssets.map(asset => ({ value: asset, label: asset }));
 
   return (
     <>
@@ -157,26 +165,12 @@ export function HeroAlertForm() {
                 </TabsList>
               </Tabs>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <Select onValueChange={setSymbol} value={symbol}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Trending Asset" />
-                  </SelectTrigger>
-                  <SelectContent side="bottom" avoidCollisions={false}>
-                    {trendingAssets.map(asset => (
-                      <SelectItem key={asset} value={asset}>{asset}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <Input
-                  type="text"
-                  placeholder="Or enter symbol..."
-                  value={symbol}
-                  onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-                  className="h-10"
-                />
-              </div>
+              <Combobox
+                options={assetOptions}
+                value={symbol}
+                onValueChange={setSymbol}
+                placeholder="Search or select asset..."
+              />
 
                <Select value={exchange} onValueChange={setExchange}>
                 <SelectTrigger>
