@@ -3,15 +3,11 @@
 import { useState } from 'react';
 import {
   BellRing,
-  ChevronDown,
-  DollarSign,
   TrendingUp,
   Bitcoin,
   Mail,
   Bell,
-  Send,
   Smartphone,
-  Percent,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,9 +32,9 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { AuthTabs } from '@/features/auth/auth-tabs';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -47,6 +43,7 @@ import { Label } from '@/components/ui/label';
 import type { Alert } from '@/features/alerts/types';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useCurrency } from '@/context/CurrencyContext';
+import { Combobox } from '@/components/ui/combobox';
 
 
 const dummyTrending = {
@@ -131,6 +128,8 @@ export function HeroAlertForm() {
   const trendingAssets = assetType === 'stocks' ? dummyTrending.stocks : dummyTrending.crypto;
   const exchangeOptions = assetType === 'stocks' ? stockExchanges : cryptoExchanges;
 
+  const assetOptions = trendingAssets.map(asset => ({ value: asset, label: asset }));
+
   return (
     <>
       <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
@@ -163,26 +162,12 @@ export function HeroAlertForm() {
                 </TabsList>
               </Tabs>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <Select onValueChange={setSymbol} value={symbol}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Trending Asset" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {trendingAssets.map(asset => (
-                      <SelectItem key={asset} value={asset}>{asset}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <Input
-                  type="text"
-                  placeholder="Or enter symbol..."
-                  value={symbol}
-                  onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-                  className="h-10"
-                />
-              </div>
+              <Combobox
+                options={assetOptions}
+                value={symbol}
+                onValueChange={setSymbol}
+                placeholder="Search or select asset..."
+              />
 
                <Select value={exchange} onValueChange={setExchange}>
                 <SelectTrigger>
