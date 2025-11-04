@@ -19,7 +19,7 @@ const { firestore: db } = initializeFirebase();
 const COL = 'tickets';
 
 export function listenMyTickets(uid: string, cb: (items: Ticket[]) => void) {
-  if (process.env.NODE_ENV === 'development') {
+  if (!uid.startsWith('guest_') && process.env.NODE_ENV === 'development') {
     const dummyTickets: Ticket[] = [
       { id: '1', ownerUid: uid, subject: 'Dev Ticket', message: 'My app is in dev mode.', status: 'open', priority: 'normal', lastActor: 'user' },
     ];

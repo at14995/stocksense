@@ -2,7 +2,7 @@
 
 import {
   FeatureGrid,
-  CTASection,
+  ContactSection,
   FAQAccordion,
 } from '@/components/landing';
 import { HeroAlertForm } from '@/components/landing/hero-alert-form';
@@ -30,7 +30,7 @@ export default function Home() {
           </div>
         </section>
         <FeatureGrid />
-        <CTASection />
+        <ContactSection />
         <FAQAccordion />
       </motion.main>
     </AnimatePresence>
