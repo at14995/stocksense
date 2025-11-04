@@ -4,6 +4,7 @@ import {
   FeatureGrid,
   ContactSection,
   FAQAccordion,
+  LiveMarketTicker,
 } from '@/components/landing';
 import { HeroAlertForm } from '@/components/landing/hero-alert-form';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,6 +30,7 @@ export default function Home() {
              <HeroAlertForm />
           </div>
         </section>
+        <LiveMarketTicker />
         <FeatureGrid />
         <ContactSection />
         <FAQAccordion />
