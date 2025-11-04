@@ -4,7 +4,7 @@ import {Header} from '@/components/header';
 import {Footer} from '@/components/footer';
 import {Toaster} from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import AuroraBackground from '@/components/backgrounds/AuroraBackground';
+import DarkVeil from '@/components/backgrounds/DarkVeil';
 import { CurrencyProvider } from '@/context/CurrencyContext';
 
 export const metadata: Metadata = {
@@ -48,8 +48,16 @@ export default function RootLayout({
             </header>
 
             {/* Animated background behind all pages */}
-            <div className="fixed inset-0 -z-10">
-              <AuroraBackground />
+            <div className="absolute inset-0 -z-10">
+              <DarkVeil
+                hueShift={0}
+                noiseIntensity={0.05}
+                scanlineIntensity={0.1}
+                speed={0.6}
+                scanlineFrequency={3.0}
+                warpAmount={0.03}
+                resolutionScale={1}
+              />
             </div>
             
             <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
