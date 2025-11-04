@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { listenPosts } from './marketplaceService';
+import { listenPosts } from './analystService';
 import PostComposer from './PostComposer';
 import PostCard from './PostCard';
 import { motion } from 'framer-motion';
 
-export default function MarketplacePage() {
+export default function AnalystPage() {
   const [posts,setPosts]=useState([]);
   useEffect(()=>{ const unsub = listenPosts(setPosts); return ()=>unsub&&unsub(); },[]);
   
@@ -17,7 +17,7 @@ export default function MarketplacePage() {
       transition={{duration:0.3}}
     >
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Analyst Marketplace</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Analyst Hub</h1>
         <p className="text-muted-foreground mt-2">Discover insights and predictions from top analysts.</p>
       </div>
       <PostComposer />

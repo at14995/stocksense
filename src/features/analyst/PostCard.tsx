@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { MessageSquare, Trash2 } from 'lucide-react';
 import { useUser } from '@/firebase';
-import { deletePost, listenComments, createComment, deleteComment } from './marketplaceService';
+import { deletePost, listenComments, createComment, deleteComment } from './analystService';
 import CommentList from './CommentList';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

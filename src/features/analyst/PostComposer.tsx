@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Send, ShieldAlert } from 'lucide-react';
 import { useUser } from '@/firebase';
-import { createPost } from './marketplaceService';
+import { createPost } from './analystService';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
