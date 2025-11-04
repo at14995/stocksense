@@ -24,9 +24,6 @@ export function Footer() {
                 <Link href="/support" className="text-sm text-muted-foreground hover:text-primary">Support</Link>
                 <Link href="/#contact" className="text-sm text-muted-foreground hover:text-primary">Contact</Link>
             </div>
-            <p className="text-sm text-muted-foreground">
-                v0.1.0-ui
-            </p>
         </div>
       </div>
     </footer>
