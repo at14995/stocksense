@@ -42,24 +42,24 @@ export default function RootLayout({
       <body className="relative min-h-screen text-white overflow-x-hidden antialiased">
         <FirebaseClientProvider>
           <CurrencyProvider>
+            {/* Animated background behind all pages */}
+            <div className="fixed inset-0 -z-10">
+              <DarkVeil
+                hueShift={0}
+                noiseIntensity={0.04}
+                scanlineIntensity={0.08}
+                speed={0.4}
+                scanlineFrequency={2.8}
+                warpAmount={0.02}
+                resolutionScale={1}
+              />
+            </div>
+            
             {/* Solid fixed navbar */}
             <header className="fixed top-0 left-0 right-0 z-[100] bg-[#0a0a0a] border-b border-gray-800 shadow-md">
               <Header />
             </header>
 
-            {/* Animated background behind all pages */}
-            <div className="absolute inset-0 -z-10">
-              <DarkVeil
-                hueShift={0}
-                noiseIntensity={0.05}
-                scanlineIntensity={0.1}
-                speed={0.6}
-                scanlineFrequency={3.0}
-                warpAmount={0.03}
-                resolutionScale={1}
-              />
-            </div>
-            
             <main className="relative z-10 pt-16 min-h-screen bg-transparent">{children}</main>
 
             {/* Footer */}

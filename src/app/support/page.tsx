@@ -24,7 +24,7 @@ export default function SupportPage() {
     );
   }
   return (
-    <main className="flex justify-center items-start min-h-screen px-4 py-20">
+    <main className="flex justify-center items-start min-h-screen px-4 py-20 bg-transparent">
       <div className="max-w-5xl w-full bg-[#0E0E12]/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/10">
         <UserSupportPage />
       </div>

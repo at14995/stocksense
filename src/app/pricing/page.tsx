@@ -65,7 +65,7 @@ const tiers = [
 
 export default function PricingPage() {
   return (
-    <main className="flex flex-col items-center min-h-screen px-4 py-20">
+    <main className="flex flex-col items-center min-h-screen px-4 py-20 bg-transparent">
       <div className="text-center max-w-2xl mx-auto mb-12">
         <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white">Choose the Plan That Fits You</h1>
         <p className="text-gray-300 leading-relaxed">

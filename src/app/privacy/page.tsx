@@ -1,7 +1,7 @@
 
 export default function PrivacyPage() {
   return (
-    <main className="flex justify-center items-center min-h-screen px-4 py-20">
+    <main className="flex justify-center items-center min-h-screen px-4 py-20 bg-transparent">
       <div className="max-w-3xl w-full bg-[#0E0E12]/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/10">
         <div className="space-y-6">
           <h1 className="text-3xl font-bold mb-6 text-white">Privacy Policy</h1>
