@@ -271,7 +271,7 @@ function EditAlertDialog({
             <SelectTrigger>
               <SelectValue placeholder="Select Exchange" />
             </SelectTrigger>
-            <SelectContent side="bottom" avoidCollisions={false}>
+            <SelectContent>
               <SelectItem value="NASDAQ">NASDAQ</SelectItem>
               <SelectItem value="NYSE">NYSE</SelectItem>
               <SelectItem value="LSE">LSE</SelectItem>
@@ -288,7 +288,7 @@ function EditAlertDialog({
             <SelectTrigger>
               <SelectValue placeholder="Notification Method" />
             </SelectTrigger>
-            <SelectContent side="bottom" avoidCollisions={false}>
+            <SelectContent>
               <SelectItem value="email">Email</SelectItem>
               <SelectItem value="sms">SMS</SelectItem>
               <SelectItem value="app">App Alert</SelectItem>

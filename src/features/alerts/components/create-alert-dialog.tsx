@@ -141,7 +141,7 @@ export default function CreateAlertDialog({
             <SelectTrigger>
               <SelectValue placeholder="Select Exchange" />
             </SelectTrigger>
-            <SelectContent side="bottom" avoidCollisions={false}>
+            <SelectContent>
               {exchangeOptions.map((ex) => (
                 <SelectItem key={ex} value={ex}>{ex}</SelectItem>
               ))}
@@ -152,7 +152,7 @@ export default function CreateAlertDialog({
             <SelectTrigger>
               <SelectValue placeholder="Alert Type" />
             </SelectTrigger>
-            <SelectContent side="bottom" avoidCollisions={false}>
+            <SelectContent>
               <SelectItem value="price_up_dollar">Price increases by ($)</SelectItem>
               <SelectItem value="price_down_dollar">Price decreases by ($)</SelectItem>
               <SelectItem value="price_reach">Price reaches ($)</SelectItem>
@@ -172,7 +172,7 @@ export default function CreateAlertDialog({
             <SelectTrigger>
               <SelectValue placeholder="Notification Method" />
             </SelectTrigger>
-            <SelectContent side="bottom" avoidCollisions={false}>
+            <SelectContent>
               <SelectItem value="email">Email</SelectItem>
               <SelectItem value="sms">SMS</SelectItem>
               <SelectItem value="app">App Alert</SelectItem>
