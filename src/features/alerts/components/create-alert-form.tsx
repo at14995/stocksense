@@ -141,15 +141,15 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <Card className="w-full max-w-2xl mx-auto bg-[#0E0E12]/95 backdrop-blur-sm border-white/10 shadow-2xl shadow-black/40 rounded-2xl transition-all hover:shadow-black/60">
-            <CardHeader className="text-center p-8">
+          <Card className="w-full max-w-2xl mx-auto bg-[#0E0E12] border-white/10 shadow-2xl shadow-black/40 rounded-2xl">
+            <CardHeader className="text-center p-6 sm:p-8">
               <CardTitle className="flex items-center gap-3 text-2xl justify-center">
                 <BellRing className="w-7 h-7 text-primary" />
                 <span>Never Miss a Price Move</span>
               </CardTitle>
               <CardDescription>Set advanced, real-time alerts for stocks and crypto.</CardDescription>
             </CardHeader>
-            <CardContent className="p-8 pt-0 space-y-6">
+            <CardContent className="p-6 sm:p-8 pt-0 space-y-6">
               <Tabs
                 value={assetType}
                 onValueChange={handleAssetTypeChange}
@@ -165,54 +165,56 @@ export default function CreateAlertForm() {
                 </TabsList>
               </Tabs>
               
-              <Combobox
-                options={assetOptions}
-                value={symbol}
-                onValueChange={setSymbol}
-                placeholder="Search or select asset..."
-              />
+              <div className="space-y-4">
+                <Combobox
+                  options={assetOptions}
+                  value={symbol}
+                  onValueChange={setSymbol}
+                  placeholder="Search or select asset..."
+                />
 
-               <Select value={exchange} onValueChange={setExchange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Exchange" />
-                </SelectTrigger>
-                <SelectContent side="bottom" avoidCollisions={false}>
-                   {exchangeOptions.map((ex) => (
-                    <SelectItem key={ex} value={ex}>{ex}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
+                 <Select value={exchange} onValueChange={setExchange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Condition" />
+                    <SelectValue placeholder="Select Exchange" />
                   </SelectTrigger>
-                  <SelectContent side="bottom" avoidCollisions={false}>
-                     <SelectItem value="price_reach">Price reaches</SelectItem>
-                     <SelectItem value="percent_up">Price rises by</SelectItem>
-                     <SelectItem value="percent_down">Price drops by</SelectItem>
-                     <SelectItem value="price_up_dollar">Price increases by</SelectItem>
-                     <SelectItem value="price_down_dollar">Price decreases by</SelectItem>
+                  <SelectContent>
+                     {exchangeOptions.map((ex) => (
+                      <SelectItem key={ex} value={ex}>{ex}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
-                <div className="relative">
-                  <Input
-                    type="number"
-                    placeholder="Value"
-                    value={target}
-                    onChange={(e) => setTarget(e.target.value)}
-                    className="h-10 pl-7"
-                  />
-                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                    {conditionLabel}
-                  </span>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Condition" />
+                    </SelectTrigger>
+                    <SelectContent>
+                       <SelectItem value="price_reach">Price reaches</SelectItem>
+                       <SelectItem value="percent_up">Price rises by</SelectItem>
+                       <SelectItem value="percent_down">Price drops by</SelectItem>
+                       <SelectItem value="price_up_dollar">Price increases by</SelectItem>
+                       <SelectItem value="price_down_dollar">Price decreases by</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      placeholder="Value"
+                      value={target}
+                      onChange={(e) => setTarget(e.target.value)}
+                      className="h-10 pl-7"
+                    />
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                      {conditionLabel}
+                    </span>
+                  </div>
                 </div>
               </div>
               
               <div>
-                <Label className="text-sm font-medium mb-2 block">Notify me via:</Label>
-                <div className="flex flex-wrap gap-4">
+                <Label className="text-sm font-medium mb-3 block text-center sm:text-left">Notify me via:</Label>
+                <div className="flex flex-wrap gap-x-6 gap-y-3 items-center justify-center sm:justify-start">
                   <div className="flex items-center space-x-2">
                     <Checkbox id="email" checked={notifyVia.email} onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} />
                     <Label htmlFor="email" className="font-normal flex items-center gap-1.5"><Mail className="w-4 h-4"/>Email</Label>
