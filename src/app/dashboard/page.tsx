@@ -27,15 +27,13 @@ export default function DashboardPage() {
   }
 
   return (
-    <>
-      <div className="p-4 md:p-6">
-        <div className="flex justify-end mb-4">
-          <Button asChild>
-            <Link href="/watchlists">Manage Watchlists</Link>
-          </Button>
-        </div>
-        <DashboardGrid />
+    <div className="p-4 md:p-6">
+      <div className="flex justify-end mb-4">
+        <Button asChild>
+          <Link href="/watchlists">Manage Watchlists</Link>
+        </Button>
       </div>
-    </>
+      <DashboardGrid />
+    </div>
   );
 }

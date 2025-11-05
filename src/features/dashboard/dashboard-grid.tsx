@@ -9,7 +9,7 @@ import { SupportWidget } from './widgets/support-widget';
 export function DashboardGrid() {
   return (
     <motion.div
-      className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 p-4 md:p-6"
+      className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

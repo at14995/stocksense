@@ -35,8 +35,8 @@ export function Header() {
 
   return (
     <header>
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 shrink-0 md:hidden">
+      <div className="container mx-auto flex items-center justify-between h-16 px-4">
+        <div className="flex items-center gap-4 md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -46,15 +46,17 @@ export function Header() {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[300px]">
                     <nav className="flex flex-col gap-6 pt-8">
-                        <Logo className="mb-4" />
+                        <div className="px-4">
+                            <Logo />
+                        </div>
                         {navLinks.map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
                             onClick={() => setIsMenuOpen(false)}
                             className={cn(
-                            "text-lg font-medium",
-                            pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                            "text-lg font-medium px-4 py-2 rounded-md",
+                            pathname === link.href ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
                             )}
                         >
                             {link.label}
@@ -63,31 +65,27 @@ export function Header() {
                     </nav>
                 </SheetContent>
             </Sheet>
-             <div className="ml-4">
-              <Logo />
-            </div>
         </div>
         
         <div className="hidden md:flex items-center gap-8">
            <Logo />
-        </div>
-        
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "font-medium transition-colors hover:text-primary",
-                pathname === link.href ? "text-primary underline" : "text-muted-foreground"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+           <nav className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+                <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                    "font-medium transition-colors hover:text-primary",
+                    pathname === link.href ? "text-primary" : "text-muted-foreground"
+                )}
+                >
+                {link.label}
+                </Link>
+            ))}
+            </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <CurrencySelector />
           {user && <NotificationBell />}
           <UserNav />

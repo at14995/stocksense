@@ -18,7 +18,7 @@ const pageVariants = {
 export default function Home() {
   return (
     <AnimatePresence mode="wait">
-      <motion.main
+      <motion.div
         initial="hidden"
         animate="enter"
         exit="exit"
@@ -30,11 +30,13 @@ export default function Home() {
              <HeroAlertForm />
           </div>
         </section>
-        <LiveMarketTicker />
+        <div className="px-4">
+          <LiveMarketTicker />
+        </div>
         <FeatureGrid />
         <ContactSection />
         <FAQAccordion />
-      </motion.main>
+      </motion.div>
     </AnimatePresence>
   );
 }
