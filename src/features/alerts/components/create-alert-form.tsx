@@ -45,6 +45,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Combobox } from '@/components/ui/combobox';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 
 const dummyTrending = {
@@ -141,7 +142,7 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <Card className="w-full max-w-2xl mx-auto bg-[#0A0A0A]/95 border-white/10 shadow-2xl shadow-black/40 rounded-2xl">
+          <Card className="w-full max-w-2xl mx-auto bg-[#0E0E12] border-white/10 shadow-2xl shadow-black/40 rounded-2xl">
             <CardHeader className="text-center p-6 sm:p-8">
               <CardTitle className="flex items-center gap-3 text-2xl justify-center">
                 <BellRing className="w-7 h-7 text-primary" />
@@ -150,19 +151,35 @@ export default function CreateAlertForm() {
               <CardDescription>Set advanced, real-time alerts for stocks and crypto.</CardDescription>
             </CardHeader>
             <CardContent className="p-6 sm:p-8 pt-0 space-y-6">
-              <Tabs
+               <Tabs
                 value={assetType}
                 onValueChange={handleAssetTypeChange}
                 className="w-full"
               >
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="stocks">
+                <div className="flex justify-center gap-3 mb-5">
+                  <TabsTrigger 
+                    value="stocks" 
+                    className={cn(
+                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1',
+                      assetType === 'stocks'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted/40 text-muted-foreground hover:bg-muted/60'
+                    )}
+                  >
                     <TrendingUp className="w-4 h-4 mr-2" /> Stocks
                   </TabsTrigger>
-                  <TabsTrigger value="crypto">
+                  <TabsTrigger 
+                    value="crypto"
+                    className={cn(
+                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1',
+                      assetType === 'crypto'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted/40 text-muted-foreground hover:bg-muted/60'
+                    )}
+                  >
                     <Bitcoin className="w-4 h-4 mr-2" /> Crypto
                   </TabsTrigger>
-                </TabsList>
+                </div>
               </Tabs>
               
               <div className="space-y-4">
