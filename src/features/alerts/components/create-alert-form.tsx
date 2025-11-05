@@ -142,7 +142,7 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <Card className="w-full max-w-2xl mx-auto bg-[#0E0E12] border-white/10 shadow-2xl shadow-black/40 rounded-2xl">
+          <Card className="w-full max-w-2xl mx-auto bg-[#0A0A0A]/95 border-white/10 shadow-2xl shadow-black/40 rounded-2xl">
             <CardHeader className="text-center p-6 sm:p-8">
               <CardTitle className="flex items-center gap-3 text-2xl justify-center">
                 <BellRing className="w-7 h-7 text-primary" />
@@ -156,14 +156,11 @@ export default function CreateAlertForm() {
                 onValueChange={handleAssetTypeChange}
                 className="w-full"
               >
-                <div className="flex justify-center gap-3 mb-5">
+                <TabsList className="grid grid-cols-2 gap-3 mb-5 bg-transparent p-0">
                   <TabsTrigger 
                     value="stocks" 
                     className={cn(
-                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1',
-                      assetType === 'stocks'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted/40 text-muted-foreground hover:bg-muted/60'
+                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1 data-[state=inactive]:bg-muted/40 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-muted/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
                     )}
                   >
                     <TrendingUp className="w-4 h-4 mr-2" /> Stocks
@@ -171,15 +168,12 @@ export default function CreateAlertForm() {
                   <TabsTrigger 
                     value="crypto"
                     className={cn(
-                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1',
-                      assetType === 'crypto'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted/40 text-muted-foreground hover:bg-muted/60'
+                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1 data-[state=inactive]:bg-muted/40 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-muted/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
                     )}
                   >
                     <Bitcoin className="w-4 h-4 mr-2" /> Crypto
                   </TabsTrigger>
-                </div>
+                </TabsList>
               </Tabs>
               
               <div className="space-y-4">
