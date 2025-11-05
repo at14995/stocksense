@@ -37,7 +37,6 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { AuthTabs } from '@/features/auth/auth-tabs';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import type { Alert } from '@/features/alerts/types';
@@ -142,110 +141,133 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <Card className="w-full max-w-2xl mx-auto bg-[#0A0A0A]/95 border-white/10 shadow-2xl shadow-black/40 rounded-2xl">
-            <CardHeader className="text-center p-6 sm:p-8">
-              <CardTitle className="flex items-center gap-3 text-2xl justify-center">
-                <BellRing className="w-7 h-7 text-primary" />
-                <span>Never Miss a Price Move</span>
-              </CardTitle>
-              <CardDescription>Set advanced, real-time alerts for stocks and crypto.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-6 sm:p-8 pt-0 space-y-6">
-               <Tabs
-                value={assetType}
-                onValueChange={handleAssetTypeChange}
-                className="w-full"
+          <div className="w-full max-w-lg mx-auto rounded-2xl bg-[#0F111A] shadow-xl p-6 sm:p-8 text-white space-y-6">
+            <div className="text-center space-y-1">
+              <h2 className="text-2xl font-semibold text-white flex items-center justify-center gap-2">
+                <span>🔔</span> Never Miss a Price Move
+              </h2>
+              <p className="text-gray-400 text-sm">
+                Set advanced, real-time alerts for stocks and crypto.
+              </p>
+            </div>
+            
+            <div className="flex w-full rounded-lg overflow-hidden border border-gray-700">
+              <button
+                onClick={() => handleAssetTypeChange("stocks")}
+                className={`flex-1 py-2 font-medium text-sm transition ${
+                  assetType === "stocks"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-[#1C1E29] text-gray-300 hover:bg-gray-800"
+                }`}
               >
-                <TabsList className="grid grid-cols-2 gap-3 mb-5 bg-transparent p-0">
-                  <TabsTrigger 
-                    value="stocks" 
-                    className={cn(
-                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1 data-[state=inactive]:bg-muted/40 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-muted/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
-                    )}
-                  >
-                    <TrendingUp className="w-4 h-4 mr-2" /> Stocks
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="crypto"
-                    className={cn(
-                      'px-4 py-2 rounded-md text-sm font-medium transition flex-1 data-[state=inactive]:bg-muted/40 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-muted/60 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
-                    )}
-                  >
-                    <Bitcoin className="w-4 h-4 mr-2" /> Crypto
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
+                📈 Stocks
+              </button>
+              <button
+                onClick={() => handleAssetTypeChange("crypto")}
+                className={`flex-1 py-2 font-medium text-sm transition ${
+                  assetType === "crypto"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-[#1C1E29] text-gray-300 hover:bg-gray-800"
+                }`}
+              >
+                ₿ Crypto
+              </button>
+            </div>
               
-              <div className="space-y-4">
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Combobox
                   options={assetOptions}
                   value={symbol}
                   onValueChange={setSymbol}
-                  placeholder="Search or select asset..."
+                  placeholder="Select Trending Asset"
+                  className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700"
                 />
+                <Input
+                  type="text"
+                  placeholder="Or enter symbol..."
+                  className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700 rounded-md px-3 py-2 h-10"
+                  value={symbol}
+                  onChange={(e) => setSymbol(e.target.value)}
+                />
+              </div>
 
-                 <Select value={exchange} onValueChange={setExchange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Exchange" />
+              <Select value={exchange} onValueChange={setExchange}>
+                <SelectTrigger className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700">
+                  <SelectValue placeholder="Select Exchange" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1C1E29] text-gray-200 border border-gray-700 z-[9999]" side="bottom">
+                    {exchangeOptions.map((ex) => (
+                    <SelectItem key={ex} value={ex}>{ex}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
+                  <SelectTrigger className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700">
+                    <SelectValue placeholder="Condition" />
                   </SelectTrigger>
-                  <SelectContent>
-                     {exchangeOptions.map((ex) => (
-                      <SelectItem key={ex} value={ex}>{ex}</SelectItem>
-                    ))}
+                  <SelectContent className="bg-[#1C1E29] text-gray-200 border border-gray-700 z-[9999]" side="bottom">
+                      <SelectItem value="price_reach">Price reaches</SelectItem>
+                      <SelectItem value="percent_up">Price rises by (%)</SelectItem>
+                      <SelectItem value="percent_down">Price drops by (%)</SelectItem>
+                      <SelectItem value="price_up_dollar">Price increases by ($)</SelectItem>
+                      <SelectItem value="price_down_dollar">Price decreases by ($)</SelectItem>
                   </SelectContent>
                 </Select>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Condition" />
-                    </SelectTrigger>
-                    <SelectContent>
-                       <SelectItem value="price_reach">Price reaches</SelectItem>
-                       <SelectItem value="percent_up">Price rises by</SelectItem>
-                       <SelectItem value="percent_down">Price drops by</SelectItem>
-                       <SelectItem value="price_up_dollar">Price increases by</SelectItem>
-                       <SelectItem value="price_down_dollar">Price decreases by</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      placeholder="Value"
-                      value={target}
-                      onChange={(e) => setTarget(e.target.value)}
-                      className="h-10 pl-7"
-                    />
-                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                      {conditionLabel}
-                    </span>
-                  </div>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    placeholder="Value"
+                    value={target}
+                    onChange={(e) => setTarget(e.target.value)}
+                    className="h-10 w-full bg-[#1C1E29] text-gray-200 border border-gray-700 rounded-md pl-7"
+                  />
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                    {conditionLabel}
+                  </span>
                 </div>
               </div>
+            </div>
               
-              <div>
-                <Label className="text-sm font-medium mb-3 block text-center sm:text-left">Notify me via:</Label>
-                <div className="flex flex-wrap gap-x-6 gap-y-3 items-center justify-center sm:justify-start">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="email" checked={notifyVia.email} onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} />
-                    <Label htmlFor="email" className="font-normal flex items-center gap-1.5"><Mail className="w-4 h-4"/>Email</Label>
-                  </div>
-                   <div className="flex items-center space-x-2">
-                    <Checkbox id="sms" checked={notifyVia.sms} onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))} />
-                    <Label htmlFor="sms" className="font-normal flex items-center gap-1.5"><Smartphone className="w-4 h-4"/>SMS</Label>
-                  </div>
-                   <div className="flex items-center space-x-2">
-                    <Checkbox id="app" checked={notifyVia.app} onCheckedChange={(c) => setNotifyVia(v => ({...v, app: !!c}))} />
-                    <Label htmlFor="app" className="font-normal flex items-center gap-1.5"><Bell className="w-4 h-4"/>App Alert</Label>
-                  </div>
-                </div>
+            <div>
+              <p className="text-gray-300 text-sm mb-2 font-medium">Notify me via:</p>
+              <div className="flex flex-wrap items-center gap-4">
+                <Label className="flex items-center gap-2 text-sm font-normal">
+                  <Checkbox 
+                    id="email" 
+                    checked={notifyVia.email} 
+                    onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} 
+                    className="accent-indigo-600"
+                  />
+                  Email
+                </Label>
+                <Label className="flex items-center gap-2 text-sm font-normal">
+                   <Checkbox 
+                    id="sms" 
+                    checked={notifyVia.sms} 
+                    onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))}
+                    className="accent-indigo-600"
+                   />
+                  SMS
+                </Label>
+                <Label className="flex items-center gap-2 text-sm font-normal">
+                   <Checkbox 
+                    id="app" 
+                    checked={notifyVia.app} 
+                    onCheckedChange={(c) => setNotifyVia(v => ({...v, app: !!c}))}
+                    className="accent-indigo-600"
+                   />
+                   App Alert
+                </Label>
               </div>
+            </div>
 
-              <Button size="lg" className="w-full" onClick={handleSubmit}>
-                Set Alert
-              </Button>
-            </CardContent>
-          </Card>
+            <Button size="lg" className="w-full py-3 bg-white text-gray-900 font-semibold rounded-md hover:bg-gray-200 transition" onClick={handleSubmit}>
+              Set Alert
+            </Button>
+          </div>
         </motion.div>
 
         <DialogContent className="max-w-md p-0 bg-transparent border-0">

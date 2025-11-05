@@ -239,6 +239,7 @@ function EditAlertDialog({
   const [notificationMethod, setNotificationMethod] = useState(
     alert.notificationMethod
   );
+  const [condition, setCondition] = useState(alert.condition);
   const [exchange, setExchange] = useState(alert.exchange || '');
   const [err, setErr] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -261,6 +262,7 @@ function EditAlertDialog({
         target: Number(targetValue),
         notificationMethod,
         exchange,
+        condition,
       });
       toast({
         title: 'Alert Updated',
@@ -291,6 +293,19 @@ function EditAlertDialog({
             placeholder="New Target Value"
             type="number"
           />
+
+          <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Condition" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="price_reach">Price reaches</SelectItem>
+                <SelectItem value="percent_up">Price rises by (%)</SelectItem>
+                <SelectItem value="percent_down">Price drops by (%)</SelectItem>
+                <SelectItem value="price_up_dollar">Price increases by ($)</SelectItem>
+                <SelectItem value="price_down_dollar">Price decreases by ($)</SelectItem>
+            </SelectContent>
+          </Select>
 
           <Select value={exchange} onValueChange={setExchange}>
             <SelectTrigger>
