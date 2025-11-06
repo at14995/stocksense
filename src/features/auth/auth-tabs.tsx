@@ -1,31 +1,26 @@
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useState } from 'react';
 import { SignInForm } from '@/features/auth/sign-in-form';
 import { SignUpForm } from '@/features/auth/sign-up-form';
 import { ResetPasswordForm } from '@/features/auth/reset-password-form';
 import { VerifyEmailPanel } from '@/features/auth/verify-email-panel';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useUser } from '@/firebase';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function AuthTabs() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
   const { user } = useUser();
+  const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
 
-  const verify = searchParams.get('verify');
-  const tab = searchParams.get('tab') || 'signin';
-
-  const onTabChange = (value: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('tab', value);
-    router.replace(`${pathname}?${params.toString()}`);
-  };
-
-  if (verify && user && !user.emailVerified) {
+  if (user && !user.emailVerified) {
     return <VerifyEmailPanel email={user.email} />;
   }
+  
+  const contentVariants = {
+    hidden: { opacity: 0, y: 10 },
+    enter: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -10 },
+  };
 
   return (
     <>
@@ -38,24 +33,45 @@ export function AuthTabs() {
         </p>
       </div>
 
-      <Tabs value={tab} onValueChange={onTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-[#151826] border border-gray-700/60 rounded-full p-1">
-          <TabsTrigger value="signin" className="data-[state=active]:bg-gradient-to-r from-indigo-500 to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-full">Sign In</TabsTrigger>
-          <TabsTrigger value="signup" className="data-[state=active]:bg-gradient-to-r from-indigo-500 to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-full">Create Account</TabsTrigger>
-        </TabsList>
+      <div className="flex bg-[#151826] border border-gray-700/60 rounded-full p-1">
+        <button
+          onClick={() => setMode('signin')}
+          className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+            mode === 'signin'
+              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+              : 'text-gray-300 hover:text-white'
+          }`}
+        >
+          Sign In
+        </button>
+        <button
+          onClick={() => setMode('signup')}
+          className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+            mode === 'signup'
+              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+              : 'text-gray-300 hover:text-white'
+          }`}
+        >
+          Create Account
+        </button>
+      </div>
 
-        <div className="mt-8">
-          <TabsContent value="signin" className="m-0">
-            <SignInForm />
-          </TabsContent>
-          <TabsContent value="signup" className="m-0">
-            <SignUpForm />
-          </TabsContent>
-          <TabsContent value="reset" className="m-0">
-            <ResetPasswordForm />
-          </TabsContent>
-        </div>
-      </Tabs>
+      <div className="mt-8">
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={mode}
+                initial="hidden"
+                animate="enter"
+                exit="exit"
+                variants={contentVariants}
+                transition={{ duration: 0.2 }}
+            >
+                {mode === 'signin' && <SignInForm onSwitchToReset={() => setMode('reset')} />}
+                {mode === 'signup' && <SignUpForm />}
+                {mode === 'reset' && <ResetPasswordForm onSwitchToSignIn={() => setMode('signin')} />}
+            </motion.div>
+        </AnimatePresence>
+      </div>
     </>
   );
 }

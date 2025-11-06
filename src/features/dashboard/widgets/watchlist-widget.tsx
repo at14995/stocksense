@@ -48,7 +48,7 @@ export function WatchlistWidget() {
 
   return (
     <div className="xl:col-span-2">
-      <Card className="bg-[#121521]/95 border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/30">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <List className="h-5 w-5" />

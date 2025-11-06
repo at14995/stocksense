@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useAuth } from '@/firebase';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -17,7 +17,7 @@ type SignInErrors = {
   form?: string;
 };
 
-export function SignInForm() {
+export function SignInForm({ onSwitchToReset }: { onSwitchToReset: () => void; }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +25,6 @@ export function SignInForm() {
   
   const auth = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -79,12 +77,6 @@ export function SignInForm() {
     }
   };
 
-  const switchToReset = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set('tab', 'reset');
-    router.replace(`${pathname}?${params.toString()}`);
-  }
-
   return (
       <form onSubmit={handleSignIn} className="space-y-4">
           <FormField
@@ -120,7 +112,7 @@ export function SignInForm() {
           <div className="text-center text-sm text-gray-500 pt-4">
             <p>
               Forgot password?{" "}
-              <button type="button" onClick={switchToReset} className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+              <button type="button" onClick={onSwitchToReset} className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
                 Reset here
               </button>
             </p>
