@@ -10,7 +10,6 @@ import { useAuth, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { CardContent, CardFooter } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { FormField } from './form-field';
 import { signUpSchema } from './schemas';
@@ -97,8 +96,8 @@ export function SignUpForm() {
   };
 
   return (
-      <form onSubmit={handleSignUp}>
-        <CardContent className="space-y-4 p-0">
+      <form onSubmit={handleSignUp} className="space-y-6">
+        <div className="space-y-4">
           <FormField
             id="displayName-signup"
             label="Name"
@@ -128,24 +127,25 @@ export function SignUpForm() {
            {errors.form && (
             <p className="text-sm font-medium text-destructive">{errors.form}</p>
           )}
-        </CardContent>
-        <CardFooter className="flex-col items-stretch gap-4 p-0 pt-6">
-          <Button className="w-full" type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              'Create Account'
-            )}
+        </div>
+        
+        <div>
+          <Button 
+            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 transition shadow-lg shadow-indigo-800/30" 
+            type="submit" 
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Account'}
           </Button>
-          <div className="text-center text-xs text-muted-foreground">
+          <div className="text-center text-sm text-gray-500 pt-4">
             <p>
               By creating an account, you agree to our{' '}
-              <Link href="/terms" className="text-primary hover:text-primary/80">
+              <Link href="/terms" className="text-indigo-400 hover:text-indigo-300">
                 Terms & Conditions
               </Link>
             </p>
           </div>
-        </CardFooter>
+        </div>
       </form>
   );
 }

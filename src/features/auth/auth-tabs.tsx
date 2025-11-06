@@ -28,41 +28,52 @@ export function AuthTabs() {
   }
 
   return (
-    <Tabs value={tab} onValueChange={onTabChange} className="w-full">
-      <div className="flex justify-center bg-[#1A1C27] rounded-full p-1 border border-gray-800 w-full max-w-xs mx-auto">
-        <button
-          onClick={() => onTabChange('signin')}
-          className={`flex-1 py-2 text-sm font-medium rounded-full transition ${
-            tab === 'signin'
-              ? 'bg-primary text-primary-foreground shadow'
-              : 'text-muted-foreground hover:text-white'
-          }`}
-        >
-          Sign In
-        </button>
-        <button
-          onClick={() => onTabChange('signup')}
-          className={`flex-1 py-2 text-sm font-medium rounded-full transition ${
-            tab === 'signup'
-              ? 'bg-primary text-primary-foreground shadow'
-              : 'text-muted-foreground hover:text-white'
-          }`}
-        >
-          Create Account
-        </button>
+    <>
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-semibold tracking-tight">
+          Access your <span className="text-indigo-400">Stock Sense</span> account
+        </h1>
+        <p className="text-gray-400 text-sm">
+          Sign in or create an account to continue
+        </p>
       </div>
 
-      <div className="mt-6">
-        <TabsContent value="signin" className="m-0">
-          <SignInForm />
-        </TabsContent>
-        <TabsContent value="signup" className="m-0">
-          <SignUpForm />
-        </TabsContent>
-        <TabsContent value="reset" className="m-0">
-          <ResetPasswordForm />
-        </TabsContent>
-      </div>
-    </Tabs>
+      <Tabs value={tab} onValueChange={onTabChange} className="w-full">
+        <div className="flex bg-[#151826] border border-gray-700/60 rounded-full p-1">
+          <button
+            onClick={() => onTabChange('signin')}
+            className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
+              tab === 'signin'
+                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+                : 'text-gray-300 hover:text-white'
+            }`}
+          >
+            Sign In
+          </button>
+          <button
+            onClick={() => onTabChange('signup')}
+            className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
+              tab === 'signup'
+                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+                : 'text-gray-300 hover:text-white'
+            }`}
+          >
+            Create Account
+          </button>
+        </div>
+
+        <div className="mt-6">
+          <TabsContent value="signin" className="m-0">
+            <SignInForm />
+          </TabsContent>
+          <TabsContent value="signup" className="m-0">
+            <SignUpForm />
+          </TabsContent>
+          <TabsContent value="reset" className="m-0">
+            <ResetPasswordForm />
+          </TabsContent>
+        </div>
+      </Tabs>
+    </>
   );
 }
