@@ -130,17 +130,17 @@ export function SignUpForm() {
           )}
         </CardContent>
         <CardFooter className="flex-col items-stretch gap-4 p-0 pt-6">
-          <Button className="w-full py-3 rounded-lg font-semibold bg-primary hover:bg-primary/90 transition text-primary-foreground shadow-md" type="submit" disabled={isLoading}>
+          <Button className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               'Create Account'
             )}
           </Button>
-          <div className="text-center text-xs text-gray-500">
+          <div className="text-center text-xs text-muted-foreground">
             <p>
               By creating an account, you agree to our{' '}
-              <Link href="/terms" className="text-primary/80 hover:text-primary">
+              <Link href="/terms" className="text-primary hover:text-primary/80">
                 Terms & Conditions
               </Link>
             </p>
