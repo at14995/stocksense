@@ -210,7 +210,7 @@ export default function CreateAlertForm() {
                     onChange={(e) => setTarget(e.target.value)}
                     className="pl-7"
                   />
-                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                  <span className="absolute left-0 top-0 h-full w-7 flex items-center justify-center text-muted-foreground text-sm">
                     {conditionLabel}
                   </span>
                 </div>
