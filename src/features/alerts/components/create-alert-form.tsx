@@ -1,14 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  BellRing,
-  TrendingUp,
-  Bitcoin,
-  Mail,
-  Bell,
-  Smartphone,
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,13 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { useUser } from '@/firebase';
 import { createAlert } from '@/features/alerts/alert-service';
@@ -44,7 +29,6 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Combobox } from '@/components/ui/combobox';
 import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
 
 
 const dummyTrending = {
@@ -141,7 +125,7 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <div className="w-full max-w-lg mx-auto rounded-2xl bg-[#0F111A] shadow-xl p-6 sm:p-8 text-white space-y-6">
+          <div className="w-full max-w-lg mx-auto rounded-2xl bg-background shadow-xl p-6 sm:p-8 text-white space-y-6">
             <div className="text-center space-y-1">
               <h2 className="text-2xl font-semibold text-white flex items-center justify-center gap-2">
                 <span>🔔</span> Never Miss a Price Move
