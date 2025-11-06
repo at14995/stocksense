@@ -129,18 +129,18 @@ export function SignUpForm() {
           )}
         </div>
         
-        <div>
+        <div className="pt-2">
           <Button 
-            className="w-full py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 transition shadow-lg shadow-indigo-800/30" 
+            className="w-full"
             type="submit" 
             disabled={isLoading}
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Account'}
           </Button>
-          <div className="text-center text-sm text-gray-500 pt-4">
+          <div className="text-center text-sm text-muted-foreground pt-4">
             <p>
               By creating an account, you agree to our{' '}
-              <Link href="/terms" className="text-indigo-400 hover:text-indigo-300">
+              <Link href="/terms" className="text-primary hover:underline">
                 Terms & Conditions
               </Link>
             </p>

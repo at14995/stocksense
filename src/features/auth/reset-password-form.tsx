@@ -91,7 +91,7 @@ export function ResetPasswordForm() {
               'Send Reset Link'
             )}
           </Button>
-          <Button variant="link" size="sm" type="button" onClick={switchToSignIn}>
+          <Button variant="link" size="sm" type="button" onClick={switchToSignIn} className="text-primary">
             Back to Sign In
           </Button>
         </CardFooter>

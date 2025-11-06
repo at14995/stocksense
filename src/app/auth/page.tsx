@@ -47,7 +47,7 @@ function AuthPageContent() {
   // Render the authentication tabs (sign-in, sign-up, email verification)
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-transparent relative">
-      <div className="w-full max-w-md backdrop-blur-xl bg-[#0E1019]/90 border border-gray-800/60 shadow-2xl rounded-2xl p-8 space-y-8 text-white">
+      <div className="w-full max-w-md bg-card rounded-2xl shadow-xl p-8 space-y-8 text-foreground border border-border">
         <AuthTabs />
       </div>
     </div>
