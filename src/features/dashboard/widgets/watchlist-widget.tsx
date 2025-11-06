@@ -29,14 +29,13 @@ export function WatchlistWidget() {
   const { user } = useUser();
   const [watchlists, setWatchlists] = useState<Watchlist[] | null>(null);
   
-  // We'll just display symbols from the first watchlist on the dashboard for now.
   const watchlistSymbols = watchlists?.[0]?.symbols ?? [];
 
   const { watchlistData, isLoading } = useMarketFeed(watchlistSymbols);
 
   useEffect(() => {
     if (!user) {
-        setWatchlists([]); // Clear data on logout
+        setWatchlists([]);
         return;
     }
     const unsub = listenUserWatchlists(user.uid, lists => {
@@ -48,63 +47,65 @@ export function WatchlistWidget() {
   const showLoading = isLoading || watchlists === null;
 
   return (
-    <Card className="xl:col-span-2">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <List className="h-5 w-5" />
-          <span>My Watchlist</span>
-        </CardTitle>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/watchlists">
-            <Plus className="h-4 w-4 mr-2" />
-            Manage
-          </Link>
-        </Button>
-      </CardHeader>
-      <CardContent>
-        {showLoading ? (
-          <div className="space-y-2">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        ) : watchlistData.length === 0 ? (
-          <div className="text-center text-muted-foreground py-8">
-            <p>You have no items in your primary watchlist.</p>
-            <Button asChild className="mt-4">
-                <Link href="/watchlists">Add Symbols</Link>
-            </Button>
-          </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Symbol</TableHead>
-                <TableHead className="text-right">Last Price</TableHead>
-                <TableHead className="text-right">24h Change</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {watchlistData.map((item) => (
-                <TableRow key={item.symbol}>
-                  <TableCell className="font-medium">{item.symbol}</TableCell>
-                  <TableCell className="text-right">{item.price}</TableCell>
-                  <TableCell
-                    className={cn(
-                      'text-right',
-                      item.change.startsWith('+')
-                        ? 'text-green-500'
-                        : 'text-red-500'
-                    )}
-                  >
-                    {item.change}
-                  </TableCell>
+    <div className="xl:col-span-2">
+      <Card className="bg-[#121521]/95 border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <List className="h-5 w-5" />
+            <span>My Watchlist</span>
+          </CardTitle>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/watchlists">
+              <Plus className="h-4 w-4 mr-2" />
+              Manage
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {showLoading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-10 w-full bg-[#191C29]" />
+              <Skeleton className="h-10 w-full bg-[#191C29]" />
+              <Skeleton className="h-10 w-full bg-[#191C29]" />
+            </div>
+          ) : watchlistData.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">
+              <p>You have no items in your primary watchlist.</p>
+              <Button asChild className="mt-4">
+                  <Link href="/watchlists">Add Symbols</Link>
+              </Button>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-b-white/10">
+                  <TableHead>Symbol</TableHead>
+                  <TableHead className="text-right">Last Price</TableHead>
+                  <TableHead className="text-right">24h Change</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
+              </TableHeader>
+              <TableBody>
+                {watchlistData.map((item, index) => (
+                  <TableRow key={item.symbol} className={cn("border-none", index % 2 === 0 ? 'bg-[#161925]' : 'bg-[#121521]', 'hover:bg-[#191C29]')}>
+                    <TableCell className="font-medium">{item.symbol}</TableCell>
+                    <TableCell className="text-right font-mono">{item.price}</TableCell>
+                    <TableCell
+                      className={cn(
+                        'text-right font-mono transition-colors duration-500 ease-out',
+                        item.change.startsWith('+')
+                          ? 'text-green-400'
+                          : 'text-red-400'
+                      )}
+                    >
+                      {item.change}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }

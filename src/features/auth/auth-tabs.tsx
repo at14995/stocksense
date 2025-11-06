@@ -31,20 +31,20 @@ export function AuthTabs() {
     <>
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight">
-          Access your <span className="text-primary">Stock Sense</span> account
+          Access your <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Stock Sense</span> account
         </h1>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm text-gray-400">
           Sign in or create an account to continue
         </p>
       </div>
 
       <Tabs value={tab} onValueChange={onTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="signin">Sign In</TabsTrigger>
-          <TabsTrigger value="signup">Create Account</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 bg-[#151826] border border-gray-700/60 rounded-full p-1">
+          <TabsTrigger value="signin" className="data-[state=active]:bg-gradient-to-r from-indigo-500 to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-full">Sign In</TabsTrigger>
+          <TabsTrigger value="signup" className="data-[state=active]:bg-gradient-to-r from-indigo-500 to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-full">Create Account</TabsTrigger>
         </TabsList>
 
-        <div className="mt-6">
+        <div className="mt-8">
           <TabsContent value="signin" className="m-0">
             <SignInForm />
           </TabsContent>

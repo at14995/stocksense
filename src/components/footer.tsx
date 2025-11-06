@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Logo } from './logo';
 import Link from 'next/link';
+import { Logo } from './logo';
 
 export function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -11,18 +11,18 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="border-t bg-background/80 backdrop-blur">
+    <footer className="w-full">
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <Logo />
-            <p className="text-center text-sm text-muted-foreground md:order-first">
+            <p className="text-center text-sm text-gray-500 md:order-first">
               © {year} Stock Sense. All rights reserved.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-                <Link href="/terms" className="text-sm text-muted-foreground hover:text-primary">Terms</Link>
-                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-primary">Privacy</Link>
-                <Link href="/support" className="text-sm text-muted-foreground hover:text-primary">Support</Link>
-                <Link href="/#contact" className="text-sm text-muted-foreground hover:text-primary">Contact</Link>
+            <div className="flex items-center gap-x-4">
+                <Link href="/terms" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">Terms</Link>
+                <Link href="/privacy" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">Privacy</Link>
+                <Link href="/support" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">Support</Link>
+                <Link href="/#contact" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">Contact</Link>
             </div>
         </div>
       </div>

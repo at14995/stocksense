@@ -18,10 +18,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function getStatusColor(status: string) {
     switch (status) {
-        case 'active': return 'bg-blue-500/20 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border-blue-500/20';
-        case 'triggered': return 'bg-amber-500/20 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border-amber-500/20';
-        case 'archived': return 'bg-gray-500/20 text-gray-600 dark:bg-gray-500/10 dark:text-gray-400 border-gray-500/20';
-        default: return 'bg-gray-500/20 text-gray-600 dark:bg-gray-500/10 dark:text-gray-400 border-gray-500/20';
+        case 'active': return 'bg-blue-500/20 text-blue-400 border-blue-500/20';
+        case 'triggered': return 'bg-amber-500/20 text-amber-400 border-amber-500/20';
+        case 'archived': return 'bg-gray-500/20 text-gray-400 border-gray-500/20';
+        default: return 'bg-gray-500/20 text-gray-400 border-gray-500/20';
     }
 }
 
@@ -36,49 +36,51 @@ export function AlertsWidget() {
     }
     const unsub = listenUserAlerts(user.uid, (data) => {
         setAlerts(data);
-    });
+    }, 3);
     return () => unsub && unsub();
   }, [user]);
 
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Bell className="h-5 w-5" />
-          <span>Price Alerts</span>
-        </CardTitle>
-         <Button variant="outline" size="sm" asChild>
-            <Link href="/alerts">Manage Alerts</Link>
-        </Button>
-      </CardHeader>
-      <CardContent>
-        {alerts === null ? (
-           <div className="space-y-3">
-              <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-6 w-full" />
-           </div>
-        ) : alerts.length === 0 ? (
-            <div className="text-center text-muted-foreground py-4">
-                <p>No active alerts.</p>
-                <Button asChild variant="link">
-                    <Link href="/alerts">Create one</Link>
-                </Button>
-            </div>
-        ) : (
-            <div className="space-y-3">
-                {alerts.slice(0, 3).map(alert => (
-                    <div key={alert.id} className="flex justify-between items-center text-sm">
-                        <span>{alert.symbol} {alert.condition.includes('up') ? '>' : '<'} ${alert.target}</span>
-                        <Badge variant="outline" className={getStatusColor(alert.status)}>
-                            {alert.status}
-                        </Badge>
-                    </div>
-                ))}
-            </div>
-        )}
-      </CardContent>
-    </Card>
+    <div>
+      <Card className="bg-[#121521]/95 border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/30">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Bell className="h-5 w-5" />
+            <span>Price Alerts</span>
+          </CardTitle>
+           <Button variant="outline" size="sm" asChild>
+              <Link href="/alerts">Manage Alerts</Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {alerts === null ? (
+             <div className="space-y-3">
+                <Skeleton className="h-6 w-full bg-[#191C29]" />
+                <Skeleton className="h-6 w-full bg-[#191C29]" />
+                <Skeleton className="h-6 w-full bg-[#191C29]" />
+             </div>
+          ) : alerts.length === 0 ? (
+              <div className="text-center text-muted-foreground py-4">
+                  <p>No active alerts.</p>
+                  <Button asChild variant="link">
+                      <Link href="/alerts/create">Create one</Link>
+                  </Button>
+              </div>
+          ) : (
+              <div className="space-y-3">
+                  {alerts.map(alert => (
+                      <div key={alert.id} className="flex justify-between items-center text-sm">
+                          <span className="font-mono">{alert.symbol} {alert.condition.includes('up') ? '>' : '<'} ${alert.target}</span>
+                          <Badge variant="outline" className={getStatusColor(alert.status)}>
+                              {alert.status}
+                          </Badge>
+                      </div>
+                  ))}
+              </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }

@@ -74,11 +74,6 @@ export function SignInForm() {
           break;
       }
       setErrors({ form: errorMessage });
-      toast({
-        variant: "destructive",
-        title: "Sign In Failed",
-        description: errorMessage,
-      });
     } finally {
       setIsLoading(false);
     }
@@ -91,8 +86,7 @@ export function SignInForm() {
   }
 
   return (
-      <form onSubmit={handleSignIn} className="space-y-6">
-        <div className="space-y-4">
+      <form onSubmit={handleSignIn} className="space-y-4">
           <FormField
             id="email-signin"
             label="Email"
@@ -112,22 +106,21 @@ export function SignInForm() {
             placeholder="••••••••"
           />
            {errors.form && (
-            <p className="text-sm font-medium text-destructive">{errors.form}</p>
+            <p className="text-sm font-medium text-red-500 animate-shake">{errors.form}</p>
           )}
-        </div>
         
         <div className="pt-2">
           <Button 
-            className="w-full" 
+            className="w-full h-12 mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 transition shadow-lg shadow-indigo-800/30"
             type="submit" 
             disabled={isLoading}
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
           </Button>
-          <div className="text-center text-sm text-muted-foreground pt-4">
+          <div className="text-center text-sm text-gray-500 pt-4">
             <p>
               Forgot password?{" "}
-              <button type="button" onClick={switchToReset} className="text-primary hover:underline">
+              <button type="button" onClick={switchToReset} className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
                 Reset here
               </button>
             </p>

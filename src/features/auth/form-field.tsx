@@ -30,7 +30,7 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <div className={cn('space-y-2', className)}>
-      <Label htmlFor={id} className={cn('block text-sm font-medium mb-1', error && 'text-destructive')}>
+      <Label htmlFor={id} className={cn('block text-sm text-gray-300 mb-1', error && 'text-destructive')}>
         {label}
       </Label>
       <Input
@@ -40,10 +40,10 @@ export function FormField({
         onChange={onChange}
         onBlur={onBlur}
         placeholder={placeholder}
-        className={cn("w-full px-4 py-2.5 rounded-lg transition", error && 'border-destructive')}
+        className={cn('w-full h-12 px-4 py-2.5 bg-[#191C29] border border-gray-700/60 rounded-lg text-gray-100 focus:ring-2 focus:ring-indigo-500 outline-none transition', error && 'border-destructive focus:ring-destructive/50')}
         aria-invalid={!!error}
       />
-      {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+      {error && <p className="text-sm font-medium text-destructive mt-1">{error}</p>}
     </div>
   );
 }

@@ -85,19 +85,13 @@ export function SignUpForm() {
            break;
       }
       setErrors({ form: errorMessage });
-      toast({
-        variant: "destructive",
-        title: "Sign Up Failed",
-        description: errorMessage,
-      });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-      <form onSubmit={handleSignUp} className="space-y-6">
-        <div className="space-y-4">
+      <form onSubmit={handleSignUp} className="space-y-4">
           <FormField
             id="displayName-signup"
             label="Name"
@@ -125,22 +119,21 @@ export function SignUpForm() {
             placeholder="••••••••"
           />
            {errors.form && (
-            <p className="text-sm font-medium text-destructive">{errors.form}</p>
+            <p className="text-sm font-medium text-red-500 animate-shake">{errors.form}</p>
           )}
-        </div>
         
         <div className="pt-2">
           <Button 
-            className="w-full"
+            className="w-full h-12 mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 transition shadow-lg shadow-indigo-800/30"
             type="submit" 
             disabled={isLoading}
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create Account'}
           </Button>
-          <div className="text-center text-sm text-muted-foreground pt-4">
+          <div className="text-center text-sm text-gray-500 pt-4">
             <p>
               By creating an account, you agree to our{' '}
-              <Link href="/terms" className="text-primary hover:underline">
+              <Link href="/terms" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
                 Terms & Conditions
               </Link>
             </p>
