@@ -39,7 +39,7 @@ export function AuthTabs() {
           className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
             mode === 'signin'
               ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-              : 'text-gray-300 hover:text-white'
+              : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500/30 hover:to-purple-500/30 hover:shadow-indigo-500/10 hover:shadow-lg'
           }`}
         >
           Sign In
@@ -49,7 +49,7 @@ export function AuthTabs() {
           className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
             mode === 'signup'
               ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-              : 'text-gray-300 hover:text-white'
+              : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500/30 hover:to-purple-500/30 hover:shadow-indigo-500/10 hover:shadow-lg'
           }`}
         >
           Create Account
