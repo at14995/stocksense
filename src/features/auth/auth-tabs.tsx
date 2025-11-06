@@ -1,6 +1,6 @@
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { SignInForm } from '@/features/auth/sign-in-form';
 import { SignUpForm } from '@/features/auth/sign-up-form';
 import { ResetPasswordForm } from '@/features/auth/reset-password-form';
@@ -29,10 +29,29 @@ export function AuthTabs() {
 
   return (
     <Tabs value={tab} onValueChange={onTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-2 bg-muted p-1 h-auto rounded-lg">
-        <TabsTrigger value="signin" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-md">Sign In</TabsTrigger>
-        <TabsTrigger value="signup" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-md">Create Account</TabsTrigger>
-      </TabsList>
+      <div className="flex justify-center bg-[#1A1C27] rounded-full p-1 border border-gray-800 w-full max-w-xs mx-auto">
+        <button
+          onClick={() => onTabChange('signin')}
+          className={`flex-1 py-2 text-sm font-medium rounded-full transition ${
+            tab === 'signin'
+              ? 'bg-primary text-primary-foreground shadow'
+              : 'text-muted-foreground hover:text-white'
+          }`}
+        >
+          Sign In
+        </button>
+        <button
+          onClick={() => onTabChange('signup')}
+          className={`flex-1 py-2 text-sm font-medium rounded-full transition ${
+            tab === 'signup'
+              ? 'bg-primary text-primary-foreground shadow'
+              : 'text-muted-foreground hover:text-white'
+          }`}
+        >
+          Create Account
+        </button>
+      </div>
+
       <div className="mt-6">
         <TabsContent value="signin" className="m-0">
           <SignInForm />

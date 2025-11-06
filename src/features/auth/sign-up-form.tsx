@@ -10,19 +10,13 @@ import { useAuth, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { CardContent, CardFooter } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { FormField } from './form-field';
 import { signUpSchema } from './schemas';
 import type { ZodIssue } from 'zod';
 import { ensureUserProfile } from '@/lib/profile';
+import Link from 'next/link';
 
 type SignUpErrors = {
   displayName?: string;
@@ -78,11 +72,6 @@ export function SignUpForm() {
         description: 'A verification email has been sent. Please check your inbox.',
       });
       
-      // Since email verification is required, we don't redirect to dashboard here.
-      // The parent `auth/page.tsx` will handle showing the verification prompt.
-      // If verification wasn't required, we would redirect here:
-      // router.push('/dashboard');
-      
     } catch (error: any) {
       let errorMessage = 'An unexpected error occurred.';
       switch (error.code) {
@@ -108,7 +97,6 @@ export function SignUpForm() {
   };
 
   return (
-    <Card className="bg-transparent border-0 shadow-none">
       <form onSubmit={handleSignUp}>
         <CardContent className="space-y-4 p-0">
           <FormField
@@ -135,21 +123,29 @@ export function SignUpForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             error={errors.password}
+            placeholder="••••••••"
           />
            {errors.form && (
             <p className="text-sm font-medium text-destructive">{errors.form}</p>
           )}
         </CardContent>
-        <CardFooter className="p-0 pt-6">
-          <Button className="w-full" type="submit" disabled={isLoading}>
+        <CardFooter className="flex-col items-stretch gap-4 p-0 pt-6">
+          <Button className="w-full py-3 rounded-lg font-semibold bg-primary hover:bg-primary/90 transition text-primary-foreground shadow-md" type="submit" disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               'Create Account'
             )}
           </Button>
+          <div className="text-center text-xs text-gray-500">
+            <p>
+              By creating an account, you agree to our{' '}
+              <Link href="/terms" className="text-primary/80 hover:text-primary">
+                Terms & Conditions
+              </Link>
+            </p>
+          </div>
         </CardFooter>
       </form>
-    </Card>
   );
 }

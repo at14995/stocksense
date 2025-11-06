@@ -2,18 +2,11 @@
 
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useAuth, useUser } from '@/firebase';
+import { useAuth } from '@/firebase';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { CardContent, CardFooter } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { FormField } from './form-field';
 import { signInSchema } from './schemas';
@@ -99,7 +92,6 @@ export function SignInForm() {
   }
 
   return (
-    <Card className="bg-transparent border-0 shadow-none">
       <form onSubmit={handleSignIn}>
         <CardContent className="space-y-4 p-0">
           <FormField
@@ -118,20 +110,25 @@ export function SignInForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             error={errors.password}
+            placeholder="••••••••"
           />
            {errors.form && (
             <p className="text-sm font-medium text-destructive">{errors.form}</p>
           )}
         </CardContent>
         <CardFooter className="flex-col items-stretch gap-4 p-0 pt-6">
-          <Button className="w-full" type="submit" disabled={isLoading}>
+          <Button className="w-full py-3 rounded-lg font-semibold bg-primary hover:bg-primary/90 transition text-primary-foreground shadow-md" type="submit" disabled={isLoading}>
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
           </Button>
-          <Button variant="link" size="sm" type="button" onClick={switchToReset} className="text-muted-foreground">
-            Forgot password?
-          </Button>
+          <div className="text-center text-xs text-gray-500">
+            <p>
+              Forgot password?{" "}
+              <button type="button" onClick={switchToReset} className="text-primary/80 hover:text-primary">
+                Reset here
+              </button>
+            </p>
+          </div>
         </CardFooter>
       </form>
-    </Card>
   );
 }

@@ -47,11 +47,14 @@ function AuthPageContent() {
   // Render the authentication tabs (sign-in, sign-up, email verification)
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md space-y-6">
-            <div className="text-center">
-                <h1 className="text-2xl font-semibold tracking-tight">
-                    Access your Stock Sense account
-                </h1>
+        <div className="w-full max-w-md bg-[#0F111A]/90 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-800 p-8 text-white space-y-6">
+            <div className="text-center space-y-2">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                Access your <span className="text-primary">Stock Sense</span> account
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Sign in or create an account to continue
+              </p>
             </div>
             <AuthTabs />
         </div>
