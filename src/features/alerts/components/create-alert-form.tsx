@@ -30,6 +30,7 @@ import { useCurrency } from '@/context/CurrencyContext';
 import { Combobox } from '@/components/ui/combobox';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { TrendingUp, Bitcoin, Mail, MessageSquare, Bell, BellRing } from 'lucide-react';
 
 
 const dummyTrending = {
@@ -126,10 +127,11 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <div className="w-full max-w-lg mx-auto rounded-2xl bg-background shadow-xl p-6 sm:p-8 text-foreground space-y-6 border border-border">
+          <div className="w-full max-w-lg mx-auto rounded-2xl bg-card shadow-xl p-6 sm:p-8 text-foreground space-y-6 border border-border">
             <div className="text-center space-y-1">
               <h2 className="text-2xl font-semibold text-foreground flex items-center justify-center gap-2">
-                <span>🔔</span> Never Miss a Price Move
+                <Bell className="h-6 w-6" />
+                <span>Never Miss a Price Move</span>
               </h2>
               <p className="text-muted-foreground text-sm">
                 Set advanced, real-time alerts for stocks and crypto.
@@ -139,23 +141,23 @@ export default function CreateAlertForm() {
             <div className="flex w-full rounded-lg overflow-hidden border border-border p-1 bg-muted">
               <button
                 onClick={() => handleAssetTypeChange("stocks")}
-                className={cn('flex-1 py-1.5 font-medium text-sm rounded-md transition-colors',
+                className={cn('flex-1 py-2 font-medium text-sm rounded-md transition-colors flex items-center justify-center gap-2',
                   assetType === "stocks"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-accent/50"
                 )}
               >
-                📈 Stocks
+                <TrendingUp className="h-4 w-4" /> Stocks
               </button>
               <button
                 onClick={() => handleAssetTypeChange("crypto")}
-                className={cn('flex-1 py-1.5 font-medium text-sm rounded-md transition-colors',
+                className={cn('flex-1 py-2 font-medium text-sm rounded-md transition-colors flex items-center justify-center gap-2',
                   assetType === "crypto"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-accent/50"
                 )}
               >
-                ₿ Crypto
+                <Bitcoin className="h-4 w-4" /> Crypto
               </button>
             </div>
               
@@ -166,6 +168,7 @@ export default function CreateAlertForm() {
                   value={symbol}
                   onValueChange={setSymbol}
                   placeholder="Select Trending Asset"
+                  searchPlaceholder='Search assets...'
                 />
                 <Input
                   type="text"
@@ -215,15 +218,15 @@ export default function CreateAlertForm() {
             </div>
               
             <div>
-              <p className="text-muted-foreground text-sm mb-2 font-medium">Notify me via:</p>
-              <div className="flex flex-wrap items-center gap-4">
+              <p className="text-muted-foreground text-sm mb-3 font-medium">Notify me via:</p>
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                   <Checkbox 
                     id="email" 
                     checked={notifyVia.email} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} 
                   />
-                  Email
+                  <Mail className="h-4 w-4 text-muted-foreground" /> Email
                 </Label>
                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
@@ -231,7 +234,7 @@ export default function CreateAlertForm() {
                     checked={notifyVia.sms} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))}
                    />
-                  SMS
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" /> SMS
                 </Label>
                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
@@ -239,7 +242,7 @@ export default function CreateAlertForm() {
                     checked={notifyVia.app} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, app: !!c}))}
                    />
-                   App Alert
+                   <BellRing className="h-4 w-4 text-muted-foreground" /> App Alert
                 </Label>
               </div>
             </div>
