@@ -64,15 +64,15 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <Card>
+    <Card className="bg-transparent border-0 shadow-none">
       <form onSubmit={handleReset}>
-        <CardHeader>
+        <CardHeader className="p-0 mb-6 text-center">
           <CardTitle>Reset Password</CardTitle>
-          <CardDescription>
+          <CardDescription className="pt-1">
             Enter your email to receive a password reset link.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <FormField
             id="email-reset"
             label="Email"
@@ -83,7 +83,7 @@ export function ResetPasswordForm() {
             placeholder="m@example.com"
           />
         </CardContent>
-        <CardFooter className="flex-col items-stretch gap-4">
+        <CardFooter className="flex-col items-stretch gap-4 p-0 pt-6">
           <Button className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

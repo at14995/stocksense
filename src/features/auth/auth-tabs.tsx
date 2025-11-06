@@ -29,19 +29,21 @@ export function AuthTabs() {
 
   return (
     <Tabs value={tab} onValueChange={onTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="signin">Sign In</TabsTrigger>
-        <TabsTrigger value="signup">Create Account</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-2 bg-muted p-1 h-auto rounded-lg">
+        <TabsTrigger value="signin" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-md">Sign In</TabsTrigger>
+        <TabsTrigger value="signup" className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm rounded-md">Create Account</TabsTrigger>
       </TabsList>
-      <TabsContent value="signin">
-        <SignInForm />
-      </TabsContent>
-      <TabsContent value="signup">
-        <SignUpForm />
-      </TabsContent>
-      <TabsContent value="reset">
-        <ResetPasswordForm />
-      </TabsContent>
+      <div className="mt-6">
+        <TabsContent value="signin" className="m-0">
+          <SignInForm />
+        </TabsContent>
+        <TabsContent value="signup" className="m-0">
+          <SignUpForm />
+        </TabsContent>
+        <TabsContent value="reset" className="m-0">
+          <ResetPasswordForm />
+        </TabsContent>
+      </div>
     </Tabs>
   );
 }

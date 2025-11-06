@@ -108,15 +108,9 @@ export function SignUpForm() {
   };
 
   return (
-    <Card>
+    <Card className="bg-transparent border-0 shadow-none">
       <form onSubmit={handleSignUp}>
-        <CardHeader>
-          <CardTitle>Create Account</CardTitle>
-          <CardDescription>
-            Get started with Stock Sense today.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-0">
           <FormField
             id="displayName-signup"
             label="Name"
@@ -146,7 +140,7 @@ export function SignUpForm() {
             <p className="text-sm font-medium text-destructive">{errors.form}</p>
           )}
         </CardContent>
-        <CardFooter>
+        <CardFooter className="p-0 pt-6">
           <Button className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

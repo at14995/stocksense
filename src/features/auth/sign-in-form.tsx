@@ -99,15 +99,9 @@ export function SignInForm() {
   }
 
   return (
-    <Card>
+    <Card className="bg-transparent border-0 shadow-none">
       <form onSubmit={handleSignIn}>
-        <CardHeader>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-0">
           <FormField
             id="email-signin"
             label="Email"
@@ -129,7 +123,7 @@ export function SignInForm() {
             <p className="text-sm font-medium text-destructive">{errors.form}</p>
           )}
         </CardContent>
-        <CardFooter className="flex-col items-stretch gap-4">
+        <CardFooter className="flex-col items-stretch gap-4 p-0 pt-6">
           <Button className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
           </Button>
