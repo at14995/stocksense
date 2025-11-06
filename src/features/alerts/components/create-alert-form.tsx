@@ -29,6 +29,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Combobox } from '@/components/ui/combobox';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 
 const dummyTrending = {
@@ -125,34 +126,34 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <div className="w-full max-w-lg mx-auto rounded-2xl bg-background shadow-xl p-6 sm:p-8 text-white space-y-6">
+          <div className="w-full max-w-lg mx-auto rounded-2xl bg-background shadow-xl p-6 sm:p-8 text-foreground space-y-6 border border-border">
             <div className="text-center space-y-1">
-              <h2 className="text-2xl font-semibold text-white flex items-center justify-center gap-2">
+              <h2 className="text-2xl font-semibold text-foreground flex items-center justify-center gap-2">
                 <span>🔔</span> Never Miss a Price Move
               </h2>
-              <p className="text-gray-400 text-sm">
+              <p className="text-muted-foreground text-sm">
                 Set advanced, real-time alerts for stocks and crypto.
               </p>
             </div>
             
-            <div className="flex w-full rounded-lg overflow-hidden border border-gray-700">
+            <div className="flex w-full rounded-lg overflow-hidden border border-border p-1 bg-muted">
               <button
                 onClick={() => handleAssetTypeChange("stocks")}
-                className={`flex-1 py-2 font-medium text-sm transition ${
+                className={cn('flex-1 py-1.5 font-medium text-sm rounded-md transition-colors',
                   assetType === "stocks"
                     ? "bg-primary text-primary-foreground"
-                    : "bg-[#1C1E29] text-gray-300 hover:bg-gray-800"
-                }`}
+                    : "text-muted-foreground hover:bg-accent/50"
+                )}
               >
                 📈 Stocks
               </button>
               <button
                 onClick={() => handleAssetTypeChange("crypto")}
-                className={`flex-1 py-2 font-medium text-sm transition ${
+                className={cn('flex-1 py-1.5 font-medium text-sm rounded-md transition-colors',
                   assetType === "crypto"
                     ? "bg-primary text-primary-foreground"
-                    : "bg-[#1C1E29] text-gray-300 hover:bg-gray-800"
-                }`}
+                    : "text-muted-foreground hover:bg-accent/50"
+                )}
               >
                 ₿ Crypto
               </button>
@@ -165,22 +166,20 @@ export default function CreateAlertForm() {
                   value={symbol}
                   onValueChange={setSymbol}
                   placeholder="Select Trending Asset"
-                  className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700"
                 />
                 <Input
                   type="text"
                   placeholder="Or enter symbol..."
-                  className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700 rounded-md px-3 py-2 h-10"
                   value={symbol}
                   onChange={(e) => setSymbol(e.target.value)}
                 />
               </div>
 
               <Select value={exchange} onValueChange={setExchange}>
-                <SelectTrigger className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700">
+                <SelectTrigger>
                   <SelectValue placeholder="Select Exchange" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1C1E29] text-gray-200 border border-gray-700 z-[9999]" side="bottom">
+                <SelectContent side="bottom">
                     {exchangeOptions.map((ex) => (
                     <SelectItem key={ex} value={ex}>{ex}</SelectItem>
                   ))}
@@ -189,10 +188,10 @@ export default function CreateAlertForm() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Select value={condition} onValueChange={(v: Alert['condition']) => setCondition(v)}>
-                  <SelectTrigger className="w-full bg-[#1C1E29] text-gray-200 border border-gray-700">
+                  <SelectTrigger>
                     <SelectValue placeholder="Condition" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1C1E29] text-gray-200 border border-gray-700 z-[9999]" side="bottom">
+                  <SelectContent side="bottom">
                       <SelectItem value="price_reach">Price reaches</SelectItem>
                       <SelectItem value="percent_up">Price rises by (%)</SelectItem>
                       <SelectItem value="percent_down">Price drops by (%)</SelectItem>
@@ -206,7 +205,7 @@ export default function CreateAlertForm() {
                     placeholder="Value"
                     value={target}
                     onChange={(e) => setTarget(e.target.value)}
-                    className="h-10 w-full bg-[#1C1E29] text-gray-200 border border-gray-700 rounded-md pl-7"
+                    className="pl-7"
                   />
                   <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
                     {conditionLabel}
@@ -216,39 +215,36 @@ export default function CreateAlertForm() {
             </div>
               
             <div>
-              <p className="text-gray-300 text-sm mb-2 font-medium">Notify me via:</p>
+              <p className="text-muted-foreground text-sm mb-2 font-medium">Notify me via:</p>
               <div className="flex flex-wrap items-center gap-4">
-                <Label className="flex items-center gap-2 text-sm font-normal">
+                <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                   <Checkbox 
                     id="email" 
                     checked={notifyVia.email} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} 
-                    className="accent-indigo-600"
                   />
                   Email
                 </Label>
-                <Label className="flex items-center gap-2 text-sm font-normal">
+                <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
                     id="sms" 
                     checked={notifyVia.sms} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))}
-                    className="accent-indigo-600"
                    />
                   SMS
                 </Label>
-                <Label className="flex items-center gap-2 text-sm font-normal">
+                <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
                     id="app" 
                     checked={notifyVia.app} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, app: !!c}))}
-                    className="accent-indigo-600"
                    />
                    App Alert
                 </Label>
               </div>
             </div>
 
-            <Button size="lg" className="w-full py-3 bg-white text-gray-900 font-semibold rounded-md hover:bg-gray-200 transition" onClick={handleSubmit}>
+            <Button size="lg" className="w-full" onClick={handleSubmit}>
               Set Alert
             </Button>
           </div>
