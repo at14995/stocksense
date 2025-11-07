@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 export type BinancePrice = {
   symbol: string;
   price: string;
+  lastPrice?: string;
+  priceChangePercent?: string;
 };
 
 export function useBinancePrices() {
