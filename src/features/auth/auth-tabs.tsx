@@ -7,6 +7,7 @@ import { ResetPasswordForm } from '@/features/auth/reset-password-form';
 import { VerifyEmailPanel } from '@/features/auth/verify-email-panel';
 import { useUser } from '@/firebase';
 import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export function AuthTabs() {
   const { user } = useUser();
@@ -33,24 +34,24 @@ export function AuthTabs() {
         </p>
       </div>
 
-      <div className="flex bg-[#151826] border border-gray-700/60 rounded-full p-1">
+      <div className="flex w-full rounded-full overflow-hidden border border-border p-1 bg-muted max-w-sm mx-auto">
         <button
           onClick={() => setMode('signin')}
-          className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-            mode === 'signin'
-              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-              : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500/30 hover:to-purple-500/30 hover:shadow-indigo-500/10 hover:shadow-lg'
-          }`}
+          className={cn('flex-1 py-2 font-medium text-sm rounded-full transition-colors flex items-center justify-center gap-2',
+            mode === "signin"
+              ? "bg-primary text-primary-foreground shadow"
+              : "text-muted-foreground hover:bg-accent/50"
+          )}
         >
           Sign In
         </button>
         <button
           onClick={() => setMode('signup')}
-          className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-            mode === 'signup'
-              ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
-              : 'text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-indigo-500/30 hover:to-purple-500/30 hover:shadow-indigo-500/10 hover:shadow-lg'
-          }`}
+          className={cn('flex-1 py-2 font-medium text-sm rounded-full transition-colors flex items-center justify-center gap-2',
+            mode === "signup"
+              ? "bg-primary text-primary-foreground shadow"
+              : "text-muted-foreground hover:bg-accent/50"
+          )}
         >
           Create Account
         </button>
