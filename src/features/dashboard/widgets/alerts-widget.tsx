@@ -73,7 +73,7 @@ export function AlertsWidget() {
                       <div key={alert.id} className="flex justify-between items-center text-sm">
                           <span className="font-mono">{alert.symbol} {alert.condition.includes('up') ? '>' : '<'} ${alert.target}</span>
                           <Badge variant="outline" className={getStatusColor(alert.status)}>
-                              {alert.status}
+                              {alert.status.charAt(0).toUpperCase() + alert.status.slice(1)}
                           </Badge>
                       </div>
                   ))}

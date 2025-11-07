@@ -9,15 +9,19 @@ import { SupportWidget } from './widgets/support-widget';
 export function DashboardGrid() {
   return (
     <motion.div
-      className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+      className="grid gap-6 grid-cols-1 lg:grid-cols-3"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <MarketOverviewWidget />
-      <WatchlistWidget />
-      <AlertsWidget />
-      <SupportWidget />
+      <div className="lg:col-span-2">
+        <MarketOverviewWidget />
+      </div>
+      <div className="space-y-6">
+        <WatchlistWidget />
+        <AlertsWidget />
+        <SupportWidget />
+      </div>
     </motion.div>
   );
 }

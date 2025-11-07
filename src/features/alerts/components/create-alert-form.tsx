@@ -203,16 +203,19 @@ export default function CreateAlertForm() {
                   </SelectContent>
                 </Select>
                 <div className="relative">
+                  <span
+                    className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none"
+                  >
+                    {conditionLabel}
+                  </span>
+
                   <Input
                     type="number"
                     placeholder="Value"
                     value={target}
                     onChange={(e) => setTarget(e.target.value)}
-                    className="pl-7"
+                    className="pl-8"
                   />
-                  <span className="absolute left-0 top-0 h-full w-7 flex items-center justify-center text-muted-foreground text-sm">
-                    {conditionLabel}
-                  </span>
                 </div>
               </div>
             </div>

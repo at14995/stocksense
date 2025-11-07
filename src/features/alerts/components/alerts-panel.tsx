@@ -140,15 +140,15 @@ export default function AlertsPanel() {
                       <TableCell className="font-medium">{a.symbol}</TableCell>
                       <TableCell>{a.exchange || 'N/A'}</TableCell>
                       <TableCell>{getConditionLabel(a)}</TableCell>
-                      <TableCell className="capitalize">
-                        {a.notificationMethod}
+                      <TableCell>
+                        {a.notificationMethod.charAt(0).toUpperCase() + a.notificationMethod.slice(1)}
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"
                           className={`capitalize ${getStatusColor(a.status)}`}
                         >
-                          {a.status}
+                          {a.status.charAt(0).toUpperCase() + a.status.slice(1)}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right space-x-1">
