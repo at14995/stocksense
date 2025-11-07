@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect } from 'react';
 import { MessageSquare, Trash2 } from 'lucide-react';
@@ -9,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import AssetIcon from '@/components/ui/AssetIcon';
 
 export default function PostCard({ post }:{ post:any }) {
   const { user } = useUser();
@@ -47,8 +49,13 @@ export default function PostCard({ post }:{ post:any }) {
       </CardHeader>
       <CardContent>
         <p className="whitespace-pre-line text-gray-300">{post.content}</p>
-        <div className="mt-4 flex gap-2">
-            {post.tickers.map((t: string) => <Badge key={t} variant="secondary">{t}</Badge>)}
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+            {post.tickers.map((t: string) => (
+              <Badge key={t} variant="secondary" className="flex items-center gap-1.5">
+                <AssetIcon symbol={t} size={14} />
+                {t}
+              </Badge>
+            ))}
             <Badge variant="outline" className={sentimentColor}>{post.sentiment}</Badge>
         </div>
       </CardContent>

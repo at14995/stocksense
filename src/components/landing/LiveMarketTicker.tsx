@@ -1,23 +1,17 @@
+
 'use client';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBinancePrices } from '@/hooks/useBinancePrices';
-
-const cryptoIconUrls: Record<string, string> = {
-    BTCUSDT: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25668/svg/color/btc.svg',
-    ETHUSDT: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25668/svg/color/eth.svg',
-    SOLUSDT: 'https://cdn.jsdelivrnet/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25668/svg/color/sol.svg',
-    XRPUSDT: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25668/svg/color/xrp.svg',
-    DOGEUSDT: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25668/svg/color/doge.svg',
-};
+import AssetIcon from '../ui/AssetIcon';
 
 const initialStocks = [
-  { symbol: 'AAPL', name: 'Apple Inc.', price: 189.23, change24h: 1.12, logoUrl: 'https://companiesmarketcap.com/img/company-logos/64/AAPL.png' },
-  { symbol: 'MSFT', name: 'Microsoft', price: 410.55, change24h: -0.21, logoUrl: 'https://companiesmarketcap.com/img/company-logos/64/MSFT.png' },
-  { symbol: 'NVDA', name: 'NVIDIA', price: 950.12, change24h: 2.78, logoUrl: 'https://companiesmarketcap.com/img/company-logos/64/NVDA.png' },
-  { symbol: 'AMZN', name: 'Amazon', price: 185.00, change24h: 0.25, logoUrl: 'https://companiesmarketcap.com/img/company-logos/64/AMZN.png' },
-  { symbol: 'META', name: 'Meta', price: 470.89, change24h: -1.54, logoUrl: 'https://companiesmarketcap.com/img/company-logos/64/META.png' },
+  { symbol: 'AAPL', name: 'Apple Inc.', price: 189.23, change24h: 1.12 },
+  { symbol: 'MSFT', name: 'Microsoft', price: 410.55, change24h: -0.21 },
+  { symbol: 'NVDA', name: 'NVIDIA', price: 950.12, change24h: 2.78 },
+  { symbol: 'AMZN', name: 'Amazon', price: 185.00, change24h: 0.25 },
+  { symbol: 'META', name: 'Meta', price: 470.89, change24h: -1.54 },
 ];
 
 export function LiveMarketTicker() {
@@ -32,7 +26,7 @@ export function LiveMarketTicker() {
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center space-x-3 w-1/3">
-        <img src={cryptoIconUrls[item.symbol]} alt={item.symbol} className="w-6 h-6 rounded-full bg-white/10 p-0.5" />
+        <AssetIcon symbol={item.symbol} size={24} />
         <span className="text-white font-medium">{item.symbol.replace("USDT", "")}</span>
       </div>
       <div className="text-gray-300 w-1/3 text-right font-mono">${parseFloat(item.lastPrice).toFixed(2)}</div>
@@ -51,7 +45,7 @@ export function LiveMarketTicker() {
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center space-x-3 w-1/3">
-        <img src={item.logoUrl} alt={item.symbol} className="w-6 h-6 rounded-full bg-white/10 p-0.5" />
+        <AssetIcon symbol={item.symbol} size={24} />
         <span className="text-white font-medium">{item.symbol}</span>
       </div>
       <div className="text-gray-300 w-1/3 text-right font-mono">${item.price.toFixed(2)}</div>

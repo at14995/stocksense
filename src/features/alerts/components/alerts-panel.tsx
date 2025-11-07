@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useState } from 'react';
 import { Bell, Plus, Trash2, Archive, Edit } from 'lucide-react';
@@ -47,6 +48,7 @@ import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/context/CurrencyContext';
 import Link from 'next/link';
+import AssetIcon from '@/components/ui/AssetIcon';
 
 export default function AlertsPanel() {
   const { user } = useUser();
@@ -137,7 +139,12 @@ export default function AlertsPanel() {
                 {alerts.length > 0 ? (
                   alerts.map((a) => (
                     <TableRow key={a.id}>
-                      <TableCell className="font-medium">{a.symbol}</TableCell>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <AssetIcon symbol={a.symbol} size={20} />
+                          <span>{a.symbol}</span>
+                        </div>
+                      </TableCell>
                       <TableCell>{a.exchange || 'N/A'}</TableCell>
                       <TableCell>{getConditionLabel(a)}</TableCell>
                       <TableCell>

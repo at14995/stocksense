@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ import { useEffect, useState } from 'react';
 import { listenUserWatchlists } from '@/features/watchlists/watchlist-service';
 import Link from 'next/link';
 import { Watchlist } from '@/features/watchlists/types';
+import AssetIcon from '@/components/ui/AssetIcon';
 
 export function WatchlistWidget() {
   const { user } = useUser();
@@ -87,7 +89,12 @@ export function WatchlistWidget() {
               <TableBody>
                 {watchlistData.map((item, index) => (
                   <TableRow key={item.symbol} className={cn("border-none", index % 2 === 0 ? 'bg-[#161925]' : 'bg-[#121521]', 'hover:bg-[#191C29]')}>
-                    <TableCell className="font-medium">{item.symbol}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <AssetIcon symbol={item.symbol} size={20} />
+                        <span>{item.symbol}</span>
+                      </div>
+                    </TableCell>
                     <TableCell className="text-right font-mono">{item.price}</TableCell>
                     <TableCell
                       className={cn(
