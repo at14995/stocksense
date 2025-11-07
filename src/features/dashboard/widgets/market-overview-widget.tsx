@@ -3,13 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { TrendingUp, Plus } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { useBinancePrices } from '@/hooks/useBinancePrices';
 import AssetIcon from '@/components/ui/AssetIcon';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser } from '@/firebase';
 import { addSymbolToWatchlist } from '@/features/watchlists/watchlist-service';
 import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 const staticStocks = [
     { symbol: 'AAPL', price: 189.65, change: 0.22, type: 'stock' },
@@ -35,6 +35,7 @@ export function MarketOverviewWidget() {
   const { user } = useUser();
   const { prices: binancePrices, isLoading: isCryptoLoading } = useBinancePrices();
   const { toast } = useToast();
+  const [addedSymbol, setAddedSymbol] = useState('');
 
   const handleAddToWatchlist = async (symbol: string) => {
     if (!user) {
@@ -51,6 +52,8 @@ export function MarketOverviewWidget() {
         title: 'Success',
         description: `${symbol} has been added to your watchlist.`,
       });
+      setAddedSymbol(symbol);
+      setTimeout(() => setAddedSymbol(""), 2500);
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -111,14 +114,31 @@ export function MarketOverviewWidget() {
                     >
                       {asset.change.toFixed(2)}%
                     </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleAddToWatchlist(asset.symbol)}
-                      className="px-2 py-1 h-auto text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary"
-                    >
-                      <Plus className="h-3 w-3 mr-1" /> Add
-                    </Button>
+                    {addedSymbol === asset.symbol ? (
+                        <button
+                          disabled
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-600/30 text-green-300 text-xs font-medium cursor-default transition-all duration-300"
+                        >
+                          ✓ Added
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleAddToWatchlist(asset.symbol)}
+                          className="group flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600/80 to-purple-600/80 text-white text-xs font-medium shadow-md hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 hover:scale-[1.05] focus:outline-none focus:ring-2 focus:ring-indigo-400/50 active:scale-[0.98]"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-300"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                          </svg>
+                          <span>Add</span>
+                        </button>
+                      )}
                   </div>
                 </motion.div>
               ))}
