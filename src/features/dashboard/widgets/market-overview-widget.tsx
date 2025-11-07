@@ -105,7 +105,8 @@ export function MarketOverviewWidget() {
                     <AssetIcon symbol={asset.symbol + (asset.type === "crypto" ? "USDT" : "")} size={24} />
                     <span className="font-medium">{asset.symbol}</span>
                   </div>
-                  <div className="flex items-center justify-end gap-4 sm:gap-6 flex-1">
+
+                  <div className="flex items-center justify-end gap-4 sm:gap-6 w-2/4 text-right">
                     <span className="text-gray-300 text-sm font-mono w-24 text-right">
                       ${asset.price.toFixed(2)}
                     </span>
@@ -114,6 +115,9 @@ export function MarketOverviewWidget() {
                     >
                       {asset.change.toFixed(2)}%
                     </span>
+                  </div>
+                  
+                  <div className="flex justify-end w-1/4">
                     {addedSymbol === asset.symbol ? (
                         <button
                           disabled
