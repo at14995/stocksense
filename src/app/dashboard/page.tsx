@@ -30,7 +30,7 @@ export default function DashboardPage() {
     <div className="p-4 md:p-6">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
            <Button asChild>
               <Link href="/alerts/create">
                   <BellPlus className="h-4 w-4 mr-2" />

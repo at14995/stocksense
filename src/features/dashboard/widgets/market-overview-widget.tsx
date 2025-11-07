@@ -1,126 +1,130 @@
 'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { TrendingUp, Bitcoin } from 'lucide-react';
-import { useMarketFeed } from '../hooks/use-market-feed';
-import { useBinancePrices, type BinancePrice } from '@/hooks/useBinancePrices';
+import { TrendingUp, Plus } from 'lucide-react';
+import { useBinancePrices } from '@/hooks/useBinancePrices';
+import AssetIcon from '@/components/ui/AssetIcon';
+import { useUser, useFirestore } from '@/firebase';
+import { addSymbolToWatchlist } from '@/features/watchlists/watchlist-service';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+
+const staticStocks = [
+    { symbol: 'AAPL', price: 189.65, change: 0.22, type: 'stock' },
+    { symbol: 'TSLA', price: 247.32, change: -0.22, type: 'stock' },
+    { symbol: 'GOOG', price: 143.39, change: 0.60, type: 'stock' },
+    { symbol: 'AMZN', price: 184.74, change: -0.14, type: 'stock' },
+];
 
 const stagger = {
   animate: {
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.05,
     },
   },
 };
 
 const fadeInUp = {
   initial: { y: 20, opacity: 0 },
-  animate: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+  animate: { y: 0, opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
 };
 
-const usdtPairsToShow = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT'];
-
 export function MarketOverviewWidget() {
-  const { overviewData, isLoading: isStockLoading } = useMarketFeed();
+  const { user } = useUser();
   const { prices: binancePrices, isLoading: isCryptoLoading } = useBinancePrices();
+  const { toast } = useToast();
 
-  const filteredCryptoPrices = binancePrices
-    .filter(p => usdtPairsToShow.includes(p.symbol))
-    .sort((a, b) => usdtPairsToShow.indexOf(a.symbol) - usdtPairsToShow.indexOf(b.symbol));
+  const handleAddToWatchlist = async (symbol: string) => {
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Required',
+        description: 'Please sign in to add symbols to your watchlist.',
+      });
+      return;
+    }
+    try {
+      await addSymbolToWatchlist(user.uid, symbol);
+      toast({
+        title: 'Success',
+        description: `${symbol} has been added to your watchlist.`,
+      });
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message || `Failed to add ${symbol} to watchlist.`,
+      });
+    }
+  };
 
-  const renderCryptoPrice = (pair: BinancePrice) => (
-    <motion.div 
-      key={pair.symbol} 
-      variants={fadeInUp}
-      className="bg-[#191C29] border border-gray-700/60 rounded-lg p-3 transition-transform hover:-translate-y-1"
-    >
-      <p className="font-semibold text-sm text-gray-400">{pair.symbol.replace('USDT', '/USDT')}</p>
-      <p className="text-xl font-bold font-mono text-indigo-400">${parseFloat(pair.price).toFixed(2)}</p>
-    </motion.div>
-  );
+  const combinedAssets = [
+    ...binancePrices.map((c) => ({
+      symbol: c.symbol.replace('USDT', ''),
+      price: parseFloat(c.lastPrice!),
+      change: parseFloat(c.priceChangePercent!),
+      type: 'crypto',
+    })),
+    ...staticStocks,
+  ];
 
   return (
-    <div className="2xl:col-span-2 grid grid-cols-1 gap-6">
-      <Card>
+    <Card className="flex flex-col h-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <TrendingUp className="h-5 w-5" />
-            <span>Stock Market Overview</span>
+            <span>Combined Market Overview</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          {isStockLoading ? (
-            <div className="grid grid-cols-2 gap-4">
-              <Skeleton className="h-20 w-full bg-[#191C29]" />
-              <Skeleton className="h-20 w-full bg-[#191C29]" />
-              <Skeleton className="h-20 w-full bg-[#191C29]" />
-              <Skeleton className="h-20 w-full bg-[#191C29]" />
+        <CardContent className="flex-grow">
+          {isCryptoLoading ? (
+            <div className="space-y-3">
+              {Array(8).fill(0).map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full bg-[#191C29]" />
+              ))}
             </div>
           ) : (
             <motion.div
-              className="grid grid-cols-2 gap-4"
+              className="flex flex-col gap-3"
               variants={stagger}
               initial="initial"
               animate="animate"
             >
-              {overviewData.map((item) => (
-                <motion.div 
-                  key={item.symbol} 
+              {combinedAssets.slice(0, 10).map((asset) => (
+                <motion.div
+                  key={asset.symbol}
                   variants={fadeInUp}
-                  className="bg-[#191C29] border border-gray-700/60 rounded-lg p-4 transition-transform hover:-translate-y-1"
+                  className="flex items-center justify-between bg-[#191C29] px-4 py-2 rounded-xl border border-transparent hover:border-primary/50 transition-colors duration-300"
                 >
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="font-semibold text-sm">{item.symbol}</p>
-                    <p
-                      className={cn(
-                        'text-sm font-semibold transition-colors duration-500 ease-out',
-                        item.change.startsWith('+')
-                          ? 'text-green-400'
-                          : 'text-red-400'
-                      )}
-                    >
-                      {item.change}
-                    </p>
+                  <div className="flex items-center gap-3 w-1/4">
+                    <AssetIcon symbol={asset.symbol + (asset.type === "crypto" ? "USDT" : "")} size={24} />
+                    <span className="font-medium">{asset.symbol}</span>
                   </div>
-                  <p className="text-2xl font-bold font-mono">{item.price}</p>
+                  <div className="flex items-center justify-end gap-4 sm:gap-6 flex-1">
+                    <span className="text-gray-300 text-sm font-mono w-24 text-right">
+                      ${asset.price.toFixed(2)}
+                    </span>
+                    <span
+                      className={cn('font-semibold text-sm font-mono w-20 text-right', asset.change >= 0 ? "text-green-400" : "text-red-400")}
+                    >
+                      {asset.change.toFixed(2)}%
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleAddToWatchlist(asset.symbol)}
+                      className="px-2 py-1 h-auto text-xs font-medium text-primary hover:bg-primary/10 hover:text-primary"
+                    >
+                      <Plus className="h-3 w-3 mr-1" /> Add
+                    </Button>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
           )}
         </CardContent>
-      </Card>
-
-      <Card>
-         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Bitcoin className="h-5 w-5" />
-            <span>Live Crypto Prices</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-            {isCryptoLoading ? (
-                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {Array(6).fill(0).map((_, i) => (
-                        <Skeleton key={i} className="h-16 w-full bg-[#191C29]" />
-                    ))}
-                </div>
-            ) : filteredCryptoPrices.length > 0 ? (
-                <motion.div
-                    className="grid grid-cols-2 md:grid-cols-3 gap-4"
-                    variants={stagger}
-                    initial="initial"
-                    animate="animate"
-                >
-                    {filteredCryptoPrices.map(renderCryptoPrice)}
-                </motion.div>
-            ) : (
-                <p className="text-center text-muted-foreground py-4">Could not load crypto prices.</p>
-            )}
-        </CardContent>
-      </Card>
-    </div>
+    </Card>
   );
 }

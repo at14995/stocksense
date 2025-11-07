@@ -12,6 +12,7 @@ import {
   where,
   onSnapshot,
   getDoc,
+  limit
 } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
 import type { Watchlist } from './types';
@@ -102,4 +103,32 @@ export async function removeSymbol(id: string, symbol: string) {
     symbols: current.filter((x) => x !== s),
     updatedAt: serverTimestamp(),
   });
+}
+
+export async function addSymbolToWatchlist(ownerUid: string, symbol: string) {
+    const s = normalizeSymbol(symbol);
+    const q = query(
+        collection(db, COL),
+        where('ownerUid', '==', ownerUid),
+        orderBy('createdAt', 'asc'),
+        limit(1)
+    );
+
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+        throw new Error("No watchlist found for the user.");
+    }
+    
+    const watchlistDoc = snapshot.docs[0];
+    const watchlistId = watchlistDoc.id;
+    const currentSymbols = watchlistDoc.data().symbols || [];
+
+    if (currentSymbols.includes(s)) {
+        throw new Error(`${s} is already in your watchlist.`);
+    }
+
+    await updateDoc(doc(db, COL, watchlistId), {
+        symbols: [...currentSymbols, s],
+        updatedAt: serverTimestamp(),
+    });
 }
