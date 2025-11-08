@@ -26,12 +26,16 @@ import { listenUserWatchlists } from '@/features/watchlists/watchlist-service';
 import Link from 'next/link';
 import { Watchlist } from '@/features/watchlists/types';
 import AssetIcon from '@/components/ui/AssetIcon';
+import { useMemo } from 'react';
 
 export function WatchlistWidget() {
   const { user } = useUser();
   const [watchlists, setWatchlists] = useState<Watchlist[] | null>(null);
   
-  const watchlistSymbols = watchlists?.[0]?.symbols ?? [];
+  const watchlistSymbols = useMemo(() => {
+    const allSymbols = watchlists?.flatMap(w => w.symbols) ?? [];
+    return Array.from(new Set(allSymbols)); // deduplicate
+  }, [watchlists]);
 
   const { watchlistData, isLoading } = useMarketFeed(watchlistSymbols);
 

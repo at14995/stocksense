@@ -15,7 +15,7 @@ export default function AssetIcon({ symbol, size = 24, className }: AssetIconPro
   const [src, setSrc] = useState(getAssetIcon(symbol));
   
   // A generic, locally-hosted default icon
-  const defaultIcon = 'https://placehold.co/32x32/191C29/FFFFFF/png?text=--';
+  const defaultIcon = '/icons/default-icon.svg';
 
   return (
     <Image
@@ -26,7 +26,10 @@ export default function AssetIcon({ symbol, size = 24, className }: AssetIconPro
       className={`rounded-full bg-[#1A1D2A] p-0.5 ${className || ''}`}
       unoptimized // Recommended for small, numerous external images if performance is an issue
       onError={() => {
-        setSrc(defaultIcon); // Fallback to the default icon on error
+        // Do not set src to defaultIcon directly if it's already the default, to prevent loops
+        if (src !== defaultIcon) {
+            setSrc(defaultIcon); 
+        }
       }}
     />
   );

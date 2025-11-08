@@ -80,7 +80,7 @@ export function LiveMarketTicker() {
           <div>
             <h3 className="text-lg font-semibold text-primary mb-3 text-center md:text-left">Top Stocks</h3>
             <div className="space-y-1">
-               {isLoading ? Array(5).fill(0).map((_,i) => renderSkeleton(i)) : initialStocks.map(renderStockRow)}
+               {initialStocks.map(renderStockRow)}
             </div>
           </div>
         </div>
