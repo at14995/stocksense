@@ -11,7 +11,7 @@ export async function GET() {
     }
     const data = await response.json();
     
-    // Filter for the top symbols and sort them
+    // Filter for the top symbols and sort them to maintain a consistent order
     const filteredData = data.filter((item: any) => TOP_SYMBOLS.includes(item.symbol))
       .sort((a: any, b: any) => TOP_SYMBOLS.indexOf(a.symbol) - TOP_SYMBOLS.indexOf(b.symbol));
 
