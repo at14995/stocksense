@@ -64,14 +64,17 @@ export function MarketOverviewWidget() {
   };
 
   const combinedAssets = [
-    ...binancePrices.map(c => ({
-      symbol: c.symbol,           // BTCUSDT
-      displaySymbol: c.symbol.replace('USDT',''),  // BTC
+    ...binancePrices.map((c) => ({
+      symbol: c.symbol,                       // BTCUSDT
+      displaySymbol: c.symbol.replace('USDT', ''), // BTC (for text)
       price: parseFloat(c.lastPrice!),
       change: parseFloat(c.priceChangePercent!),
       type: 'crypto',
     })),
-    ...staticStocks,
+    ...staticStocks.map((s) => ({
+      ...s,
+      displaySymbol: s.symbol, // keep same as symbol for stocks
+    })),
   ];
   
 
@@ -104,8 +107,9 @@ export function MarketOverviewWidget() {
                   className="flex items-center justify-between bg-[#191C29] px-4 py-2 rounded-xl border border-transparent hover:border-primary/50 transition-colors duration-300"
                 >
                   <div className="flex items-center gap-3 w-1/4">
-                  <AssetIcon symbol={asset.symbol} size={24} />
-                  <span>{asset.displaySymbol ?? asset.symbol}</span>
+                  <AssetIcon symbol={asset.displaySymbol} size={24} />
+                  <span className="font-medium">{asset.displaySymbol}</span>
+
                   </div>
 
                   <div className="flex items-center justify-end gap-4 sm:gap-6 w-2/4 text-right">
