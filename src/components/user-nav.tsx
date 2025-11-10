@@ -15,7 +15,7 @@ import { useAuth, useUser } from "@/firebase";
 import { signOut } from "firebase/auth";
 import Link from "next/link"
 import { useRouter } from "next/navigation";
-import { LogOut, Settings, User as UserIcon } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
 
 export function UserNav() {
@@ -50,14 +50,16 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
             {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || "User avatar"} />}
-            <AvatarFallback>{user.displayName?.charAt(0) || 'U'}</AvatarFallback>
+            <AvatarFallback className="bg-gradient-to-r from-indigo-600/80 to-purple-600/80 text-white font-semibold">
+              {user.displayName?.charAt(0) || 'U'}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.displayName || 'User'}</p>
+          <div className="flex flex-col space-y-1 p-2">
+            <p className="text-sm font-semibold leading-none text-white">{user.displayName || 'User'}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>
