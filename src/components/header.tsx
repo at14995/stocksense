@@ -44,8 +44,9 @@ export function Header() {
 
 
   return (
-    <header className="backdrop-blur-lg bg-[#0B0D14]/70">
-      <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
+    <div className="relative border-b border-white/10">
+      <div className="absolute inset-0 backdrop-blur-lg bg-[#0B0D14]/70"></div>
+      <div className="relative container mx-auto flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
            <Logo />
@@ -119,6 +120,6 @@ export function Header() {
         </motion.div>
       )}
       </AnimatePresence>
-    </header>
+    </div>
   );
 }
