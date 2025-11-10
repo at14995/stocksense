@@ -17,6 +17,11 @@ const initialStocks = [
 export function LiveMarketTicker() {
   const { prices: crypto, isLoading } = useBinancePrices();
 
+  const mappedCrypto = crypto.map((c: any) => ({
+    ...c,
+    displaySymbol: c.symbol.replace('USDT', ''), // base symbol for icons and text
+  }));
+  
   const renderCryptoRow = (item: any) => (
     <motion.div 
       key={item.symbol} 
@@ -26,8 +31,8 @@ export function LiveMarketTicker() {
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center space-x-3 w-1/3">
-        <AssetIcon symbol={item.symbol} size={24} />
-        <span className="text-white font-medium">{item.symbol.replace("USDT", "")}</span>
+      <AssetIcon symbol={item.displaySymbol} size={24} />
+      <span className="text-white font-medium">{item.displaySymbol}</span>
       </div>
       <div className="text-gray-300 w-1/3 text-right font-mono">${parseFloat(item.lastPrice).toFixed(2)}</div>
       <div className={cn("text-sm w-1/3 text-right font-mono", parseFloat(item.priceChangePercent) >= 0 ? 'text-green-400' : 'text-red-400')}>
@@ -74,7 +79,7 @@ export function LiveMarketTicker() {
           <div>
             <h3 className="text-lg font-semibold text-primary mb-3 text-center md:text-left">Top Cryptos</h3>
             <div className="space-y-1">
-              {isLoading ? Array(5).fill(0).map((_,i) => renderSkeleton(i)) : crypto.map(renderCryptoRow)}
+              {isLoading ? Array(5).fill(0).map((_,i) => renderSkeleton(i)) : mappedCrypto.map(renderCryptoRow)}
             </div>
           </div>
           <div>

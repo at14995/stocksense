@@ -14,9 +14,10 @@ interface AssetIconProps {
 export default function AssetIcon({ symbol, size = 24, className }: AssetIconProps) {
   const [src, setSrc] = useState(getAssetIcon(symbol));
   
+  
   // A generic, locally-hosted default icon
   const defaultIcon = '/icons/default-icon.svg';
-
+  
   return (
     <Image
       src={src}
