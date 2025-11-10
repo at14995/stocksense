@@ -55,7 +55,7 @@ export default function RootLayout({
               />
             </div>
             
-            <header className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-lg bg-[#0B0D14]/70 border-b border-white/10">
+            <header className="fixed top-0 left-0 right-0 z-[100] border-b border-white/10">
               <Header />
             </header>
 

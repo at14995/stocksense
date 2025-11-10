@@ -44,7 +44,7 @@ export function Header() {
 
 
   return (
-    <header>
+    <header className="backdrop-blur-lg bg-[#0B0D14]/70">
       <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
