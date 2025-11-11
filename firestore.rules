@@ -8,11 +8,11 @@
  * Data Structure:
  * - /users/{userId}: Private user data.
  * - /watchlists/{watchlistId}: User-owned watchlists.
- * - /alerts/{alertId}: User-owned price alerts.
- * - /posts/{postId}: Public posts by analysts.
+ * - /alerts/{alertId}: User-owned price alerts, gated by role.
+ * - /posts/{postId}: Public posts by analysts, gated by role.
  * - /comments/{commentId}: Public comments on posts.
  * - /tickets/{ticketId}: Support tickets, accessible by owner and admins.
- * - /roles/{userId}: Admin role definitions.
+ * - /roles/{userId}: Role definitions (e.g., free, trader, analyst, admin).
  * - /notifications/{notificationId}: User-specific notifications.
  */
 rules_version = '2';
@@ -46,10 +46,13 @@ service cloud.firestore {
     }
 
     /**
-     * @description User can create, read, update, and delete their own alerts.
+     * @description User can create alerts if they have 'trader' or 'analyst' role.
+     * They can manage their own existing alerts.
      */
     match /alerts/{alertId} {
-      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
+      allow create: if request.auth != null
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role in ['trader', 'analyst', 'admin'];
       allow read, update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
     }
 
@@ -91,11 +94,11 @@ service cloud.firestore {
     
     /**
      * @description Role documents are only readable by admins.
-     * Analysts can read their own role.
+     * Users can read their own role.
      */
     match /roles/{userId} {
       allow read: if request.auth != null && (get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'admin' || request.auth.uid == userId);
-      allow write: if false; // Roles should be managed manually or by a trusted backend.
+      allow write: if false; // Roles should be managed by a trusted backend (e.g., Stripe webhook).
     }
 
     /**

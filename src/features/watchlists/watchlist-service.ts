@@ -25,18 +25,27 @@ const COL = 'watchlists';
 
 export function listenUserWatchlists(
   ownerUid: string,
-  cb: (items: Watchlist[]) => void
+  cb: (items: Watchlist[]) => void,
+  onError?: (err: Error) => void
 ) {
   const q = query(
     collection(db, COL),
     where('ownerUid', '==', ownerUid),
     orderBy('updatedAt', 'desc')
   );
-  return onSnapshot(q, (snap) => {
-    const out: Watchlist[] = [];
-    snap.forEach((d) => out.push({ id: d.id, ...(d.data() as any) }));
-    cb(out);
-  });
+
+  return onSnapshot(
+    q,
+    (snap) => {
+      const out: Watchlist[] = [];
+      snap.forEach((d) => out.push({ id: d.id, ...(d.data() as any) }));
+      cb(out);
+    },
+    (err: any) => {
+      console.error('Error listening to watchlists:', err);
+      if (onError) onError(err);
+    }
+  );
 }
 
 export async function createWatchlist(
@@ -131,4 +140,26 @@ export async function addSymbolToWatchlist(ownerUid: string, symbol: string) {
         symbols: [...currentSymbols, s],
         updatedAt: serverTimestamp(),
     });
+}
+
+export async function addSymbolToWatchlistToId(watchlistId: string, symbol: string) {
+  const s = normalizeSymbol(symbol);
+
+  const docRef = doc(db, 'watchlists', watchlistId);
+  const snap = await getDoc(docRef);
+
+  if (!snap.exists()) {
+    throw new Error('Watchlist not found');
+  }
+
+  const currentSymbols: string[] = snap.data().symbols ?? [];
+
+  if (currentSymbols.includes(s)) {
+    throw new Error(`${s} is already in this watchlist`);
+  }
+
+  await updateDoc(docRef, {
+    symbols: [...currentSymbols, s],
+    updatedAt: serverTimestamp(),
+  });
 }

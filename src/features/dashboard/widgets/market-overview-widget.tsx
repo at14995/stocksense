@@ -100,6 +100,8 @@ export function MarketOverviewWidget() {
               initial="initial"
               animate="animate"
             >
+
+              
               {combinedAssets.slice(0, 10).map((asset) => (
                 <motion.div
                   key={asset.symbol}

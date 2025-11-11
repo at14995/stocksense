@@ -11,6 +11,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useIsAnalyst } from './hooks/useIsAnalyst';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import RoleGate from '@/components/auth/RoleGate';
+import Link from 'next/link';
 
 export default function PostComposer() {
   const { user } = useUser();
@@ -43,8 +45,10 @@ export default function PostComposer() {
     );
   }
 
-  if (!isAnalyst) {
-    return (
+  return (
+    <RoleGate
+      allow={['analyst']}
+      fallback={
         <Card className="mb-6">
             <CardContent className="p-6 text-center">
                 <ShieldAlert className="h-8 w-8 mx-auto text-primary mb-2" />
@@ -55,34 +59,33 @@ export default function PostComposer() {
                 </Button>
             </CardContent>
         </Card>
-    );
-  }
-
-  return (
-    <Card className="mb-6">
-      <CardContent className="p-4">
-        <Textarea value={text} onChange={e=>setText(e.target.value)} rows={3}
-          placeholder="Share an insight or market prediction..."
-          className="w-full resize-none"
-        />
-        <div className="flex flex-wrap gap-2 items-center justify-between mt-3">
-          <Input value={tickers} onChange={e=>setTickers(e.target.value)} placeholder="Tickers (comma separated)" className="flex-1 text-sm"/>
-          <Select value={sentiment} onValueChange={(v: any)=>setSentiment(v)}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Sentiment" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="bullish">Bullish</SelectItem>
-              <SelectItem value="bearish">Bearish</SelectItem>
-              <SelectItem value="neutral">Neutral</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button disabled={!valid} onClick={handlePost} >
-            <Send className="h-4 w-4 mr-2"/> Post
-          </Button>
-        </div>
-        {error && <p className="text-xs text-destructive mt-2">{error}</p>}
-      </CardContent>
-    </Card>
+      }
+    >
+      <Card className="mb-6">
+        <CardContent className="p-4">
+          <Textarea value={text} onChange={e=>setText(e.target.value)} rows={3}
+            placeholder="Share an insight or market prediction..."
+            className="w-full resize-none"
+          />
+          <div className="flex flex-wrap gap-2 items-center justify-between mt-3">
+            <Input value={tickers} onChange={e=>setTickers(e.target.value)} placeholder="Tickers (comma separated)" className="flex-1 text-sm"/>
+            <Select value={sentiment} onValueChange={(v: any)=>setSentiment(v)}>
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder="Sentiment" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bullish">Bullish</SelectItem>
+                <SelectItem value="bearish">Bearish</SelectItem>
+                <SelectItem value="neutral">Neutral</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button disabled={!valid} onClick={handlePost} >
+              <Send className="h-4 w-4 mr-2"/> Post
+            </Button>
+          </div>
+          {error && <p className="text-xs text-destructive mt-2">{error}</p>}
+        </CardContent>
+      </Card>
+    </RoleGate>
   );
 }
