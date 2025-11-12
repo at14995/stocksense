@@ -148,7 +148,7 @@ export default function AlertsPanel() {
                       <TableCell>{a.exchange || 'N/A'}</TableCell>
                       <TableCell>{getConditionLabel(a)}</TableCell>
                       <TableCell>
-                        {a.notificationMethod.charAt(0).toUpperCase() + a.notificationMethod.slice(1)}
+                        {Array.isArray(a.notificationMethod) ? a.notificationMethod.map(m => m.charAt(0).toUpperCase() + m.slice(1)).join(', ') : 'N/A'}
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -243,18 +243,19 @@ function EditAlertDialog({
 }) {
   const { toast } = useToast();
   const [targetValue, setTargetValue] = useState(alert.target.toString());
-  const [notificationMethod, setNotificationMethod] = useState(
+  const [notificationMethods, setNotificationMethods] = useState(
     alert.notificationMethod
   );
   const [condition, setCondition] = useState(alert.condition);
   const [exchange, setExchange] = useState(alert.exchange || '');
+  const [whatsappNumber, setWhatsappNumber] = useState(alert.ownerWhatsapp || '');
   const [err, setErr] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const valid =
     !isNaN(Number(targetValue)) &&
     Number(targetValue) > 0 &&
-    notificationMethod &&
+    notificationMethods.length > 0 &&
     exchange;
 
   const handleUpdate = async () => {
@@ -262,14 +263,20 @@ function EditAlertDialog({
       setErr('Please fill out all fields correctly.');
       return;
     }
+     if (notificationMethods.includes('WHATSAPP') && !/^\+[1-9]\d{1,14}$/.test(whatsappNumber)) {
+        setErr('Please enter a valid WhatsApp number in E.164 format.');
+        return;
+    }
+
     setIsLoading(true);
     setErr(null);
     try {
       await updateAlert(alert.id, {
         target: Number(targetValue),
-        notificationMethod,
+        notificationMethod: notificationMethods,
         exchange,
         condition,
+        ownerWhatsapp: notificationMethods.includes('WHATSAPP') ? whatsappNumber : undefined
       });
       toast({
         title: 'Alert Updated',
@@ -289,8 +296,7 @@ function EditAlertDialog({
         <DialogHeader>
           <DialogTitle>Edit Alert for {alert.symbol}</DialogTitle>
           <DialogDescription>
-            Modify the target value, exchange, or notification method for this
-            alert.
+            Modify the details for this alert.
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-4">
@@ -328,20 +334,6 @@ function EditAlertDialog({
               <SelectItem value="MEXC">MEXC</SelectItem>
               <SelectItem value="Bybit">Bybit</SelectItem>
               <SelectItem value="Bitfinex">Bitfinex</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={notificationMethod}
-            onValueChange={setNotificationMethod}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Notification Method" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="email">Email</SelectItem>
-              <SelectItem value="sms">SMS</SelectItem>
-              <SelectItem value="app">App Alert</SelectItem>
             </SelectContent>
           </Select>
 

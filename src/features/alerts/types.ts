@@ -10,8 +10,11 @@ export type Alert = {
     | 'percent_up'
     | 'percent_down';
   target: number;
-  notificationMethod: string;
+  notificationMethod: string[];
   status: 'active' | 'triggered' | 'archived';
   createdAt?: any;
   updatedAt?: any;
+  ownerWhatsapp?: string;
+  ownerEmail?: string;
+  ownerPhone?: string;
 };

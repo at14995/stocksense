@@ -52,7 +52,8 @@ export default function CreateAlertForm() {
   const [condition, setCondition] = useState<Alert['condition'] | ''>('');
   const [target, setTarget] = useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [notifyVia, setNotifyVia] = useState({ email: true, sms: false, app: true });
+  const [notifyVia, setNotifyVia] = useState({ email: true, sms: false, app: true, whatsapp: false });
+  const [whatsappNumber, setWhatsappNumber] = useState('');
 
   const handleAssetTypeChange = (value: string) => {
     setAssetType(value);
@@ -66,29 +67,38 @@ export default function CreateAlertForm() {
       return;
     }
 
-    if (!symbol || !target || !exchange || !condition) {
+    const notificationMethods = Object.entries(notifyVia)
+        .filter(([, checked]) => checked)
+        .map(([method]) => method.toUpperCase());
+
+    if (!symbol || !target || !exchange || !condition || notificationMethods.length === 0) {
       toast({
         variant: 'destructive',
         title: 'Missing Fields',
-        description: 'Please fill out all alert details.',
+        description: 'Please fill out all alert details and select at least one notification method.',
       });
       return;
     }
+    
+    if (notifyVia.whatsapp && !/^\+[1-9]\d{1,14}$/.test(whatsappNumber)) {
+        toast({
+            variant: 'destructive',
+            title: 'Invalid WhatsApp Number',
+            description: 'Please enter a valid number in E.164 format (e.g., +15551234567).',
+        });
+        return;
+    }
+
 
     try {
-      const getNotificationMethod = () => {
-        if (notifyVia.app) return 'app';
-        if (notifyVia.email) return 'email';
-        if (notifyVia.sms) return 'sms';
-        return 'app';
-      };
-
       await createAlert(user.uid, {
         symbol: symbol.toUpperCase(),
         exchange: exchange,
         condition: condition,
         target: Number(target),
-        notificationMethod: getNotificationMethod(),
+        notificationMethod: notificationMethods,
+        ownerWhatsapp: notifyVia.whatsapp ? whatsappNumber : undefined,
+        ownerEmail: user.email || undefined
       });
       
       toast({
@@ -229,7 +239,7 @@ export default function CreateAlertForm() {
                     checked={notifyVia.email} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} 
                   />
-                  <Mail className="h-4 w-4 text-muted-foreground" /> Email
+                  📧 Email
                 </Label>
                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
@@ -237,7 +247,15 @@ export default function CreateAlertForm() {
                     checked={notifyVia.sms} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))}
                    />
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" /> SMS
+                  📱 SMS
+                </Label>
+                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                   <Checkbox 
+                    id="whatsapp" 
+                    checked={notifyVia.whatsapp} 
+                    onCheckedChange={(c) => setNotifyVia(v => ({...v, whatsapp: !!c}))}
+                   />
+                  💬 WhatsApp
                 </Label>
                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
@@ -248,6 +266,26 @@ export default function CreateAlertForm() {
                    <BellRing className="h-4 w-4 text-muted-foreground" /> App Alert
                 </Label>
               </div>
+
+               {notifyVia.whatsapp && (
+                 <motion.div 
+                    initial={{opacity:0, height: 0, marginTop: 0}}
+                    animate={{opacity:1, height: 'auto', marginTop: '1rem'}}
+                    exit={{opacity:0, height: 0, marginTop: 0}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
+                 >
+                    <Label htmlFor="whatsapp-number">WhatsApp Number</Label>
+                    <Input
+                        id="whatsapp-number"
+                        type="tel"
+                        placeholder="+15551234567"
+                        value={whatsappNumber}
+                        onChange={e => setWhatsappNumber(e.target.value)}
+                        className="mt-2"
+                    />
+                 </motion.div>
+               )}
+
             </div>
 
             <Button size="lg" className="w-full" onClick={handleSubmit}>
