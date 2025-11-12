@@ -42,7 +42,7 @@ const cryptoExchanges = ['Binance', 'Coinbase', 'Kraken', 'MEXC', 'Bybit', 'Bitf
 export default function CreateAlertForm() {
   const { user } = useUser();
   const firestore = useFirestore();
-  const userDocRef = useMemoFirebase(() => user ? doc(firestore, 'users', user.uid) : null, [firestore, user]);
+  const userDocRef = useMemoFirebase(() => user ? doc(firestore, 'users', user.uid) : null, [firestore, user?.uid]);
   const { data: userProfile } = useDoc(userDocRef);
 
   const { toast } = useToast();
@@ -61,11 +61,9 @@ export default function CreateAlertForm() {
   const { assets, isLoading: isAssetsLoading } = useAssetsList();
 
   useEffect(() => {
-    if (userProfile) {
-      if (userProfile.phoneNumber) {
-        setSmsNumber(userProfile.phoneNumber);
-        setWhatsappNumber(userProfile.phoneNumber);
-      }
+    if (userProfile && userProfile.phoneNumber) {
+      setSmsNumber(userProfile.phoneNumber);
+      setWhatsappNumber(userProfile.phoneNumber);
     }
   }, [userProfile]);
 
@@ -161,7 +159,7 @@ export default function CreateAlertForm() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         >
-          <div className="w-full max-w-lg mx-auto rounded-2xl bg-card shadow-xl p-6 sm:p-8 text-foreground space-y-6 border border-border">
+          <div className="w-full max-w-lg mx-auto rounded-2xl bg-card/100 shadow-xl p-6 sm:p-8 text-foreground space-y-6 border border-border">
             <div className="text-center space-y-1">
               <h2 className="text-2xl font-semibold text-foreground flex items-center justify-center gap-2">
                 <Bell className="h-6 w-6" />
