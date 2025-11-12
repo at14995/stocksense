@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { motion } from 'framer-motion';
-import { useUser, useDoc } from '@/firebase';
+import { useUser, useDoc, useMemoFirebase } from '@/firebase';
 import { createAlert } from '@/features/alerts/alert-service';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -42,7 +42,8 @@ const cryptoExchanges = ['Binance', 'Coinbase', 'Kraken', 'MEXC', 'Bybit', 'Bitf
 export default function CreateAlertForm() {
   const { user } = useUser();
   const firestore = useFirestore();
-  const { data: userProfile } = useDoc(user ? doc(firestore, 'users', user.uid) : null);
+  const userDocRef = useMemoFirebase(() => user ? doc(firestore, 'users', user.uid) : null, [firestore, user]);
+  const { data: userProfile } = useDoc(userDocRef);
 
   const { toast } = useToast();
   const router = useRouter();

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -48,8 +49,6 @@ function SettingsPage() {
     }
   }, [user, isUserLoading, router]);
 
-  // This effect now ONLY runs when the profile data initially loads or changes from the backend.
-  // It no longer depends on local state variables like `displayName` or `phoneNumber`.
   useEffect(() => {
     if (userProfile) {
       setDisplayName(userProfile.displayName || '');
