@@ -72,7 +72,7 @@ export function LiveMarketTicker() {
   )
 
   return (
-    <section className="relative z-10 w-full max-w-5xl mx-auto -mt-16 mb-16 bg-card rounded-2xl shadow-2xl shadow-black/30 border border-white/10">
+    <section className="relative z-10 w-full max-w-5xl mx-auto -mt-16 mb-16 bg-secondary rounded-2xl shadow-2xl shadow-black/30 border border-white/10">
       <div className="p-4 md:p-6">
         <h2 className="text-2xl font-semibold text-white mb-6 text-center">Live Market Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
