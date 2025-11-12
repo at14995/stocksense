@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -154,15 +155,34 @@ export const useFirebaseApp = (): FirebaseApp => {
   return firebaseApp;
 };
 
-type MemoFirebase <T> = T & {__memo?: boolean};
+/**
+ * A hook that memoizes a Firestore query or document reference. This is critical
+ * for preventing infinite loops in `useCollection` and `useDoc` hooks when the
+ * reference is created inline.
+ * 
+ * It adds a non-enumerable property `__memo` to the returned object, which is
+ * used internally by `useCollection` and `useDoc` to verify that the reference
+ * has been memoized.
+ * 
+ * @template T The type of the value to be memoized (e.g., Query, DocumentReference).
+ * @param factory A function that creates the value to be memoized.
+ * @param deps An array of dependencies for the `useMemo` hook.
+ * @returns The memoized value.
+ */
+export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
+    const memoized = useMemo(factory, deps);
 
-export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T | (MemoFirebase<T>) {
-  const memoized = useMemo(factory, deps);
-  
-  if(typeof memoized !== 'object' || memoized === null) return memoized;
-  (memoized as MemoFirebase<T>).__memo = true;
-  
-  return memoized;
+    // This is a development-only check to help developers use the hook correctly.
+    // We tag the object to verify it was created with this hook.
+    if (process.env.NODE_ENV === 'development' && memoized && typeof memoized === 'object') {
+        Object.defineProperty(memoized, '__memo', {
+            value: true,
+            writable: false,
+            enumerable: false, // Hide it from console.log, etc.
+        });
+    }
+
+    return memoized;
 }
 
 /**
@@ -174,3 +194,5 @@ export const useUser = (): UserHookResult => { // Renamed from useAuthUser
   const { user, isUserLoading, userError } = useFirebase(); // Leverages the main hook
   return { user, isUserLoading, userError };
 };
+
+    

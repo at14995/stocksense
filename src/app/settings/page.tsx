@@ -1,7 +1,8 @@
+
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useAuth, useFirestore, useUser, useDoc } from '@/firebase';
+import { useEffect, useState, useMemo } from 'react';
+import { useAuth, useFirestore, useUser, useDoc, useMemoFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -31,7 +32,7 @@ function SettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const userDocRef = user ? doc(firestore, 'users', user.uid) : null;
+  const userDocRef = useMemoFirebase(() => (user ? doc(firestore, 'users', user.uid) : null), [firestore, user]);
   const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
 
 
@@ -221,3 +222,5 @@ function SettingsPage() {
 }
 
 export default SettingsPage;
+
+    
