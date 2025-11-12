@@ -23,12 +23,6 @@ type Feature = {
 
 const defaultFeatures: Feature[] = [
   {
-    icon: UserCircle,
-    title: 'Authentication and Profiles',
-    description: 'Secure sign-in and personalized user profiles.',
-    href: '/auth',
-  },
-  {
     icon: Eye,
     title: 'Watchlists with Logos',
     description: 'Create and track custom watchlists for your favorite stocks.',
