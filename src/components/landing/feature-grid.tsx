@@ -23,12 +23,6 @@ type Feature = {
 
 const defaultFeatures: Feature[] = [
   {
-    icon: Eye,
-    title: 'Watchlists with Logos',
-    description: 'Create and track custom watchlists for your favorite stocks.',
-    href: '/dashboard',
-  },
-  {
     icon: BellRing,
     title: 'Price Alerts',
     description: 'Set real-time price alerts and never miss a market move.',
