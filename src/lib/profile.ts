@@ -10,6 +10,8 @@ export async function ensureUserProfile(db: Firestore, uid: string, data: { disp
       displayName: data.displayName || '',
       email: data.email || '',
       photoURL: '',
+      phoneNumber: '',
+      phoneVerified: false,
       preferredCurrency: 'USD',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -23,20 +25,22 @@ export async function updateUserProfile(
   db: Firestore,
   auth: Auth,
   uid: string,
-  data: { displayName: string }
+  data: { displayName?: string, phoneNumber?: string }
 ) {
   if (!uid || !auth.currentUser) throw new Error('User not authenticated.');
   if (auth.currentUser.uid !== uid) throw new Error('Permission denied.');
 
   const userDocRef = doc(db, 'users', uid);
   await updateDoc(userDocRef, {
-    displayName: data.displayName,
+    ...data,
     updatedAt: serverTimestamp(),
   });
 
-  await updateProfile(auth.currentUser, {
-    displayName: data.displayName,
-  });
+  if (data.displayName) {
+    await updateProfile(auth.currentUser, {
+        displayName: data.displayName,
+    });
+  }
 }
 
 export async function deleteUserAccount(db: Firestore, auth: Auth, uid: string) {

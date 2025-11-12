@@ -1,7 +1,7 @@
 
 'use client';
 import { useEffect, useState } from 'react';
-import { Bell, Plus, Trash2, Archive, Edit } from 'lucide-react';
+import { Bell, Plus, Trash2, Archive, Edit, Phone, MessageSquare, Mail, BellRing } from 'lucide-react';
 import { useUser } from '@/firebase';
 import {
   listenUserAlerts,
@@ -49,6 +49,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useCurrency } from '@/context/CurrencyContext';
 import Link from 'next/link';
 import AssetIcon from '@/components/ui/AssetIcon';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { motion } from 'framer-motion';
 
 export default function AlertsPanel() {
   const { user } = useUser();
@@ -101,6 +104,16 @@ export default function AlertsPanel() {
         return `Reaches ${alert.target}`;
     }
   };
+  
+  const renderNotifyIcon = (method: string) => {
+    switch(method.toUpperCase()) {
+      case 'EMAIL': return <Mail className="h-4 w-4" title="Email" />;
+      case 'SMS': return <Phone className="h-4 w-4" title="SMS" />;
+      case 'WHATSAPP': return <MessageSquare className="h-4 w-4" title="WhatsApp" />;
+      case 'APP': return <BellRing className="h-4 w-4" title="App Alert" />;
+      default: return null;
+    }
+  }
 
   return (
     <Card>
@@ -148,7 +161,9 @@ export default function AlertsPanel() {
                       <TableCell>{a.exchange || 'N/A'}</TableCell>
                       <TableCell>{getConditionLabel(a)}</TableCell>
                       <TableCell>
-                        {Array.isArray(a.notificationMethod) ? a.notificationMethod.map(m => m.charAt(0).toUpperCase() + m.slice(1)).join(', ') : 'N/A'}
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          {Array.isArray(a.notificationMethod) ? a.notificationMethod.map(m => renderNotifyIcon(m)) : renderNotifyIcon('APP')}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -243,15 +258,20 @@ function EditAlertDialog({
 }) {
   const { toast } = useToast();
   const [targetValue, setTargetValue] = useState(alert.target.toString());
-  const [notificationMethods, setNotificationMethods] = useState(
-    alert.notificationMethod
-  );
+  const [notifyVia, setNotifyVia] = useState({
+      email: alert.notificationMethod.includes('EMAIL'),
+      sms: alert.notificationMethod.includes('SMS'),
+      app: alert.notificationMethod.includes('APP'),
+      whatsapp: alert.notificationMethod.includes('WHATSAPP'),
+  });
   const [condition, setCondition] = useState(alert.condition);
   const [exchange, setExchange] = useState(alert.exchange || '');
   const [whatsappNumber, setWhatsappNumber] = useState(alert.ownerWhatsapp || '');
+  const [smsNumber, setSmsNumber] = useState(alert.ownerPhone || '');
   const [err, setErr] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  
+  const notificationMethods = Object.entries(notifyVia).filter(([,v])=>v).map(([k])=>k.toUpperCase());
   const valid =
     !isNaN(Number(targetValue)) &&
     Number(targetValue) > 0 &&
@@ -263,8 +283,12 @@ function EditAlertDialog({
       setErr('Please fill out all fields correctly.');
       return;
     }
-     if (notificationMethods.includes('WHATSAPP') && !/^\+[1-9]\d{1,14}$/.test(whatsappNumber)) {
+    if (notifyVia.whatsapp && !/^\+[1-9]\d{1,14}$/.test(whatsappNumber)) {
         setErr('Please enter a valid WhatsApp number in E.164 format.');
+        return;
+    }
+    if (notifyVia.sms && !/^\+[1-9]\d{1,14}$/.test(smsNumber)) {
+        setErr('Please enter a valid SMS number in E.164 format.');
         return;
     }
 
@@ -276,7 +300,8 @@ function EditAlertDialog({
         notificationMethod: notificationMethods,
         exchange,
         condition,
-        ownerWhatsapp: notificationMethods.includes('WHATSAPP') ? whatsappNumber : undefined
+        ownerWhatsapp: notifyVia.whatsapp ? whatsappNumber : undefined,
+        ownerPhone: notifyVia.sms ? smsNumber : undefined
       });
       toast({
         title: 'Alert Updated',
@@ -336,6 +361,52 @@ function EditAlertDialog({
               <SelectItem value="Bitfinex">Bitfinex</SelectItem>
             </SelectContent>
           </Select>
+
+          <div>
+              <p className="text-muted-foreground text-sm mb-3 font-medium">Notify me via:</p>
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                  <Checkbox id="edit-email" checked={notifyVia.email} onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} />
+                  <Mail className="h-4 w-4 text-muted-foreground" /> Email
+                </Label>
+                <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                   <Checkbox id="edit-sms" checked={notifyVia.sms} onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))} />
+                  <Phone className="h-4 w-4 text-muted-foreground" /> SMS
+                </Label>
+                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                   <Checkbox id="edit-whatsapp" checked={notifyVia.whatsapp} onCheckedChange={(c) => setNotifyVia(v => ({...v, whatsapp: !!c}))} />
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" /> WhatsApp
+                </Label>
+                <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
+                   <Checkbox id="edit-app" checked={notifyVia.app} onCheckedChange={(c) => setNotifyVia(v => ({...v, app: !!c}))} />
+                   <BellRing className="h-4 w-4 text-muted-foreground" /> App Alert
+                </Label>
+              </div>
+
+               {notifyVia.sms && (
+                 <motion.div 
+                    initial={{opacity:0, height: 0, marginTop: 0}}
+                    animate={{opacity:1, height: 'auto', marginTop: '1rem'}}
+                    exit={{opacity:0, height: 0, marginTop: 0}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
+                 >
+                    <Label htmlFor="sms-number">Phone Number for SMS</Label>
+                    <Input id="sms-number" type="tel" placeholder="+15551234567" value={smsNumber} onChange={e => setSmsNumber(e.target.value)} className="mt-2" />
+                 </motion.div>
+               )}
+
+               {notifyVia.whatsapp && (
+                 <motion.div 
+                    initial={{opacity:0, height: 0, marginTop: 0}}
+                    animate={{opacity:1, height: 'auto', marginTop: '1rem'}}
+                    exit={{opacity:0, height: 0, marginTop: 0}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
+                 >
+                    <Label htmlFor="whatsapp-number">WhatsApp Number</Label>
+                    <Input id="whatsapp-number" type="tel" placeholder="+15551234567" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} className="mt-2" />
+                 </motion.div>
+               )}
+            </div>
 
           {err && <p className="text-sm text-destructive">{err}</p>}
         </div>

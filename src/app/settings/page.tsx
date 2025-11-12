@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth, useFirestore, useUser } from '@/firebase';
+import { useAuth, useFirestore, useUser, useDoc } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +21,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { doc } from 'firebase/firestore';
+
 
 function SettingsPage() {
   const { user, isUserLoading } = useUser();
@@ -29,7 +31,12 @@ function SettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
 
+  const userDocRef = user ? doc(firestore, 'users', user.uid) : null;
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
+
+
   const [displayName, setDisplayName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState('');
@@ -38,10 +45,11 @@ function SettingsPage() {
     if (!isUserLoading && !user) {
       router.push('/auth');
     }
-    if (user && user.displayName) {
-      setDisplayName(user.displayName);
+    if (userProfile) {
+      setDisplayName(userProfile.displayName || '');
+      setPhoneNumber(userProfile.phoneNumber || '');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, userProfile]);
 
   const handleSaveProfile = async () => {
     if (!user || !displayName.trim()) {
@@ -52,10 +60,19 @@ function SettingsPage() {
       });
       return;
     }
+    if (phoneNumber && !/^\+[1-9]\d{1,14}$/.test(phoneNumber)) {
+        toast({
+            variant: 'destructive',
+            title: 'Validation Error',
+            description: 'Please enter a valid phone number in E.164 format (e.g., +15551234567).',
+        });
+        return;
+    }
+
 
     setIsSaving(true);
     try {
-      await updateUserProfile(firestore, auth, user.uid, { displayName });
+      await updateUserProfile(firestore, auth, user.uid, { displayName, phoneNumber });
       toast({
         title: 'Success',
         description: 'Your profile has been updated.',
@@ -98,13 +115,15 @@ function SettingsPage() {
     }
   };
   
-  if (isUserLoading || !user) {
+  if (isUserLoading || !user || isProfileLoading) {
     return (
       <div className="container flex min-h-screen items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
+  
+  const isProfileChanged = displayName !== userProfile?.displayName || phoneNumber !== userProfile?.phoneNumber;
 
   return (
     <main className="flex justify-center items-start min-h-screen px-4 py-20 bg-transparent">
@@ -115,22 +134,40 @@ function SettingsPage() {
         </div>
 
         {/* Profile Settings */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <h2 className="text-xl font-semibold">Profile</h2>
-          <div className="space-y-2">
-            <Label htmlFor="displayName">Nickname</Label>
-            <div className="flex gap-4">
+          <div className="space-y-4">
+             <div className="space-y-2">
+              <Label htmlFor="displayName">Nickname</Label>
               <Input
                 id="displayName"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="max-w-xs"
               />
-              <Button onClick={handleSaveProfile} disabled={isSaving || displayName === user.displayName}>
-                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Changes'}
-              </Button>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+               <div className="flex items-center gap-2">
+                 <Input
+                    id="phoneNumber"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="max-w-xs"
+                    placeholder="+15551234567"
+                  />
+                  {userProfile?.phoneVerified ? (
+                    <span className="flex items-center gap-1 text-sm text-green-400"><CheckCircle className="h-4 w-4" /> Verified</span>
+                  ) : (
+                    <span className="flex items-center gap-1 text-sm text-amber-400"><AlertTriangle className="h-4 w-4" /> Not Verified</span>
+                  )}
+              </div>
+               <p className="text-xs text-muted-foreground">Used for SMS and WhatsApp alerts. Verification coming soon.</p>
             </div>
           </div>
+           <Button onClick={handleSaveProfile} disabled={isSaving || !isProfileChanged}>
+                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Changes'}
+            </Button>
         </div>
 
         <Separator />

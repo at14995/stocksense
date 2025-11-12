@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { motion } from 'framer-motion';
-import { useUser } from '@/firebase';
+import { useUser, useDoc } from '@/firebase';
 import { createAlert } from '@/features/alerts/alert-service';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -30,19 +30,20 @@ import { useCurrency } from '@/context/CurrencyContext';
 import { Combobox } from '@/components/ui/combobox';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { TrendingUp, Bitcoin, Mail, MessageSquare, Bell, BellRing } from 'lucide-react';
+import { TrendingUp, Bitcoin, Mail, MessageSquare, Bell, BellRing, Phone } from 'lucide-react';
+import { useAssetsList } from '@/hooks/useAssetsList';
+import { doc } from 'firebase/firestore';
+import { useFirestore } from '@/firebase';
 
-
-const dummyTrending = {
-  stocks: ['AAPL', 'TSLA', 'NVDA', 'AMZN', 'GOOGL', 'MSFT', 'META', 'AMD', 'NFLX', 'DIS'],
-  crypto: ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT', 'DOGE/USDT', 'ADA/USDT', 'AVAX/USDT', 'LINK/USDT', 'DOT/USDT', 'MATIC/USDT'],
-};
 
 const stockExchanges = ['NASDAQ', 'NYSE', 'LSE'];
 const cryptoExchanges = ['Binance', 'Coinbase', 'Kraken', 'MEXC', 'Bybit', 'Bitfinex'];
 
 export default function CreateAlertForm() {
   const { user } = useUser();
+  const firestore = useFirestore();
+  const { data: userProfile } = useDoc(user ? doc(firestore, 'users', user.uid) : null);
+
   const { toast } = useToast();
   const router = useRouter();
   const { symbol: currencySymbol } = useCurrency();
@@ -54,6 +55,18 @@ export default function CreateAlertForm() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [notifyVia, setNotifyVia] = useState({ email: true, sms: false, app: true, whatsapp: false });
   const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [smsNumber, setSmsNumber] = useState('');
+
+  const { assets, isLoading: isAssetsLoading } = useAssetsList();
+
+  useEffect(() => {
+    if (userProfile) {
+      if (userProfile.phoneNumber) {
+        setSmsNumber(userProfile.phoneNumber);
+        setWhatsappNumber(userProfile.phoneNumber);
+      }
+    }
+  }, [userProfile]);
 
   const handleAssetTypeChange = (value: string) => {
     setAssetType(value);
@@ -89,6 +102,15 @@ export default function CreateAlertForm() {
         return;
     }
 
+     if (notifyVia.sms && !/^\+[1-9]\d{1,14}$/.test(smsNumber)) {
+        toast({
+            variant: 'destructive',
+            title: 'Invalid SMS Number',
+            description: 'Please enter a valid number in E.164 format (e.g., +15551234567).',
+        });
+        return;
+    }
+
 
     try {
       await createAlert(user.uid, {
@@ -98,6 +120,7 @@ export default function CreateAlertForm() {
         target: Number(target),
         notificationMethod: notificationMethods,
         ownerWhatsapp: notifyVia.whatsapp ? whatsappNumber : undefined,
+        ownerPhone: notifyVia.sms ? smsNumber : undefined,
         ownerEmail: user.email || undefined
       });
       
@@ -124,10 +147,10 @@ export default function CreateAlertForm() {
     condition?.includes('dollar') ? currencySymbol :
     currencySymbol;
     
-  const trendingAssets = assetType === 'stocks' ? dummyTrending.stocks : dummyTrending.crypto;
+  const trendingAssets = assetType === 'stocks' ? stockExchanges : cryptoExchanges;
   const exchangeOptions = assetType === 'stocks' ? stockExchanges : cryptoExchanges;
 
-  const assetOptions = trendingAssets.map(asset => ({ value: asset, label: asset }));
+  const assetOptions = assets.map(asset => ({ value: asset.symbol, label: asset.symbol }));
 
   return (
     <>
@@ -177,7 +200,7 @@ export default function CreateAlertForm() {
                   options={assetOptions}
                   value={symbol}
                   onValueChange={setSymbol}
-                  placeholder="Select Trending Asset"
+                  placeholder={isAssetsLoading ? "Loading assets..." : "Select Trending Asset"}
                   searchPlaceholder='Search assets...'
                 />
                 <Input
@@ -239,7 +262,7 @@ export default function CreateAlertForm() {
                     checked={notifyVia.email} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, email: !!c}))} 
                   />
-                  📧 Email
+                  <Mail className="h-4 w-4 text-muted-foreground" /> Email
                 </Label>
                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
@@ -247,7 +270,7 @@ export default function CreateAlertForm() {
                     checked={notifyVia.sms} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, sms: !!c}))}
                    />
-                  📱 SMS
+                  <Phone className="h-4 w-4 text-muted-foreground" /> SMS
                 </Label>
                  <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
@@ -255,7 +278,7 @@ export default function CreateAlertForm() {
                     checked={notifyVia.whatsapp} 
                     onCheckedChange={(c) => setNotifyVia(v => ({...v, whatsapp: !!c}))}
                    />
-                  💬 WhatsApp
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" /> WhatsApp
                 </Label>
                 <Label className="flex items-center gap-2 text-sm font-normal cursor-pointer">
                    <Checkbox 
@@ -266,6 +289,25 @@ export default function CreateAlertForm() {
                    <BellRing className="h-4 w-4 text-muted-foreground" /> App Alert
                 </Label>
               </div>
+
+               {notifyVia.sms && (
+                 <motion.div 
+                    initial={{opacity:0, height: 0, marginTop: 0}}
+                    animate={{opacity:1, height: 'auto', marginTop: '1rem'}}
+                    exit={{opacity:0, height: 0, marginTop: 0}}
+                    transition={{duration: 0.3, ease: 'easeOut'}}
+                 >
+                    <Label htmlFor="sms-number">Phone Number for SMS</Label>
+                    <Input
+                        id="sms-number"
+                        type="tel"
+                        placeholder="+15551234567"
+                        value={smsNumber}
+                        onChange={e => setSmsNumber(e.target.value)}
+                        className="mt-2"
+                    />
+                 </motion.div>
+               )}
 
                {notifyVia.whatsapp && (
                  <motion.div 
