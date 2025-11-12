@@ -45,11 +45,16 @@ function SettingsPage() {
     if (!isUserLoading && !user) {
       router.push('/auth');
     }
+  }, [user, isUserLoading, router]);
+
+  // This effect now ONLY runs when the profile data initially loads or changes from the backend.
+  // It no longer depends on local state variables like `displayName` or `phoneNumber`.
+  useEffect(() => {
     if (userProfile) {
       setDisplayName(userProfile.displayName || '');
       setPhoneNumber(userProfile.phoneNumber || '');
     }
-  }, [user, isUserLoading, router, userProfile]);
+  }, [userProfile]);
 
   const handleSaveProfile = async () => {
     if (!user || !displayName.trim()) {
@@ -123,7 +128,7 @@ function SettingsPage() {
     );
   }
   
-  const isProfileChanged = displayName !== userProfile?.displayName || phoneNumber !== userProfile?.phoneNumber;
+  const isProfileChanged = displayName !== (userProfile?.displayName ?? '') || phoneNumber !== (userProfile?.phoneNumber ?? '');
 
   return (
     <main className="flex justify-center items-start min-h-screen px-4 py-20 bg-transparent">
