@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AuthTabs } from '@/features/auth/auth-tabs';
 import { useUser } from '@/firebase';
@@ -46,7 +46,7 @@ function AuthPageContent() {
 }
 
 
-export default function AuthPage() {
+export default function AuthPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   return (
     <Suspense fallback={<div className="container flex min-h-screen items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
       <AuthPageContent />
