@@ -73,3 +73,6 @@ export const checkPriceAlerts = functions.pubsub
 
     return null;
   });
+
+// Export the new trending assets function
+export { getTrendingAssets } from './getTrendingAssets';
