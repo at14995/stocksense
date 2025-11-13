@@ -13,9 +13,15 @@ export function useAssetsList() {
 
   useEffect(() => {
     const fetchAssets = async () => {
+      // Use the environment variable for the Cloud Function URL.
+      // Fallback to the local API route for development if the env var isn't set.
+      const url = process.env.NEXT_PUBLIC_TRENDING_ASSETS_URL || '/api/assets';
+
       try {
-        const res = await fetch('/api/assets');
-        if (!res.ok) throw new Error('Failed to fetch assets');
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch assets from ${url}. Status: ${res.status}`);
+        }
 
         const data = await res.json();
         setAssets(data);
