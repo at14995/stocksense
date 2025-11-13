@@ -10,7 +10,6 @@ import { useAssetsList } from '@/hooks/useAssetsList';
 import { Combobox } from '@/components/ui/combobox';
 import AssetIcon from '@/components/ui/AssetIcon';
 
-//effe
 export default function SymbolEditor({
   watchlistId,
   symbols,
